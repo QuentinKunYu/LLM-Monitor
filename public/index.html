@@ -284,7 +284,11 @@
             <label class="field-label" for="rq1-csv-input">Study 1 CSV</label>
             <p class="analysis-note">Optional: upload experiment <code>raw_results_cleaned.csv</code>. If no file is selected, RQ1 uses the local default Study 1 CSV path.</p>
           </div>
-          <input type="file" id="rq1-csv-input" class="field-input file-input" accept=".csv,text/csv" />
+          <div class="file-picker">
+            <input type="file" id="rq1-csv-input" class="file-input-native" accept=".csv,text/csv" />
+            <label class="btn btn-outline file-picker-btn" for="rq1-csv-input">Choose CSV</label>
+            <span id="rq1-csv-filename" class="file-picker-name">No file selected</span>
+          </div>
         </div>
         <div id="rq1-csv-status" class="analysis-note">No upload selected.</div>
         <div id="rq1-status" class="progress-status">Ready to run Study 1 RQ1 logistic models.</div>

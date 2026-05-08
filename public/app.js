@@ -67,6 +67,7 @@ const $experimentViews  = document.querySelectorAll('.experiment-view');
 const $rqArea           = document.getElementById('rq-area');
 const $runRq1Btn       = document.getElementById('run-rq1-btn');
 const $rq1CsvInput      = document.getElementById('rq1-csv-input');
+const $rq1CsvFilename   = document.getElementById('rq1-csv-filename');
 const $rq1CsvStatus     = document.getElementById('rq1-csv-status');
 const $rq1Status       = document.getElementById('rq1-status');
 const $rq1Results      = document.getElementById('rq1-results');
@@ -885,10 +886,12 @@ async function runRq1Analysis() {
 function updateRq1CsvStatus() {
   const file = $rq1CsvInput.files?.[0];
   if (!file) {
+    $rq1CsvFilename.textContent = 'No file selected';
     $rq1CsvStatus.textContent = 'No upload selected.';
     return;
   }
   const sizeMb = file.size / (1024 * 1024);
+  $rq1CsvFilename.textContent = file.name;
   $rq1CsvStatus.textContent = `Selected: ${file.name} (${sizeMb.toFixed(2)} MB).`;
 }
 
