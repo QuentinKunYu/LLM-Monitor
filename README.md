@@ -1,279 +1,125 @@
-# LLM Brand Recommendation Experiment
+# LLM Brand Experiment
 
-Interactive web application for running context-free LLM brand recommendation experiments. Measures **Brand Recommendation Probability at K (BRP@K)** and **Mean Reciprocal Rank (MRR)** for focal brands across multiple LLM providers.
+This is a local web app for running LLM brand recommendation experiments and RQ1 analysis.
 
----
+The GitHub repo does not include private API keys or research data. To run RQ1, upload the Study 1 experiment CSV in the web app.
 
-## Quick Start
+## What You Need
 
-### 1. Install Dependencies
+- Node.js
+- R
+- API keys only if you want to run new LLM experiments
+- A Study 1 CSV if you want to run RQ1 analysis
+
+## 1. Download and Install
+
+Open Terminal and run:
 
 ```bash
-cd llm-brand-experiment
+git clone https://github.com/QuentinKunYu/LLM-research.git
+cd LLM-research
 npm install
 ```
 
-### 2. Configure API Keys
+## 2. Add API Keys
 
-Copy `.env.example` to `.env` and add your API keys:
+Create a file named `.env` in the project folder.
+
+Paste this into `.env`, then fill in the keys you have:
 
 ```bash
-cp .env.example .env
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+GOOGLE_API_KEY=
+OPENAI_PROJECT_ID=
 ```
 
-Edit `.env` and fill in the keys for the providers you plan to use:
+You only need API keys if you want to run new experiments. If you only want to run RQ1 from an existing CSV, you can skip this step.
 
-```
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
-GOOGLE_API_KEY=AI...
-```
+## 3. Start the App
 
-> **Note:** You only need keys for the providers you intend to test. Unused providers will return an error if selected.
-
-### 3. Start the Server
+Run:
 
 ```bash
 npm start
 ```
 
-Open **http://localhost:3000** in your browser.
+Then open this in a browser:
 
----
-
-## Experiment Design
-
-### Prompt Condition: Context-Free
-
-The experiment uses a **context-free** prompt condition. This means:
-
-- ❌ No user identity, profile, or demographics
-- ❌ No budget, preference, or need-based constraints
-- ❌ No location or behavioral data
-- ❌ No prior conversation history
-- ❌ No web search or tool use
-
-### Default Prompt Template
-
-```
-I'm looking for a [category]. What brands would you recommend?
-Please list up to five brands and briefly explain each.
+```text
+http://localhost:3000
 ```
 
-The `[category]` placeholder is automatically replaced with the selected product sub-category (e.g., "hiking jacket", "cordless drills").
+## 4. Run a New Experiment
 
-### Session Rule
+In the web app:
 
-Each replicate is treated as a **fresh, independent API call** with no shared conversation history. This ensures that:
-1. Brand recommendations are not influenced by prior outputs.
-2. Results are statistically independent.
-3. Temperature introduces natural variation between replicates.
+1. Click `Experiment`
+2. Choose a prompt condition
+3. Choose an LLM model
+4. Choose a product category
+5. Choose the number of replicates
+6. Click `Run Experiment`
+7. Export the raw CSV when the run is finished
 
----
+## 5. Run RQ1 Analysis
 
-## Metrics
+In the web app:
 
-### BRP@K — Brand Recommendation Probability at K
+1. Click `RQ Analysis`
+2. Click `Choose CSV`
+3. Select your Study 1 `raw_results_cleaned.csv`
+4. Click `Run RQ1`
 
-Measures the probability that a focal brand appears within the **top K** recommended brands across all replicates.
+The page will show:
 
-```
-BRP@K = (# replicates where brand appears in ranks 1..K) / total replicates
-```
+- Overall popularity bias
+- Category heterogeneity
+- Niche brands that still get recommended
+- Model differences
+- Visibility x model interaction
+- Logistic regression results
 
-The app calculates **BRP@1**, **BRP@3**, and **BRP@5**.
+## Study 1 CSV Format
 
-**Example:** If "Canon" appears in the top-5 recommendations in 34 out of 40 replicates:
-```
-BRP@5 = 34 / 40 = 0.85
-```
+The RQ1 CSV should include these columns:
 
-### MRR — Mean Reciprocal Rank
-
-Measures how highly a brand tends to be ranked.
-
-| Rank | Reciprocal |
-|------|------------|
-| 1    | 1.000      |
-| 2    | 0.500      |
-| 3    | 0.333      |
-| 4    | 0.250      |
-| 5    | 0.200      |
-| Not mentioned | 0.000 |
-
-```
-MRR = mean(reciprocal ranks across all replicates)
-```
-
-**Example:** Ranks [1, 2, -, 4, 2] across 5 replicates:
-```
-MRR = (1 + 0.5 + 0 + 0.25 + 0.5) / 5 = 0.45
-```
-
----
-
-## Application Workflow
-
-1. Open the app at `http://localhost:3000`
-2. Select an **LLM model** from the dropdown
-3. Select a **product category** (e.g., hiking jacket, CPU, mattress)
-4. Optionally edit the **prompt template**
-5. Set **number of replicates** (default: 40)
-6. Adjust **temperature** (default: 0.7) and **max output tokens** (default: 300)
-7. Click **Run Experiment**
-8. Watch real-time progress as replicates complete
-9. View **raw results** (brands extracted per replicate)
-10. View **metrics table** (BRP@1, BRP@3, BRP@5, MRR per focal brand)
-11. **Export** raw results CSV, metrics CSV, or experiment config JSON
-
----
-
-## Project Structure
-
-```
-llm-brand-experiment/
-├── server.js                  # Express backend & API routes
-├── package.json
-├── .env                       # API keys (not committed)
-├── .env.example               # Template for .env
-│
-├── config/
-│   ├── models.json            # Model definitions (editable)
-│   ├── categories_brands.csv  # Product categories & focal brands
-│   └── brand_alias_dictionary.csv  # Brand name normalization
-│
-├── lib/
-│   ├── llm-clients.js         # OpenAI / Anthropic / Google API clients
-│   ├── brand-extractor.js     # Multi-strategy brand extraction
-│   └── metrics.js             # BRP@K and MRR calculations
-│
-└── public/
-    ├── index.html             # Main interface
-    ├── index.css              # Stylesheet
-    └── app.js                 # Frontend controller
+```text
+run_id
+category
+sub_category
+model_id
+model_name
+replicate
+prompt_condition
+response_text
+brand_1
+brand_2
+brand_3
+brand_4
+brand_5
 ```
 
----
+Extra columns are fine.
 
-## Data Files
+## Useful Commands
 
-### `config/categories_brands.csv`
+Start the web app:
 
-Defines product categories and their focal brands (3 high-visibility + 3 niche per category):
-
-```csv
-category,sub_category,brand,visibility_group
-camping/hiking,hiking jacket,Patagonia,high_visibility
-camping/hiking,hiking jacket,Outdoor Research,niche
+```bash
+npm start
 ```
 
-### `config/brand_alias_dictionary.csv`
+Run RQ1 from the default local CSV path:
 
-Maps brand name variations to a standardized form:
-
-```csv
-category,standard_brand,alias,visibility_group
-hiking jacket,The North Face,TNF,high_visibility
-hiking jacket,The North Face,North Face,high_visibility
+```bash
+npm run analysis:rq1
 ```
 
-### `config/models.json`
+The easier option is to use the `RQ Analysis` page and upload the CSV there.
 
-Lists available LLM models. Edit this file to add or modify models:
+## Notes
 
-```json
-{
-  "models": [
-    {
-      "model_id": "gpt-4o",
-      "provider": "openai",
-      "model_name": "gpt-4o",
-      "display_name": "OpenAI GPT-4o",
-      "status": "primary"
-    }
-  ]
-}
-```
-
----
-
-## Output Format
-
-### Raw Results CSV
-
-One row per replicate:
-
-| Column | Description |
-|--------|-------------|
-| `run_id` | Unique experiment run identifier |
-| `category` | Parent category |
-| `sub_category` | Specific product category |
-| `model_id` | Model identifier |
-| `model_name` | Model name |
-| `replicate` | Replicate number (1-indexed) |
-| `prompt_condition` | Always "context-free" |
-| `prompt` | The exact prompt sent |
-| `response_text` | Full LLM response |
-| `brand_1` – `brand_5` | Extracted brands in rank order |
-| `timestamp` | ISO timestamp |
-| `temperature` | Temperature used |
-| `max_output_tokens` | Token limit used |
-| `notes` | Any notes or error messages |
-
-### Metrics CSV
-
-One row per focal brand:
-
-| Column | Description |
-|--------|-------------|
-| `sub_category` | Product category |
-| `model_id` | Model used |
-| `brand` | Focal brand name |
-| `visibility_group` | `high_visibility` or `niche` |
-| `n_replicates` | Total replicates |
-| `BRP@1` | Brand Recommendation Probability at 1 |
-| `BRP@3` | Brand Recommendation Probability at 3 |
-| `BRP@5` | Brand Recommendation Probability at 5 |
-| `MRR` | Mean Reciprocal Rank |
-
----
-
-## Adding New Categories
-
-1. Add rows to `config/categories_brands.csv` with the new category, sub-category, brands, and visibility groups
-2. Add corresponding alias entries to `config/brand_alias_dictionary.csv`
-3. Restart the server
-
----
-
-## Adding New Models
-
-Edit `config/models.json` and add a new entry:
-
-```json
-{
-  "model_id": "your-model-id",
-  "provider": "openai",       // "openai", "anthropic", or "google"
-  "model_name": "gpt-4-turbo",
-  "display_name": "OpenAI GPT-4 Turbo",
-  "status": "optional"
-}
-```
-
-Restart the server to pick up changes.
-
----
-
-## Methodological Notes
-
-- **Independence:** Each replicate is a fresh API call with no shared state.
-- **Reproducibility:** Temperature, max tokens, prompt, and model are recorded per run.
-- **Auditability:** Full response text is preserved for manual review.
-- **Standardization:** Brand alias dictionary ensures consistent brand name matching.
-- **No personalization:** Prompts contain zero user-specific context by design.
-
----
-
-## License
-
-Research use. All rights reserved.
+- `.env` is private and should not be uploaded.
+- `data/` is private and should not be uploaded.
+- The app writes local analysis outputs into `data/`, but that folder is ignored by Git.
