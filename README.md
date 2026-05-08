@@ -108,11 +108,3 @@ Start the web app:
 ```bash
 npm start
 ```
-
-Run RQ1 from the default local CSV path:
-
-```bash
-npm run analysis:rq1
-```
-
-The easier option is to use the `RQ Analysis` page and upload the CSV there.
