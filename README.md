@@ -116,9 +116,3 @@ npm run analysis:rq1
 ```
 
 The easier option is to use the `RQ Analysis` page and upload the CSV there.
-
-## Notes
-
-- `.env` is private and should not be uploaded.
-- `data/` is private and should not be uploaded.
-- The app writes local analysis outputs into `data/`, but that folder is ignored by Git.
