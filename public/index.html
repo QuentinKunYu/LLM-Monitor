@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLM Brand Recommendation Experiment</title>
+  <meta name="description" content="Interactive research tool for measuring Brand Recommendation Probability (BRP@K) and Mean Reciprocal Rank (MRR) across LLM models under multiple prompting conditions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- ════════════════════ HEADER ════════════════════ -->
+  <header id="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <h1>LLM Brand Experiment</h1>
+          <p class="header-subtitle" id="header-subtitle">Brand Recommendation Audit</p>
+        </div>
+      </div>
+      <nav class="header-nav" aria-label="Primary view">
+        <button class="nav-tab active" type="button" data-view="experiment" id="nav-experiment">Experiment</button>
+        <button class="nav-tab" type="button" data-view="rq" id="nav-rq">RQ Analysis</button>
+      </nav>
+      <div class="header-badges">
+        <span class="badge badge-condition" id="condition-badge">Context-Free</span>
+        <span class="badge badge-metrics">BRP@K &middot; MRR</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="app-main">
+    <!-- ════════════════════ LEFT PANEL ════════════════════ -->
+    <aside id="settings-panel" class="experiment-view">
+      <div class="panel-section">
+        <h2 class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Experiment Settings
+        </h2>
+
+        <!-- Prompt Condition Selector -->
+        <label class="field-label" for="condition-select">Prompt Condition</label>
+        <select id="condition-select" class="field-input"></select>
+
+        <div id="persona-field-group" class="hidden">
+          <label class="field-label" for="persona-select">Synthetic Persona</label>
+          <select id="persona-select" class="field-input"></select>
+        </div>
+
+        <!-- Model Selector -->
+        <label class="field-label" for="model-select">LLM Model</label>
+        <select id="model-select" class="field-input"></select>
+
+        <!-- Category Selector -->
+        <label class="field-label" for="category-select">Product Category</label>
+        <select id="category-select" class="field-input"></select>
+
+        <!-- Sub-category (auto-populated) -->
+        <label class="field-label" for="subcategory-display">Sub-Category</label>
+        <input type="text" id="subcategory-display" class="field-input" readonly />
+      </div>
+
+      <div class="panel-section">
+        <!-- Prompt Template -->
+        <label class="field-label" for="prompt-template">Prompt Template</label>
+        <textarea id="prompt-template" class="field-textarea" rows="4"></textarea>
+        <p class="field-hint">Use <code>[category]</code> as a placeholder.</p>
+      </div>
+
+      <div class="panel-section">
+        <!-- Replicates -->
+        <label class="field-label" for="replicates-input">Number of Replicates</label>
+        <div class="slider-group">
+          <input type="range" id="replicates-slider" min="1" max="100" value="40" />
+          <input type="number" id="replicates-input" class="field-input field-input--narrow" min="1" max="200" value="40" />
+        </div>
+
+        <!-- Temperature -->
+        <label class="field-label" for="temperature-input">Temperature</label>
+        <div class="slider-group">
+          <input type="range" id="temperature-slider" min="0" max="200" value="70" />
+          <input type="number" id="temperature-input" class="field-input field-input--narrow" min="0" max="2" step="0.05" value="0.70" />
+        </div>
+
+        <!-- Max Output Tokens -->
+        <label class="field-label" for="max-tokens-input">Max Output Tokens</label>
+        <input type="number" id="max-tokens-input" class="field-input" min="50" max="4096" step="50" value="300" />
+        
+        <!-- Web Search Toggle -->
+        <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <input type="checkbox" id="websearch-toggle" style="width: 16px; height: 16px; cursor: pointer;" />
+          <label class="field-label" for="websearch-toggle" style="margin-bottom: 0; cursor: pointer;">Enable Web Search</label>
+        </div>
+      </div>
+
+      <div class="panel-section panel-actions">
+        <button id="run-btn" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Experiment
+        </button>
+        <button id="run-all-btn" class="btn btn-primary btn-run-all">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Run All Categories
+        </button>
+        <button id="pause-btn" class="btn btn-danger hidden">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+          Pause Run
+        </button>
+        <button id="reset-btn" class="btn btn-ghost">Reset Defaults</button>
+      </div>
+    </aside>
+
+    <!-- ════════════════════ RIGHT CONTENT ════════════════════ -->
+    <div id="content-area" class="experiment-view">
+
+      <!-- Prompt Preview -->
+      <section class="card" id="prompt-preview-card">
+        <h2 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          Prompt Preview
+        </h2>
+        <pre id="prompt-preview" class="prompt-box"></pre>
+      </section>
+
+      <!-- Run Summary -->
+      <section class="card" id="run-summary-card">
+        <h2 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          Run Summary
+        </h2>
+        <div id="run-summary" class="summary-grid"></div>
+      </section>
+
+      <!-- Batch Progress (Run All) -->
+      <section class="card hidden" id="batch-progress-card">
+        <h2 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Batch Progress — All Categories
+        </h2>
+        <div class="progress-container">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="batch-progress-fill"></div>
+          </div>
+          <div class="progress-text">
+            <span id="batch-progress-count">0 / 0 categories</span>
+            <span id="batch-progress-errors"></span>
+          </div>
+        </div>
+        <div id="batch-category-list" class="batch-category-list"></div>
+        <div id="batch-status" class="progress-status"></div>
+      </section>
+
+      <!-- Progress (single run) -->
+      <section class="card hidden" id="progress-card">
+        <h2 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+          Experiment Progress
+        </h2>
+        <div class="progress-container">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progress-count">0 / 0</span>
+            <span id="progress-errors"></span>
+          </div>
+        </div>
+        <div id="progress-status" class="progress-status"></div>
+      </section>
+
+      <!-- Raw Results Table -->
+      <section class="card hidden" id="results-card">
+        <div class="card-header-row">
+          <h2 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Raw Results
+          </h2>
+          <button id="export-raw-btn" class="btn btn-sm btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table id="results-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Model</th>
+                <th>Category</th>
+                <th>Brand 1</th>
+                <th>Brand 2</th>
+                <th>Brand 3</th>
+                <th>Brand 4</th>
+                <th>Brand 5</th>
+              </tr>
+            </thead>
+            <tbody id="results-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Metrics Table -->
+      <section class="card hidden" id="metrics-card">
+        <div class="card-header-row">
+          <h2 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Metrics — BRP@K &amp; MRR
+          </h2>
+          <div class="btn-group">
+            <button id="export-metrics-btn" class="btn btn-sm btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Metrics CSV
+            </button>
+            <button id="export-config-btn" class="btn btn-sm btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Config JSON
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="metrics-table">
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th>Type</th>
+                <th>Mentions</th>
+                <th>N</th>
+                <th>BRP@1</th>
+                <th>BRP@3</th>
+                <th>BRP@5</th>
+                <th>MRR</th>
+              </tr>
+            </thead>
+            <tbody id="metrics-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <section id="rq-area" class="app-view hidden">
+      <section class="card" id="rq1-analysis-card">
+        <div class="card-header-row">
+          <div>
+            <h2 class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
+              RQ1 Analysis
+            </h2>
+            <p class="card-description">Documented popularity bias using Study 1 brand-level binary recommendation data.</p>
+            <p class="analysis-note">Unit of analysis: one candidate brand x model x category x replicate. <code>rec = 1</code> when the brand appears anywhere in the top-5 recommendation list.</p>
+          </div>
+          <button id="run-rq1-btn" class="btn btn-sm btn-outline">
+            Run RQ1
+          </button>
+        </div>
+        <div class="analysis-grid">
+          <div class="analysis-item">
+            <div class="summary-item-label">Model</div>
+            <div class="summary-item-value">logit(rec)</div>
+          </div>
+          <div class="analysis-item">
+            <div class="summary-item-label">Dataset</div>
+            <div class="summary-item-value">Study 1 focal brands</div>
+          </div>
+          <div class="analysis-item">
+            <div class="summary-item-label">Current Predictors</div>
+            <div class="summary-item-value">model, category, visibility</div>
+          </div>
+          <div class="analysis-item">
+            <div class="summary-item-label">Interaction</div>
+            <div class="summary-item-value">visibility x model</div>
+          </div>
+        </div>
+        <div id="rq1-status" class="progress-status">Ready to run Study 1 RQ1 logistic models.</div>
+        <div id="rq1-results" class="hidden">
+          <div id="rq1-key-stats" class="analysis-grid"></div>
+
+          <div class="analysis-two-col">
+            <div>
+              <h3 class="analysis-subtitle">Recommendation Probability by Visibility</h3>
+              <p class="analysis-note">Algorithm: group binary rows by <code>visibility_group</code>, then compute <code>mean(rec)</code>. This is the observed recommendation probability for high-visibility vs niche brands.</p>
+              <div id="rq1-visibility-chart" class="bar-chart"></div>
+            </div>
+            <div>
+              <h3 class="analysis-subtitle">Model Differences</h3>
+              <p class="analysis-note">Algorithm: for each model, compute <code>bias_gap = P(rec | high_visibility) - P(rec | niche)</code>. Larger gaps mean stronger high-visibility bias.</p>
+              <div id="rq1-model-bias-chart" class="bar-chart"></div>
+            </div>
+          </div>
+
+          <h3 class="analysis-subtitle">Category Heterogeneity: Strongest Popularity Bias</h3>
+          <p class="analysis-note">Algorithm: within each category, compute <code>high_visibility_rate - niche_rate</code>, then sort categories from largest gap to smallest.</p>
+          <div id="rq1-category-bias-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Niche Brands Still Recommended</h3>
+          <p class="analysis-note">Algorithm: filter to niche brands with at least one recommendation, then rank by <code>recommendation_rate = total_mentions / total_opportunities</code>.</p>
+          <div id="rq1-niche-opportunities-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Visibility x Model Interaction</h3>
+          <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the reference model, Claude Opus 4.7; the other rows test whether each model differs from that reference.</p>
+          <div id="rq1-interaction-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Logistic Regression Table</h3>
+          <p class="analysis-note">Algorithm: baseline RQ1 logit model <code>rec ~ model_id + sub_category + visibility_group</code>. The high-visibility odds ratio estimates popularity bias after model and category fixed effects.</p>
+          <div id="rq1-regression-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Category x Visibility Rates</h3>
+          <p class="analysis-note">Algorithm: group rows by <code>sub_category x visibility_group</code>, then report <code>mean(rec)</code>, mentions, and total observations.</p>
+          <div id="rq1-category-table" class="mini-table-wrap"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

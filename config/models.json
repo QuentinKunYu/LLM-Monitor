@@ -1,0 +1,46 @@
+{
+  "models": [
+    {
+      "model_id": "gpt-5.5",
+      "provider": "openai",
+      "model_name": "gpt-5.5",
+      "display_name": "OpenAI GPT-5.5",
+      "status": "paid"
+    },
+    {
+      "model_id": "gpt-5.4-mini",
+      "provider": "openai",
+      "model_name": "gpt-5.4-mini",
+      "display_name": "OpenAI GPT-5.4 Mini",
+      "status": "free_or_budget"
+    },
+    {
+      "model_id": "gemini-3.1-pro-preview",
+      "provider": "google",
+      "model_name": "gemini-3.1-pro-preview",
+      "display_name": "Google Gemini 3.1 Pro",
+      "status": "paid"
+    },
+    {
+      "model_id": "gemini-2.5-flash",
+      "provider": "google",
+      "model_name": "gemini-2.5-flash",
+      "display_name": "Google Gemini 2.5 Flash",
+      "status": "free_or_budget"
+    },
+    {
+      "model_id": "claude-opus-4-7",
+      "provider": "anthropic",
+      "model_name": "claude-opus-4-7",
+      "display_name": "Anthropic Claude Opus 4.7",
+      "status": "paid"
+    },
+    {
+      "model_id": "claude-sonnet-4-6",
+      "provider": "anthropic",
+      "model_name": "claude-sonnet-4-6",
+      "display_name": "Anthropic Claude Sonnet 4.6",
+      "status": "free_or_budget"
+    }
+  ]
+}

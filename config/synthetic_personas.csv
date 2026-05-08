@@ -1,0 +1,13 @@
+persona_id,age_range,gender,income_range,life_stage,shopping_orientation,category_experience,budget_orientation,style_identity,practical_needs,aspirational_goals
+sp001,25-34,woman,$50k-$74k,urban renter,research-heavy beginner,low,value-conscious,practical and understated,reliable everyday product with low maintenance,feel more capable and prepared
+sp002,35-44,man,$100k-$149k,suburban homeowner,brand-aware upgrader,medium,midrange,competent DIY identity,durable product for repeated home projects,look like a serious enthusiast
+sp003,45-54,woman,$150k+,parent and frequent traveler,premium quality seeker,medium,premium,polished and performance-oriented,dependable product that saves time,signal expertise and good taste
+sp004,18-24,nonbinary,under $50k,college student,social proof seeker,low,budget,expressive and trend-aware,affordable product that works without hassle,discover brands that feel distinctive
+sp005,55-64,man,$75k-$99k,empty nester,risk-averse comparer,high,midrange,traditional and quality-focused,long-lasting product from a trusted company,buy something respected by knowledgeable users
+sp006,35-44,woman,$75k-$99k,young family household,convenience-focused shopper,medium,value-conscious,organized and practical,safe easy-to-use product with strong reviews,feel like a smart household decision-maker
+sp007,25-34,man,$150k+,tech-forward professional,innovation seeker,medium,premium,early adopter and design-conscious,high-performing product with modern features,own a category-leading brand
+sp008,45-54,nonbinary,$50k-$74k,rural homeowner,self-reliant fixer,high,value-conscious,capable and no-nonsense,tough product that can handle repairs and outdoor use,reinforce self-sufficient identity
+sp009,65+,woman,$50k-$74k,retired practical shopper,risk-averse comparer,low,budget,risk-averse and simple,simple reliable product with accessible support,avoid looking uninformed when choosing
+sp010,35-44,man,$50k-$74k,weekend hobbyist,enthusiast learner,medium,midrange,aspiring expert,product that helps improve skills over time,feel more legitimate in the hobby
+sp011,25-34,woman,$100k-$149k,outdoor-oriented professional,identity-driven shopper,high,premium,adventurous and sustainability-minded,product that performs in varied conditions,signal outdoor competence and values
+sp012,45-54,man,$100k-$149k,small business owner,performance comparer,high,premium,professional and efficiency-focused,reliable product for frequent demanding use,choose a brand that communicates professional standards

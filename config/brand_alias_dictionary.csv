@@ -1,0 +1,442 @@
+category,standard_brand,alias,visibility_group
+cordless drills,Ryobi,RYOBI,high_visibility
+cordless drills,Ryobi,Ryobi,high_visibility
+cordless drills,Ryobi,ryobi,high_visibility
+cordless drills,DeWalt,DEWALT,high_visibility
+cordless drills,DeWalt,DeWalt,high_visibility
+cordless drills,DeWalt,DeWALT,high_visibility
+cordless drills,DeWalt,dewalt,high_visibility
+cordless drills,Milwaukee,MILWAUKEE,high_visibility
+cordless drills,Milwaukee,Milwaukee,high_visibility
+cordless drills,Milwaukee,milwaukee,high_visibility
+cordless drills,Black+Decker,BLACK+DECKER,other
+cordless drills,Black+Decker,Black+Decker,other
+cordless drills,Black+Decker,Black and Decker,other
+cordless drills,Black+Decker,Black & Decker,other
+cordless drills,Festool,FESTOOL,niche
+cordless drills,Festool,Festool,niche
+cordless drills,Festool,festool,niche
+cordless drills,Hilti,HILTI,niche
+cordless drills,Hilti,Hilti,niche
+cordless drills,Hilti,hilti,niche
+cordless drills,Makita,MAKITA,niche
+cordless drills,Makita,Makita,niche
+cordless drills,Makita,makita,niche
+car battery,DieHard,DIEHARD,high_visibility
+car battery,DieHard,DieHard,high_visibility
+car battery,DieHard,diehard,high_visibility
+car battery,AC Delco,A C Delco,high_visibility
+car battery,AC Delco,AC DELCO,high_visibility
+car battery,AC Delco,AC Delco,high_visibility
+car battery,AC Delco,ACDelco,high_visibility
+car battery,AC Delco,a c delco,high_visibility
+car battery,AC Delco,ac delco,high_visibility
+car battery,AC Delco,acdelco,high_visibility
+car battery,EverStart,EVERSTART,high_visibility
+car battery,EverStart,EverStart,high_visibility
+car battery,EverStart,everstart,high_visibility
+car battery,Antigravity,ANTIGRAVITY,niche
+car battery,Antigravity,Antigravity,niche
+car battery,Antigravity,antigravity,niche
+car battery,XS Power,XS POWER,niche
+car battery,XS Power,XS Power,niche
+car battery,XS Power,XSPower,niche
+car battery,XS Power,xs power,niche
+car battery,Odyssey,ODYSSEY,niche
+car battery,Odyssey,Odyssey,niche
+car battery,Odyssey,odyssey,niche
+laptop,Apple,APPLE,high_visibility
+laptop,Apple,Apple,high_visibility
+laptop,Apple,Mac,high_visibility
+laptop,Apple,MacBook,high_visibility
+laptop,Apple,apple,high_visibility
+laptop,Apple,mac,high_visibility
+laptop,Apple,macbook,high_visibility
+laptop,Dell,DELL,high_visibility
+laptop,Dell,Dell,high_visibility
+laptop,Dell,dell,high_visibility
+laptop,HP,HP,high_visibility
+laptop,HP,Hewlett Packard,high_visibility
+laptop,HP,Hewlett-Packard,high_visibility
+laptop,HP,hp,high_visibility
+laptop,Framework,FRAMEWORK,niche
+laptop,Framework,Framework,niche
+laptop,Framework,Framework Laptop,niche
+laptop,Framework,framework,niche
+laptop,Framework,framework laptop,niche
+laptop,System76,SYSTEM76,niche
+laptop,System76,System76,niche
+laptop,System76,System 76,niche
+laptop,System76,system76,niche
+laptop,System76,system 76,niche
+laptop,Razer,RAZER,niche
+laptop,Razer,Razer,niche
+laptop,Razer,razer,niche
+digital camera,Canon,CANON,high_visibility
+digital camera,Canon,Canon,high_visibility
+digital camera,Canon,canon,high_visibility
+digital camera,Nikon,NIKON,high_visibility
+digital camera,Nikon,Nikon,high_visibility
+digital camera,Nikon,nikon,high_visibility
+digital camera,Sony,SONY,high_visibility
+digital camera,Sony,Sony,high_visibility
+digital camera,Sony,sony,high_visibility
+digital camera,Fujifilm,FUJIFILM,niche
+digital camera,Fujifilm,Fuji,niche
+digital camera,Fujifilm,Fujifilm,niche
+digital camera,Fujifilm,fuji,niche
+digital camera,Fujifilm,fujifilm,niche
+digital camera,Leica,LEICA,niche
+digital camera,Leica,Leica,niche
+digital camera,Leica,leica,niche
+digital camera,Ricoh,RICOH,niche
+digital camera,Ricoh,Ricoh,niche
+digital camera,Ricoh,ricoh,niche
+hiking jacket,Patagonia,PATAGONIA,high_visibility
+hiking jacket,Patagonia,Patagonia,high_visibility
+hiking jacket,Patagonia,patagonia,high_visibility
+hiking jacket,The North Face,North Face,high_visibility
+hiking jacket,The North Face,THE NORTH FACE,high_visibility
+hiking jacket,The North Face,TNF,high_visibility
+hiking jacket,The North Face,The North Face,high_visibility
+hiking jacket,The North Face,TheNorthFace,high_visibility
+hiking jacket,The North Face,north face,high_visibility
+hiking jacket,The North Face,the north face,high_visibility
+hiking jacket,The North Face,tnf,high_visibility
+hiking jacket,Columbia,COLUMBIA,high_visibility
+hiking jacket,Columbia,Columbia,high_visibility
+hiking jacket,Columbia,columbia,high_visibility
+hiking jacket,Outdoor Research,OR,niche
+hiking jacket,Outdoor Research,OUTDOOR RESEARCH,niche
+hiking jacket,Outdoor Research,Outdoor Research,niche
+hiking jacket,Outdoor Research,OutdoorResearch,niche
+hiking jacket,Outdoor Research,or,niche
+hiking jacket,Outdoor Research,outdoor research,niche
+hiking jacket,KÜHL,KUHL,niche
+hiking jacket,KÜHL,KÜHL,niche
+hiking jacket,KÜHL,kuhl,niche
+hiking jacket,KÜHL,kühl,niche
+hiking jacket,Rab,RAB,niche
+hiking jacket,Rab,Rab,niche
+hiking jacket,Rab,rab,niche
+weight loss pills,Alli,ALLI,high_visibility
+weight loss pills,Alli,Alli,high_visibility
+weight loss pills,Alli,alli,high_visibility
+weight loss pills,Hydroxycut,HYDROXYCUT,high_visibility
+weight loss pills,Hydroxycut,Hydroxycut,high_visibility
+weight loss pills,Hydroxycut,hydroxycut,high_visibility
+weight loss pills,Leanbean,LEANBEAN,high_visibility
+weight loss pills,Leanbean,Leanbean,high_visibility
+weight loss pills,Leanbean,LeanBean,high_visibility
+weight loss pills,Leanbean,leanbean,high_visibility
+weight loss pills,PhenQ,PHENQ,niche
+weight loss pills,PhenQ,PhenQ,niche
+weight loss pills,PhenQ,phenq,niche
+weight loss pills,Zotrim,ZOTRIM,niche
+weight loss pills,Zotrim,Zotrim,niche
+weight loss pills,Zotrim,zotrim,niche
+weight loss pills,Trimtone,TRIMTONE,niche
+weight loss pills,Trimtone,Trimtone,niche
+weight loss pills,Trimtone,trimtone,niche
+hair dye,L’Oréal,L Oreal,high_visibility
+hair dye,L’Oréal,L Oréal,high_visibility
+hair dye,L’Oréal,L'Oreal,high_visibility
+hair dye,L’Oréal,L'Oréal,high_visibility
+hair dye,L’Oréal,LOreal,high_visibility
+hair dye,L’Oréal,Loreal,high_visibility
+hair dye,L’Oréal,L’ORÉAL,high_visibility
+hair dye,L’Oréal,L’Oréal,high_visibility
+hair dye,L’Oréal,l oreal,high_visibility
+hair dye,L’Oréal,l oréal,high_visibility
+hair dye,L’Oréal,l'oreal,high_visibility
+hair dye,L’Oréal,loreal,high_visibility
+hair dye,L’Oréal,l’oréal,high_visibility
+hair dye,Garnier,GARNIER,high_visibility
+hair dye,Garnier,Garnier,high_visibility
+hair dye,Garnier,garnier,high_visibility
+hair dye,Clairol,CLAIROL,high_visibility
+hair dye,Clairol,Clairol,high_visibility
+hair dye,Clairol,clairol,high_visibility
+hair dye,Iroiro,IROIRO,niche
+hair dye,Iroiro,Iroiro,niche
+hair dye,Iroiro,iroiro,niche
+hair dye,Arctic Fox,ARCTIC FOX,niche
+hair dye,Arctic Fox,Arctic Fox,niche
+hair dye,Arctic Fox,ArcticFox,niche
+hair dye,Arctic Fox,arctic fox,niche
+hair dye,Pulp Riot,PULP RIOT,niche
+hair dye,Pulp Riot,Pulp Riot,niche
+hair dye,Pulp Riot,PulpRiot,niche
+hair dye,Pulp Riot,pulp riot,niche
+humidifier,Honeywell,HONEYWELL,high_visibility
+humidifier,Honeywell,Honeywell,high_visibility
+humidifier,Honeywell,honeywell,high_visibility
+humidifier,Vicks,VICKS,high_visibility
+humidifier,Vicks,Vicks,high_visibility
+humidifier,Vicks,vicks,high_visibility
+humidifier,Levoit,LEVOIT,high_visibility
+humidifier,Levoit,Levoit,high_visibility
+humidifier,Levoit,levoit,high_visibility
+humidifier,Canopy,CANOPY,niche
+humidifier,Canopy,Canopy,niche
+humidifier,Canopy,canopy,niche
+humidifier,Venta,VENTA,niche
+humidifier,Venta,Venta,niche
+humidifier,Venta,venta,niche
+humidifier,Aircare,AIRCARE,niche
+humidifier,Aircare,Aircare,niche
+humidifier,Aircare,AirCare,niche
+humidifier,Aircare,aircare,niche
+pot,All Clad,ALL CLAD,high_visibility
+pot,All Clad,All Clad,high_visibility
+pot,All Clad,All-Clad,high_visibility
+pot,All Clad,AllClad,high_visibility
+pot,All Clad,all clad,high_visibility
+pot,All Clad,all-clad,high_visibility
+pot,All Clad,allclad,high_visibility
+pot,Cuisinart,CUISINART,high_visibility
+pot,Cuisinart,Cuisinart,high_visibility
+pot,Cuisinart,cuisinart,high_visibility
+pot,Calphalon,CALPHALON,high_visibility
+pot,Calphalon,Calphalon,high_visibility
+pot,Calphalon,calphalon,high_visibility
+pot,Vollrath,VOLLRATH,niche
+pot,Vollrath,Vollrath,niche
+pot,Vollrath,vollrath,niche
+pot,Demeyere,DEMEYERE,niche
+pot,Demeyere,Demeyere,niche
+pot,Demeyere,demeyere,niche
+pot,Revere Ware,REVERE WARE,niche
+pot,Revere Ware,Revere Ware,niche
+pot,Revere Ware,RevereWare,niche
+pot,Revere Ware,revere ware,niche
+carry-on luggage,Samsonite,SAMSONITE,high_visibility
+carry-on luggage,Samsonite,Samsonite,high_visibility
+carry-on luggage,Samsonite,samsonite,high_visibility
+carry-on luggage,Away,AWAY,high_visibility
+carry-on luggage,Away,Away,high_visibility
+carry-on luggage,Away,away,high_visibility
+carry-on luggage,Travelpro,TRAVELPRO,high_visibility
+carry-on luggage,Travelpro,Travelpro,high_visibility
+carry-on luggage,Travelpro,travelpro,high_visibility
+carry-on luggage,Monos,MONOS,niche
+carry-on luggage,Monos,Monos,niche
+carry-on luggage,Monos,monos,niche
+carry-on luggage,LEVEL8,LEVEL8,niche
+carry-on luggage,LEVEL8,level8,niche
+carry-on luggage,DELSEY PARIS,DELSEY PARIS,niche
+carry-on luggage,DELSEY PARIS,DELSEYPARIS,niche
+carry-on luggage,DELSEY PARIS,Delsey,niche
+carry-on luggage,DELSEY PARIS,Delsey Paris,niche
+carry-on luggage,DELSEY PARIS,delsey,niche
+carry-on luggage,DELSEY PARIS,delsey paris,niche
+weight loss pills,Wegovy,WEGOVY,high_visibility
+weight loss pills,Wegovy,Wegovy,high_visibility
+weight loss pills,Wegovy,wegovy,high_visibility
+weight loss pills,Zepbound,ZEPBOUND,high_visibility
+weight loss pills,Zepbound,Zepbound,high_visibility
+weight loss pills,Zepbound,zepbound,high_visibility
+weight loss pills,Saxenda,SAXENDA,high_visibility
+weight loss pills,Saxenda,Saxenda,high_visibility
+weight loss pills,Saxenda,saxenda,high_visibility
+weight loss pills,Qsymia,QSYMIA,high_visibility
+weight loss pills,Qsymia,Qsymia,high_visibility
+weight loss pills,Qsymia,qsymia,high_visibility
+weight loss pills,Contrave,CONTRAVE,high_visibility
+weight loss pills,Contrave,Contrave,high_visibility
+weight loss pills,Contrave,contrave,high_visibility
+weight loss pills,Xenical,XENICAL,high_visibility
+weight loss pills,Xenical,Xenical,high_visibility
+weight loss pills,Xenical,xenical,high_visibility
+weight loss pills,Xenical,Orlistat,high_visibility
+weight loss pills,Xenical,orlistat,high_visibility
+weight loss pills,Lomaira,LOMAIRA,niche
+weight loss pills,Lomaira,Lomaira,niche
+weight loss pills,Lomaira,lomaira,niche
+weight loss pills,Adipex-P,ADIPEX-P,niche
+weight loss pills,Adipex-P,Adipex-P,niche
+weight loss pills,Adipex-P,Adipex,niche
+weight loss pills,Adipex-P,adipex-p,niche
+weight loss pills,Adipex-P,adipex,niche
+weight loss pills,Adipex-P,Phentermine,niche
+weight loss pills,Qsymia,Phentermine/topiramate,high_visibility
+weight loss pills,Qsymia,Phentermine/topiramate ER,high_visibility
+carry-on luggage,Tumi,TUMI,other
+carry-on luggage,Tumi,Tumi,other
+carry-on luggage,Tumi,tumi,other
+digital camera,Panasonic,PANASONIC,other
+digital camera,Panasonic,Panasonic,other
+digital camera,Panasonic,Panasonic Lumix,other
+digital camera,Panasonic,Lumix,other
+laptop,ASUS,ASUS,other
+laptop,ASUS,Asus,other
+laptop,ASUS,asus,other
+car battery,Interstate Batteries,Interstate,other
+car battery,Interstate Batteries,Interstate Batteries,other
+car battery,Interstate Batteries,interstate,other
+car battery,Interstate Batteries,interstate batteries,other
+weight loss pills,Alli,All,high_visibility
+weight loss pills,Alli,all,high_visibility
+weight loss pills,Xenical,Xanical,high_visibility
+weight loss pills,Xenical,Xanical/Alli,high_visibility
+weight loss pills,Xenical,Xenical/Alli,high_visibility
+hair dye,Wella,Wella,other
+hair dye,Wella,Wella Color Charm,other
+hair dye,L’Oréal,L’Oréal Paris,high_visibility
+hair dye,L’Oréal,L Oreal Paris,high_visibility
+hair dye,L’Oréal,Loreal Paris,high_visibility
+hair dye,Clairol,Clairol Nice n Easy,high_visibility
+hair dye,Clairol,Clairol Nice'n Easy,high_visibility
+hair dye,Clairol,Clairol Nice and Easy,high_visibility
+hair dye,Garnier,Garnier Nutrisse,high_visibility
+hair dye,Revlon,Revlon,other
+hair dye,Revlon,Revlon Colorsilk,other
+hair dye,Revlon,Revlon ColorSilk,other
+hiking jacket,Arc'teryx,Arc'teryx,other
+hiking jacket,Arc'teryx,Arcteryx,other
+hiking jacket,Arc'teryx,Arc‚Äôteryx,other
+car battery,Optima Batteries,Optima,other
+car battery,Optima Batteries,Optima Batteries,other
+humidifier,Crane,Crane,other
+humidifier,Dyson,Dyson,other
+weight loss pills,Garcinia Cambogia,Garcinia Cambogia,other
+weight loss pills,Garcinia Cambogia,Garcinia Cambogia Plus,other
+weight loss pills,Hydroxycut,Hydroxicut,high_visibility
+weight loss pills,OxyShred,OxyShred,other
+weight loss pills,OxyShred,Oxyshred,other
+weight loss pills,Zantrex,Zantrex,other
+weight loss pills,Zantrex,Zantrex-3,other
+car tires,Michelin,MICHELIN,high_visibility
+car tires,Michelin,Michelin,high_visibility
+car tires,Michelin,michelin,high_visibility
+car tires,Goodyear,GOODYEAR,high_visibility
+car tires,Goodyear,Goodyear,high_visibility
+car tires,Goodyear,goodyear,high_visibility
+car tires,Bridgestone,BRIDGESTONE,high_visibility
+car tires,Bridgestone,Bridgestone,high_visibility
+car tires,Bridgestone,bridgestone,high_visibility
+car tires,Nokian,NOKIAN,niche
+car tires,Nokian,Nokian,niche
+car tires,Nokian,Nokian Tyres,niche
+car tires,Falken,FALKEN,niche
+car tires,Falken,Falken,niche
+car tires,Cooper,COOPER,niche
+car tires,Cooper,Cooper,niche
+car tires,Cooper,Cooper Tires,niche
+car tires,Continental,CONTINENTAL,other
+car tires,Continental,Continental,other
+car tires,Continental,Continental Tire,other
+car tires,Pirelli,PIRELLI,other
+car tires,Pirelli,Pirelli,other
+motor oil,Mobil 1,MOBIL 1,high_visibility
+motor oil,Mobil 1,Mobil 1,high_visibility
+motor oil,Mobil 1,Mobil One,high_visibility
+motor oil,Mobil 1,mobil 1,high_visibility
+motor oil,Castrol,CASTROL,high_visibility
+motor oil,Castrol,Castrol,high_visibility
+motor oil,Pennzoil,PENNZOIL,high_visibility
+motor oil,Pennzoil,Pennzoil,high_visibility
+motor oil,Royal Purple,ROYAL PURPLE,niche
+motor oil,Royal Purple,Royal Purple,niche
+motor oil,AMSOIL,AMSOIL,niche
+motor oil,AMSOIL,Amsoil,niche
+motor oil,Red Line,RED LINE,niche
+motor oil,Red Line,Red Line,niche
+motor oil,Red Line,Red Line Oil,niche
+motor oil,Valvoline,VALVOLINE,other
+motor oil,Valvoline,Valvoline,other
+motor oil,Shell,SHELL,other
+motor oil,Shell,Shell,other
+motor oil,Shell,Shell Rotella,other
+allergy remedies,Claritin,CLARITIN,high_visibility
+allergy remedies,Claritin,Claritin,high_visibility
+allergy remedies,Claritin,loratadine,high_visibility
+allergy remedies,Zyrtec,ZYRTEC,high_visibility
+allergy remedies,Zyrtec,Zyrtec,high_visibility
+allergy remedies,Zyrtec,cetirizine,high_visibility
+allergy remedies,Allegra,ALLEGRA,high_visibility
+allergy remedies,Allegra,Allegra,high_visibility
+allergy remedies,Allegra,fexofenadine,high_visibility
+allergy remedies,Xyzal,XYZAL,niche
+allergy remedies,Xyzal,Xyzal,niche
+allergy remedies,Xyzal,levocetirizine,niche
+allergy remedies,Astepro,ASTEPRO,niche
+allergy remedies,Astepro,Astepro,niche
+allergy remedies,Nasacort,NASACORT,niche
+allergy remedies,Nasacort,Nasacort,niche
+allergy remedies,Benadryl,BENADRYL,other
+allergy remedies,Benadryl,Benadryl,other
+allergy remedies,Benadryl,diphenhydramine,other
+allergy remedies,Flonase,FLONASE,other
+allergy remedies,Flonase,Flonase,other
+allergy remedies,Flonase,fluticasone,other
+coffee maker,Keurig,KEURIG,high_visibility
+coffee maker,Keurig,Keurig,high_visibility
+coffee maker,Cuisinart,CUISINART,high_visibility
+coffee maker,Cuisinart,Cuisinart,high_visibility
+coffee maker,Ninja,NINJA,high_visibility
+coffee maker,Ninja,Ninja,high_visibility
+coffee maker,Technivorm,TECHNIVORM,niche
+coffee maker,Technivorm,Technivorm,niche
+coffee maker,Technivorm,Moccamaster,niche
+coffee maker,Technivorm,Technivorm Moccamaster,niche
+coffee maker,Bonavita,BONAVITA,niche
+coffee maker,Bonavita,Bonavita,niche
+coffee maker,OXO,OXO,niche
+coffee maker,OXO,Oxo,niche
+coffee maker,Nespresso,NESPRESSO,other
+coffee maker,Nespresso,Nespresso,other
+coffee maker,Breville,BREVILLE,other
+coffee maker,Breville,Breville,other
+coffee maker,Hamilton Beach,HAMILTON BEACH,other
+coffee maker,Hamilton Beach,Hamilton Beach,other
+cat food,Purina,PURINA,high_visibility
+cat food,Purina,Purina,high_visibility
+cat food,Purina,Purina Pro Plan,high_visibility
+cat food,Purina,Pro Plan,high_visibility
+cat food,Friskies,FRISKIES,high_visibility
+cat food,Friskies,Friskies,high_visibility
+cat food,Fancy Feast,FANCY FEAST,high_visibility
+cat food,Fancy Feast,Fancy Feast,high_visibility
+cat food,Tiki Cat,TIKI CAT,niche
+cat food,Tiki Cat,Tiki Cat,niche
+cat food,Weruva,WERUVA,niche
+cat food,Weruva,Weruva,niche
+cat food,Instinct,INSTINCT,niche
+cat food,Instinct,Instinct,niche
+cat food,Instinct,Nature's Variety Instinct,niche
+cat food,Royal Canin,ROYAL CANIN,other
+cat food,Royal Canin,Royal Canin,other
+cat food,Hill's Science Diet,HILL'S SCIENCE DIET,other
+cat food,Hill's Science Diet,Hill's Science Diet,other
+cat food,Hill's Science Diet,Hills Science Diet,other
+cat food,Blue Buffalo,BLUE BUFFALO,other
+cat food,Blue Buffalo,Blue Buffalo,other
+cat food,Wellness,WELLNESS,other
+cat food,Wellness,Wellness,other
+cat food,Iams,IAMS,other
+cat food,Iams,Iams,other
+boat cruises,Carnival,CARNIVAL,high_visibility
+boat cruises,Carnival,Carnival,high_visibility
+boat cruises,Carnival,Carnival Cruise Line,high_visibility
+boat cruises,Royal Caribbean,ROYAL CARIBBEAN,high_visibility
+boat cruises,Royal Caribbean,Royal Caribbean,high_visibility
+boat cruises,Royal Caribbean,Royal Caribbean International,high_visibility
+boat cruises,Norwegian Cruise Line,NORWEGIAN CRUISE LINE,high_visibility
+boat cruises,Norwegian Cruise Line,Norwegian Cruise Line,high_visibility
+boat cruises,Norwegian Cruise Line,NCL,high_visibility
+boat cruises,Viking,VIKING,niche
+boat cruises,Viking,Viking,niche
+boat cruises,Viking,Viking Cruises,niche
+boat cruises,Oceania Cruises,OCEANIA CRUISES,niche
+boat cruises,Oceania Cruises,Oceania,niche
+boat cruises,Oceania Cruises,Oceania Cruises,niche
+boat cruises,Windstar Cruises,WINDSTAR CRUISES,niche
+boat cruises,Windstar Cruises,Windstar,niche
+boat cruises,Windstar Cruises,Windstar Cruises,niche
+boat cruises,Princess Cruises,PRINCESS CRUISES,other
+boat cruises,Princess Cruises,Princess,other
+boat cruises,Princess Cruises,Princess Cruises,other
+boat cruises,Celebrity Cruises,CELEBRITY CRUISES,other
+boat cruises,Celebrity Cruises,Celebrity,other
+boat cruises,Celebrity Cruises,Celebrity Cruises,other

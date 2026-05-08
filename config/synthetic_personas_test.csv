@@ -1,0 +1,5 @@
+persona_id,age_range,gender,income_range,life_stage,shopping_orientation,category_experience,budget_orientation,style_identity,practical_needs,aspirational_goals
+test_budget_beginner,25-34,woman,$50k-$74k,first apartment,value-focused beginner,low,budget,practical and cautious,needs something affordable reliable and easy to use,avoid making an uninformed choice
+test_aspiring_expert,35-44,man,$100k-$149k,suburban homeowner,brand-aware upgrader,medium,premium,serious hobbyist,needs durable performance for repeated projects,feel like a legitimate expert user
+test_identity_outdoor,25-34,nonbinary,$75k-$99k,outdoor-oriented professional,identity-driven shopper,high,premium,adventurous and values-driven,needs performance across changing conditions,signal outdoor competence and good taste
+test_low_risk_family,35-44,woman,$75k-$99k,young family household,risk-averse comparer,medium,midrange,organized household decision-maker,needs safe dependable products with strong reviews,feel confident choosing for the household

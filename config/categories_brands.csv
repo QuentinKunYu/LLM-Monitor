@@ -1,0 +1,79 @@
+category,sub_category,brand,visibility_group
+power tool,cordless drills,Ryobi,high_visibility
+power tool,cordless drills,DeWalt,high_visibility
+power tool,cordless drills,Milwaukee,high_visibility
+power tool,cordless drills,Festool,niche
+power tool,cordless drills,Hilti,niche
+power tool,cordless drills,Makita,niche
+motor vehicle parts,car tires,Michelin,high_visibility
+motor vehicle parts,car tires,Goodyear,high_visibility
+motor vehicle parts,car tires,Bridgestone,high_visibility
+motor vehicle parts,car tires,Nokian,niche
+motor vehicle parts,car tires,Falken,niche
+motor vehicle parts,car tires,Cooper,niche
+motor vehicle parts,motor oil,Mobil 1,high_visibility
+motor vehicle parts,motor oil,Castrol,high_visibility
+motor vehicle parts,motor oil,Pennzoil,high_visibility
+motor vehicle parts,motor oil,Royal Purple,niche
+motor vehicle parts,motor oil,AMSOIL,niche
+motor vehicle parts,motor oil,Red Line,niche
+consumer electronics,laptop,Apple,high_visibility
+consumer electronics,laptop,Dell,high_visibility
+consumer electronics,laptop,HP,high_visibility
+consumer electronics,laptop,Framework,niche
+consumer electronics,laptop,System76,niche
+consumer electronics,laptop,Razer,niche
+consumer electronics,digital camera,Canon,high_visibility
+consumer electronics,digital camera,Nikon,high_visibility
+consumer electronics,digital camera,Sony,high_visibility
+consumer electronics,digital camera,Fujifilm,niche
+consumer electronics,digital camera,Leica,niche
+consumer electronics,digital camera,Ricoh,niche
+camping/hiking,hiking jacket,Patagonia,high_visibility
+camping/hiking,hiking jacket,The North Face,high_visibility
+camping/hiking,hiking jacket,Columbia,high_visibility
+camping/hiking,hiking jacket,Outdoor Research,niche
+camping/hiking,hiking jacket,KÜHL,niche
+camping/hiking,hiking jacket,Rab,niche
+allergy remedies,allergy remedies,Claritin,high_visibility
+allergy remedies,allergy remedies,Zyrtec,high_visibility
+allergy remedies,allergy remedies,Allegra,high_visibility
+allergy remedies,allergy remedies,Xyzal,niche
+allergy remedies,allergy remedies,Astepro,niche
+allergy remedies,allergy remedies,Nasacort,niche
+hair styling products,hair dye,L’Oréal,high_visibility
+hair styling products,hair dye,Garnier,high_visibility
+hair styling products,hair dye,Clairol,high_visibility
+hair styling products,hair dye,Iroiro,niche
+hair styling products,hair dye,Arctic Fox,niche
+hair styling products,hair dye,Pulp Riot,niche
+home appliances,humidifier,Honeywell,high_visibility
+home appliances,humidifier,Vicks,high_visibility
+home appliances,humidifier,Levoit,high_visibility
+home appliances,humidifier,Canopy,niche
+home appliances,humidifier,Venta,niche
+home appliances,humidifier,Aircare,niche
+home appliances,coffee maker,Keurig,high_visibility
+home appliances,coffee maker,Cuisinart,high_visibility
+home appliances,coffee maker,Ninja,high_visibility
+home appliances,coffee maker,Technivorm,niche
+home appliances,coffee maker,Bonavita,niche
+home appliances,coffee maker,OXO,niche
+luggage,carry-on luggage,Samsonite,high_visibility
+luggage,carry-on luggage,Away,high_visibility
+luggage,carry-on luggage,Travelpro,high_visibility
+luggage,carry-on luggage,Monos,niche
+luggage,carry-on luggage,LEVEL8,niche
+luggage,carry-on luggage,DELSEY PARIS,niche
+pet food,cat food,Purina,high_visibility
+pet food,cat food,Friskies,high_visibility
+pet food,cat food,Fancy Feast,high_visibility
+pet food,cat food,Tiki Cat,niche
+pet food,cat food,Weruva,niche
+pet food,cat food,Instinct,niche
+cruising,boat cruises,Carnival,high_visibility
+cruising,boat cruises,Royal Caribbean,high_visibility
+cruising,boat cruises,Norwegian Cruise Line,high_visibility
+cruising,boat cruises,Viking,niche
+cruising,boat cruises,Oceania Cruises,niche
+cruising,boat cruises,Windstar Cruises,niche
