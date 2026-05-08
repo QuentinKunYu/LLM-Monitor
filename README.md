@@ -31,7 +31,6 @@ Paste this into `.env`, then fill in the keys you have:
 OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 GOOGLE_API_KEY=
-OPENAI_PROJECT_ID=
 ```
 
 You only need API keys if you want to run new experiments. If you only want to run RQ1 from an existing CSV, you can skip this step.
