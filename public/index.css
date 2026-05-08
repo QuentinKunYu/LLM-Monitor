@@ -503,6 +503,22 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-size: 0.72rem;
 }
 
+.rq1-upload-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  gap: 1rem;
+  align-items: end;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.file-input {
+  padding: 8px;
+}
+
 /* ── Prompt Preview ────────────────────────────────────────────── */
 .prompt-box {
   font-family: var(--font-mono);
@@ -928,6 +944,10 @@ td.visibility-other {
   }
 
   .analysis-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .rq1-upload-row {
     grid-template-columns: 1fr;
   }
 

@@ -66,6 +66,8 @@ const $navRq            = document.getElementById('nav-rq');
 const $experimentViews  = document.querySelectorAll('.experiment-view');
 const $rqArea           = document.getElementById('rq-area');
 const $runRq1Btn       = document.getElementById('run-rq1-btn');
+const $rq1CsvInput      = document.getElementById('rq1-csv-input');
+const $rq1CsvStatus     = document.getElementById('rq1-csv-status');
 const $rq1Status       = document.getElementById('rq1-status');
 const $rq1Results      = document.getElementById('rq1-results');
 const $rq1KeyStats     = document.getElementById('rq1-key-stats');
@@ -233,6 +235,7 @@ function wireEvents() {
   $exportMetricsBtn.addEventListener('click', exportMetricsCSV);
   $exportConfigBtn.addEventListener('click', exportConfigJSON);
   $runRq1Btn.addEventListener('click', runRq1Analysis);
+  $rq1CsvInput.addEventListener('change', updateRq1CsvStatus);
   $navExperiment.addEventListener('click', () => switchView('experiment'));
   $navRq.addEventListener('click', () => switchView('rq'));
 }
@@ -862,7 +865,12 @@ async function runRq1Analysis() {
   $rq1Results.classList.add('hidden');
 
   try {
-    const res = await fetch(`${API}/api/analysis/rq1`, { method: 'POST' });
+    const payload = await buildRq1Payload();
+    const res = await fetch(`${API}/api/analysis/rq1`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to start RQ1 analysis');
     pollRq1Analysis();
@@ -872,6 +880,32 @@ async function runRq1Analysis() {
     $rq1Status.className = 'progress-status cancelled';
     showToast(`RQ1 analysis failed: ${err.message}`, 'error');
   }
+}
+
+function updateRq1CsvStatus() {
+  const file = $rq1CsvInput.files?.[0];
+  if (!file) {
+    $rq1CsvStatus.textContent = 'No upload selected.';
+    return;
+  }
+  const sizeMb = file.size / (1024 * 1024);
+  $rq1CsvStatus.textContent = `Selected: ${file.name} (${sizeMb.toFixed(2)} MB).`;
+}
+
+async function buildRq1Payload() {
+  const file = $rq1CsvInput.files?.[0];
+  if (!file) return {};
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    throw new Error('Please upload a CSV file.');
+  }
+  const csvText = await file.text();
+  if (!csvText.trim()) {
+    throw new Error('The selected CSV file is empty.');
+  }
+  return {
+    filename: file.name,
+    csvText,
+  };
 }
 
 async function hydrateRq1Status() {

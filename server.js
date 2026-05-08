@@ -32,7 +32,7 @@ const { calculateMetrics } = require('./lib/metrics');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
@@ -59,6 +59,42 @@ function readCSVIfExists(filepath) {
     skip_empty_lines: true,
     trim: true,
   });
+}
+
+function safeFilename(filename) {
+  return String(filename || 'rq1-input.csv')
+    .replace(/[^a-zA-Z0-9._-]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 120) || 'rq1-input.csv';
+}
+
+function validateRq1CSV(csvText) {
+  const requiredColumns = [
+    'run_id',
+    'category',
+    'sub_category',
+    'model_id',
+    'model_name',
+    'replicate',
+    'prompt_condition',
+    'response_text',
+    'brand_1',
+    'brand_2',
+    'brand_3',
+    'brand_4',
+    'brand_5',
+  ];
+  const rows = parse(csvText, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+    to_line: 2,
+  });
+  const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
+  const missing = requiredColumns.filter(col => !columns.includes(col));
+  if (missing.length) {
+    throw new Error(`RQ1 CSV is missing required columns: ${missing.join(', ')}`);
+  }
 }
 
 // Load configuration data at startup
@@ -581,6 +617,22 @@ app.post('/api/analysis/rq1', (req, res) => {
     return res.status(409).json({ error: 'RQ1 analysis is already running.' });
   }
 
+  let sourceRawFile = '';
+  let sourceFilename = '';
+  try {
+    const csvText = req.body?.csvText;
+    sourceFilename = req.body?.filename || '';
+    if (csvText) {
+      validateRq1CSV(csvText);
+      const uploadDir = path.join(__dirname, 'data', 'uploads', 'rq1');
+      fs.mkdirSync(uploadDir, { recursive: true });
+      sourceRawFile = path.join(uploadDir, `${Date.now()}-${safeFilename(sourceFilename)}`);
+      fs.writeFileSync(sourceRawFile, csvText, 'utf8');
+    }
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+
   rq1AnalysisRun = {
     status: 'running',
     startedAt: new Date().toISOString(),
@@ -588,10 +640,16 @@ app.post('/api/analysis/rq1', (req, res) => {
     stdout: '',
     stderr: '',
     files: {},
+    sourceFilename: sourceFilename || 'default local Study 1 CSV',
+    sourceMode: sourceRawFile ? 'uploaded_csv' : 'default_path',
   };
 
   execFile('Rscript', ['scripts/run-rq1-logit.R'], {
     cwd: __dirname,
+    env: {
+      ...process.env,
+      ...(sourceRawFile ? { RQ1_RAW_FILE: sourceRawFile } : {}),
+    },
     timeout: 120000,
     maxBuffer: 1024 * 1024 * 5,
   }, (err, stdout, stderr) => {
@@ -605,6 +663,7 @@ app.post('/api/analysis/rq1', (req, res) => {
     rq1AnalysisRun.error = err ? err.message : '';
     rq1AnalysisRun.files = {
       summary: summaryFile,
+      rawInput: sourceRawFile || path.join(__dirname, 'data', 'exports', 'study1', 'full_2026-05-05_all_models', 'raw_results_cleaned.csv'),
       binaryDataset: path.join(outDir, 'study1_brand_binary_dataset_focal.csv'),
       predictorTemplate: path.join(outDir, 'brand_predictors_template.csv'),
       visibilityModel: path.join(outDir, 'logit_model1_visibility.csv'),

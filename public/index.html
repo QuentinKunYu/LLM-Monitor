@@ -279,6 +279,14 @@
             <div class="summary-item-value">visibility x model</div>
           </div>
         </div>
+        <div class="rq1-upload-row">
+          <div>
+            <label class="field-label" for="rq1-csv-input">Study 1 CSV</label>
+            <p class="analysis-note">Optional: upload experiment <code>raw_results_cleaned.csv</code>. If no file is selected, RQ1 uses the local default Study 1 CSV path.</p>
+          </div>
+          <input type="file" id="rq1-csv-input" class="field-input file-input" accept=".csv,text/csv" />
+        </div>
+        <div id="rq1-csv-status" class="analysis-note">No upload selected.</div>
         <div id="rq1-status" class="progress-status">Ready to run Study 1 RQ1 logistic models.</div>
         <div id="rq1-results" class="hidden">
           <div id="rq1-key-stats" class="analysis-grid"></div>

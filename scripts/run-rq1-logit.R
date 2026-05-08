@@ -1,11 +1,22 @@
 #!/usr/bin/env Rscript
 
 root <- normalizePath(getwd(), mustWork = TRUE)
-raw_file <- file.path(root, "data", "exports", "study1", "full_2026-05-05_all_models", "raw_results_cleaned.csv")
+default_raw_file <- file.path(root, "data", "exports", "study1", "full_2026-05-05_all_models", "raw_results_cleaned.csv")
+raw_file_env <- Sys.getenv("RQ1_RAW_FILE", unset = "")
+raw_file <- if (nzchar(raw_file_env)) raw_file_env else default_raw_file
 brands_file <- file.path(root, "config", "categories_brands.csv")
 out_dir <- file.path(root, "data", "analysis", "rq1")
 
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+if (!file.exists(raw_file)) {
+  stop(
+    paste0(
+      "RQ1 raw results CSV not found: ", raw_file,
+      ". Upload a Study 1 CSV in the RQ Analysis page or place raw_results_cleaned.csv at the default Study 1 path."
+    )
+  )
+}
 
 clean_name <- function(x) {
   x <- trimws(as.character(x))
@@ -31,6 +42,16 @@ write_model_table <- function(model, file) {
 
 raw <- read.csv(raw_file, stringsAsFactors = FALSE, check.names = FALSE)
 focal <- read.csv(brands_file, stringsAsFactors = FALSE, check.names = FALSE)
+
+required_cols <- c(
+  "run_id", "category", "sub_category", "model_id", "model_name",
+  "replicate", "prompt_condition", "response_text",
+  paste0("brand_", 1:5)
+)
+missing_cols <- setdiff(required_cols, names(raw))
+if (length(missing_cols) > 0) {
+  stop(paste0("RQ1 raw results CSV is missing required columns: ", paste(missing_cols, collapse = ", ")))
+}
 
 brand_cols <- paste0("brand_", 1:5)
 for (col in brand_cols) raw[[col]] <- clean_name(raw[[col]])
