@@ -97,6 +97,26 @@ function validateRq1CSV(csvText) {
   }
 }
 
+function validateRq1BaselineCSV(csvText) {
+  const requiredColumns = [
+    'sub_category',
+    'brand',
+    'baseline_share',
+    'aspiration_score',
+  ];
+  const rows = parse(csvText, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+    to_line: 2,
+  });
+  const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
+  const missing = requiredColumns.filter(col => !columns.includes(col));
+  if (missing.length) {
+    throw new Error(`Baseline CSV is missing required columns: ${missing.join(', ')}`);
+  }
+}
+
 // Load configuration data at startup
 const categoriesBrands = loadCSV('categories_brands.csv');
 const aliasRows = loadCSV('brand_alias_dictionary.csv');
@@ -618,16 +638,27 @@ app.post('/api/analysis/rq1', (req, res) => {
   }
 
   let sourceRawFile = '';
+  let sourceBaselineFile = '';
   let sourceFilename = '';
+  let sourceBaselineFilename = '';
   try {
     const csvText = req.body?.csvText;
+    const baselineCsvText = req.body?.baselineCsvText;
     sourceFilename = req.body?.filename || '';
+    sourceBaselineFilename = req.body?.baselineFilename || '';
     if (csvText) {
       validateRq1CSV(csvText);
       const uploadDir = path.join(__dirname, 'data', 'uploads', 'rq1');
       fs.mkdirSync(uploadDir, { recursive: true });
       sourceRawFile = path.join(uploadDir, `${Date.now()}-${safeFilename(sourceFilename)}`);
       fs.writeFileSync(sourceRawFile, csvText, 'utf8');
+    }
+    if (baselineCsvText) {
+      validateRq1BaselineCSV(baselineCsvText);
+      const uploadDir = path.join(__dirname, 'data', 'uploads', 'rq1');
+      fs.mkdirSync(uploadDir, { recursive: true });
+      sourceBaselineFile = path.join(uploadDir, `${Date.now()}-${safeFilename(sourceBaselineFilename)}`);
+      fs.writeFileSync(sourceBaselineFile, baselineCsvText, 'utf8');
     }
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -641,7 +672,9 @@ app.post('/api/analysis/rq1', (req, res) => {
     stderr: '',
     files: {},
     sourceFilename: sourceFilename || 'default local Study 1 CSV',
+    baselineFilename: sourceBaselineFilename || 'test baseline data',
     sourceMode: sourceRawFile ? 'uploaded_csv' : 'default_path',
+    baselineMode: sourceBaselineFile ? 'uploaded_baseline_csv' : 'test_data',
   };
 
   execFile('Rscript', ['scripts/run-rq1-logit.R'], {
@@ -649,6 +682,7 @@ app.post('/api/analysis/rq1', (req, res) => {
     env: {
       ...process.env,
       ...(sourceRawFile ? { RQ1_RAW_FILE: sourceRawFile } : {}),
+      ...(sourceBaselineFile ? { RQ1_BASELINE_FILE: sourceBaselineFile } : {}),
     },
     timeout: 120000,
     maxBuffer: 1024 * 1024 * 5,
@@ -664,6 +698,7 @@ app.post('/api/analysis/rq1', (req, res) => {
     rq1AnalysisRun.files = {
       summary: summaryFile,
       rawInput: sourceRawFile || path.join(__dirname, 'data', 'exports', 'study1', 'full_2026-05-05_all_models', 'raw_results_cleaned.csv'),
+      baselineInput: sourceBaselineFile || path.join(__dirname, 'config', 'brand_baseline_test.csv'),
       binaryDataset: path.join(outDir, 'study1_brand_binary_dataset_focal.csv'),
       predictorTemplate: path.join(outDir, 'brand_predictors_template.csv'),
       visibilityModel: path.join(outDir, 'logit_model1_visibility.csv'),
@@ -676,6 +711,10 @@ app.post('/api/analysis/rq1', (req, res) => {
       nicheBrandOpportunities: path.join(outDir, 'niche_brand_opportunities.csv'),
       modelVisibilityRates: path.join(outDir, 'model_visibility_recommendation_rates.csv'),
       modelPopularityBias: path.join(outDir, 'model_popularity_bias.csv'),
+      baselineDistributionBias: path.join(outDir, 'baseline_distribution_bias_testdata.csv'),
+      baselineModelBias: path.join(outDir, 'baseline_model_bias_testdata.csv'),
+      brandBaselineOverrecommendation: path.join(outDir, 'brand_baseline_overrecommendation_testdata.csv'),
+      brandLevelOrrModel: path.join(outDir, 'brand_level_orr_model_testdata.csv'),
     };
     rq1AnalysisRun.summary = fs.existsSync(summaryFile)
       ? fs.readFileSync(summaryFile, 'utf8')
@@ -690,6 +729,10 @@ app.post('/api/analysis/rq1', (req, res) => {
       nicheBrandOpportunities: readCSVIfExists(rq1AnalysisRun.files.nicheBrandOpportunities),
       modelVisibilityRates: readCSVIfExists(rq1AnalysisRun.files.modelVisibilityRates),
       modelPopularityBias: readCSVIfExists(rq1AnalysisRun.files.modelPopularityBias),
+      baselineDistributionBias: readCSVIfExists(rq1AnalysisRun.files.baselineDistributionBias),
+      baselineModelBias: readCSVIfExists(rq1AnalysisRun.files.baselineModelBias),
+      brandBaselineOverrecommendation: readCSVIfExists(rq1AnalysisRun.files.brandBaselineOverrecommendation),
+      brandLevelOrrModel: readCSVIfExists(rq1AnalysisRun.files.brandLevelOrrModel),
     };
   });
 

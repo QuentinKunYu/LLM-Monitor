@@ -1,0 +1,79 @@
+sub_category,brand,baseline_share,demand_power,salience,aspiration_score,segment,data_status
+cordless drills,Ryobi,0.22,72,82,2,mainstream,test_data
+cordless drills,DeWalt,0.25,88,92,4,professional,test_data
+cordless drills,Milwaukee,0.20,84,89,4,professional,test_data
+cordless drills,Festool,0.04,35,38,5,elite,test_data
+cordless drills,Hilti,0.03,32,34,5,elite,test_data
+cordless drills,Makita,0.16,75,78,4,professional,test_data
+car tires,Michelin,0.26,90,94,4,premium,test_data
+car tires,Goodyear,0.24,84,91,3,mainstream,test_data
+car tires,Bridgestone,0.22,82,88,3,mainstream,test_data
+car tires,Nokian,0.08,38,42,4,premium,test_data
+car tires,Falken,0.10,45,48,2,mainstream,test_data
+car tires,Cooper,0.10,50,55,2,mainstream,test_data
+motor oil,Mobil 1,0.27,88,93,4,premium,test_data
+motor oil,Castrol,0.24,82,89,3,mainstream,test_data
+motor oil,Pennzoil,0.22,78,86,3,mainstream,test_data
+motor oil,Royal Purple,0.07,36,40,5,elite,test_data
+motor oil,AMSOIL,0.08,40,43,5,professional,test_data
+motor oil,Red Line,0.12,42,45,5,professional,test_data
+laptop,Apple,0.28,94,96,5,premium,test_data
+laptop,Dell,0.24,82,89,3,mainstream,test_data
+laptop,HP,0.22,79,87,3,mainstream,test_data
+laptop,Framework,0.06,34,36,4,premium,test_data
+laptop,System76,0.04,25,28,4,specialist,test_data
+laptop,Razer,0.16,62,70,4,premium,test_data
+digital camera,Canon,0.29,90,94,4,premium,test_data
+digital camera,Nikon,0.24,84,90,4,premium,test_data
+digital camera,Sony,0.25,88,92,5,premium,test_data
+digital camera,Fujifilm,0.12,58,65,5,premium,test_data
+digital camera,Leica,0.04,35,42,5,luxury,test_data
+digital camera,Ricoh,0.06,30,34,4,specialist,test_data
+hiking jacket,Patagonia,0.27,90,94,5,premium,test_data
+hiking jacket,The North Face,0.25,88,95,4,premium,test_data
+hiking jacket,Columbia,0.22,78,86,3,mainstream,test_data
+hiking jacket,Outdoor Research,0.10,42,48,4,professional,test_data
+hiking jacket,KÜHL,0.08,38,44,4,premium,test_data
+hiking jacket,Rab,0.08,35,40,5,professional,test_data
+allergy remedies,Claritin,0.30,88,94,3,mainstream,test_data
+allergy remedies,Zyrtec,0.28,86,92,3,mainstream,test_data
+allergy remedies,Allegra,0.22,78,86,3,mainstream,test_data
+allergy remedies,Xyzal,0.08,45,52,3,mainstream,test_data
+allergy remedies,Astepro,0.06,34,40,2,niche,test_data
+allergy remedies,Nasacort,0.06,36,42,2,niche,test_data
+hair dye,L’Oréal,0.29,90,95,3,mainstream,test_data
+hair dye,Garnier,0.24,82,90,2,mainstream,test_data
+hair dye,Clairol,0.22,78,86,2,mainstream,test_data
+hair dye,Iroiro,0.08,30,34,4,expressive,test_data
+hair dye,Arctic Fox,0.09,42,50,4,expressive,test_data
+hair dye,Pulp Riot,0.08,36,42,5,professional,test_data
+humidifier,Honeywell,0.28,86,92,3,mainstream,test_data
+humidifier,Vicks,0.23,78,88,2,mainstream,test_data
+humidifier,Levoit,0.24,82,90,3,mainstream,test_data
+humidifier,Canopy,0.08,38,45,4,premium,test_data
+humidifier,Venta,0.07,35,40,5,premium,test_data
+humidifier,Aircare,0.10,42,48,2,mainstream,test_data
+coffee maker,Keurig,0.30,90,96,3,mainstream,test_data
+coffee maker,Cuisinart,0.25,82,90,3,mainstream,test_data
+coffee maker,Ninja,0.23,80,88,3,mainstream,test_data
+coffee maker,Technivorm,0.06,36,40,5,elite,test_data
+coffee maker,Bonavita,0.07,32,36,4,premium,test_data
+coffee maker,OXO,0.09,45,52,4,premium,test_data
+carry-on luggage,Samsonite,0.28,88,94,3,mainstream,test_data
+carry-on luggage,Away,0.24,82,90,4,premium,test_data
+carry-on luggage,Travelpro,0.22,76,84,3,mainstream,test_data
+carry-on luggage,Monos,0.10,45,50,4,premium,test_data
+carry-on luggage,LEVEL8,0.07,34,38,3,mainstream,test_data
+carry-on luggage,DELSEY PARIS,0.09,42,48,4,premium,test_data
+cat food,Purina,0.31,90,95,2,mainstream,test_data
+cat food,Friskies,0.25,78,88,1,budget,test_data
+cat food,Fancy Feast,0.20,74,84,3,premium,test_data
+cat food,Tiki Cat,0.08,40,45,4,premium,test_data
+cat food,Weruva,0.07,35,40,4,premium,test_data
+cat food,Instinct,0.09,42,48,4,premium,test_data
+boat cruises,Carnival,0.30,88,94,2,mainstream,test_data
+boat cruises,Royal Caribbean,0.28,86,92,3,mainstream,test_data
+boat cruises,Norwegian Cruise Line,0.22,78,86,3,mainstream,test_data
+boat cruises,Viking,0.08,45,55,5,luxury,test_data
+boat cruises,Oceania Cruises,0.06,34,42,5,luxury,test_data
+boat cruises,Windstar Cruises,0.06,30,38,5,luxury,test_data

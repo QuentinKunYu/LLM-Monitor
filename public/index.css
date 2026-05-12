@@ -548,6 +548,28 @@ input[type="range"]::-webkit-slider-thumb:hover {
   white-space: nowrap;
 }
 
+.rq1-test-data-row {
+  border-color: rgba(251, 191, 36, 0.24);
+  background: rgba(251, 191, 36, 0.04);
+}
+
+.test-data-note {
+  color: var(--warning);
+}
+
+.test-data-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 999px;
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
 /* ── Prompt Preview ────────────────────────────────────────────── */
 .prompt-box {
   font-family: var(--font-mono);

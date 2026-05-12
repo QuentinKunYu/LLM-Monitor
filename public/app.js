@@ -69,6 +69,9 @@ const $runRq1Btn       = document.getElementById('run-rq1-btn');
 const $rq1CsvInput      = document.getElementById('rq1-csv-input');
 const $rq1CsvFilename   = document.getElementById('rq1-csv-filename');
 const $rq1CsvStatus     = document.getElementById('rq1-csv-status');
+const $rq1BaselineInput = document.getElementById('rq1-baseline-input');
+const $rq1BaselineFilename = document.getElementById('rq1-baseline-filename');
+const $rq1BaselineStatus = document.getElementById('rq1-baseline-status');
 const $rq1Status       = document.getElementById('rq1-status');
 const $rq1Results      = document.getElementById('rq1-results');
 const $rq1KeyStats     = document.getElementById('rq1-key-stats');
@@ -79,6 +82,9 @@ const $rq1CategoryTable = document.getElementById('rq1-category-table');
 const $rq1CategoryBiasTable = document.getElementById('rq1-category-bias-table');
 const $rq1NicheOpportunitiesTable = document.getElementById('rq1-niche-opportunities-table');
 const $rq1InteractionTable = document.getElementById('rq1-interaction-table');
+const $rq1BaselineBiasTable = document.getElementById('rq1-baseline-bias-table');
+const $rq1AspirationBiasTable = document.getElementById('rq1-aspiration-bias-table');
+const $rq1OrrTable = document.getElementById('rq1-orr-table');
 
 // ═══════════════════════════════════════════════════════════════════
 // INITIALIZATION
@@ -237,6 +243,7 @@ function wireEvents() {
   $exportConfigBtn.addEventListener('click', exportConfigJSON);
   $runRq1Btn.addEventListener('click', runRq1Analysis);
   $rq1CsvInput.addEventListener('change', updateRq1CsvStatus);
+  $rq1BaselineInput.addEventListener('change', updateRq1BaselineStatus);
   $navExperiment.addEventListener('click', () => switchView('experiment'));
   $navRq.addEventListener('click', () => switchView('rq'));
 }
@@ -895,20 +902,47 @@ function updateRq1CsvStatus() {
   $rq1CsvStatus.textContent = `Selected: ${file.name} (${sizeMb.toFixed(2)} MB).`;
 }
 
+function updateRq1BaselineStatus() {
+  const file = $rq1BaselineInput.files?.[0];
+  if (!file) {
+    $rq1BaselineFilename.textContent = 'Using TEST DATA';
+    $rq1BaselineStatus.textContent = 'Baseline source: TEST DATA.';
+    $rq1BaselineStatus.classList.add('test-data-note');
+    return;
+  }
+  const sizeMb = file.size / (1024 * 1024);
+  $rq1BaselineFilename.textContent = file.name;
+  $rq1BaselineStatus.textContent = `Selected real baseline: ${file.name} (${sizeMb.toFixed(2)} MB).`;
+  $rq1BaselineStatus.classList.remove('test-data-note');
+}
+
 async function buildRq1Payload() {
   const file = $rq1CsvInput.files?.[0];
-  if (!file) return {};
-  if (!file.name.toLowerCase().endsWith('.csv')) {
+  const baselineFile = $rq1BaselineInput.files?.[0];
+  const payload = {};
+  if (file && !file.name.toLowerCase().endsWith('.csv')) {
     throw new Error('Please upload a CSV file.');
   }
-  const csvText = await file.text();
-  if (!csvText.trim()) {
-    throw new Error('The selected CSV file is empty.');
+  if (baselineFile && !baselineFile.name.toLowerCase().endsWith('.csv')) {
+    throw new Error('Please upload a baseline CSV file.');
   }
-  return {
-    filename: file.name,
-    csvText,
-  };
+  if (file) {
+    const csvText = await file.text();
+    if (!csvText.trim()) {
+      throw new Error('The selected CSV file is empty.');
+    }
+    payload.filename = file.name;
+    payload.csvText = csvText;
+  }
+  if (baselineFile) {
+    const baselineCsvText = await baselineFile.text();
+    if (!baselineCsvText.trim()) {
+      throw new Error('The selected baseline CSV file is empty.');
+    }
+    payload.baselineFilename = baselineFile.name;
+    payload.baselineCsvText = baselineCsvText;
+  }
+  return payload;
 }
 
 async function hydrateRq1Status() {
@@ -971,9 +1005,13 @@ function renderRq1Results(data) {
   const categoryBiasRows = tables.categoryPopularityBias || [];
   const nicheOpportunityRows = tables.nicheBrandOpportunities || [];
   const modelBiasRows = tables.modelPopularityBias || [];
+  const baselineBiasRows = tables.baselineDistributionBias || [];
+  const baselineModelRows = tables.baselineModelBias || [];
+  const orrRows = tables.brandBaselineOverrecommendation || [];
   const highVis = modelRows.find(row => row.term === 'visibility_grouphigh_visibility');
   const strongestCategory = categoryBiasRows[0];
   const strongestModel = modelBiasRows[0];
+  const baselineMode = data.baselineMode || 'test_data';
 
   $rq1Results.classList.remove('hidden');
   $rq1KeyStats.innerHTML = [
@@ -983,8 +1021,12 @@ function renderRq1Results(data) {
     statCard('Rows', visibilityRates.reduce((sum, row) => sum + Number(row.n_observations || 0), 0).toLocaleString()),
     statCard('Strongest Category', strongestCategory ? strongestCategory.sub_category : '—'),
     statCard('Largest Model Gap', strongestModel ? strongestModel.model_id : '—'),
+    statCard('Baseline Source', baselineMode === 'test_data' ? 'TEST DATA' : 'Uploaded'),
   ].join('');
 
+  renderBaselineBiasTable(baselineBiasRows);
+  renderAspirationBiasTable(baselineBiasRows, baselineModelRows);
+  renderOrrTable(orrRows);
   renderVisibilityChart(visibilityRates);
   renderModelBiasChart(modelBiasRows);
   renderRegressionTable(modelRows);
@@ -1085,6 +1127,68 @@ function renderRegressionTable(rows) {
       odds_ratio: formatNumber(row.odds_ratio, 2),
       p_value: formatP(row.p_value),
     }))
+  );
+}
+
+function renderBaselineBiasTable(rows) {
+  const compact = rows.slice(0, 18).map(row => ({
+    sub_category: row.sub_category,
+    model: modelLabel(row.model_id),
+    jsd: formatNumber(row.js_divergence, 3),
+    hhi_amp: formatNumber(row.hhi_amplification, 3),
+    top3_amp: formatPercent(Number(row.top3_amplification || 0)),
+    data: row.data_status || 'test_data',
+  }));
+  $rq1BaselineBiasTable.innerHTML = miniTable(
+    ['sub_category', 'model', 'jsd', 'hhi_amp', 'top3_amp', 'data'],
+    compact
+  );
+}
+
+function renderAspirationBiasTable(categoryRows, modelRows) {
+  const modelCompact = modelRows.slice(0, 6).map(row => ({
+    scope: 'model avg',
+    item: modelLabel(row.model_id),
+    aspiration_bias: formatNumber(row.aspiration_bias, 3),
+    jsd: formatNumber(row.js_divergence, 3),
+    data: row.data_status || 'test_data',
+  }));
+  const categoryCompact = categoryRows
+    .slice()
+    .sort((a, b) => Number(b.aspiration_bias || 0) - Number(a.aspiration_bias || 0))
+    .slice(0, 12)
+    .map(row => ({
+      scope: 'category-model',
+      item: `${row.sub_category} / ${modelLabel(row.model_id)}`,
+      aspiration_bias: formatNumber(row.aspiration_bias, 3),
+      jsd: formatNumber(row.js_divergence, 3),
+      data: row.data_status || 'test_data',
+    }));
+  $rq1AspirationBiasTable.innerHTML = miniTable(
+    ['scope', 'item', 'aspiration_bias', 'jsd', 'data'],
+    [...modelCompact, ...categoryCompact]
+  );
+}
+
+function renderOrrTable(rows) {
+  const compact = rows
+    .filter(row => Number.isFinite(Number(row.over_recommendation_ratio)))
+    .slice()
+    .sort((a, b) => Number(b.over_recommendation_ratio || 0) - Number(a.over_recommendation_ratio || 0))
+    .slice(0, 20)
+    .map(row => ({
+      sub_category: row.sub_category,
+      brand: row.brand,
+      model: modelLabel(row.model_id),
+      llm_q: formatPercent(Number(row.llm_q || 0)),
+      baseline_p: formatPercent(Number(row.baseline_p || 0)),
+      orr: formatNumber(row.over_recommendation_ratio, 2),
+      aspiration: formatNumber(row.aspiration_score, 1),
+      data: row.data_status || 'test_data',
+    }));
+  $rq1OrrTable.innerHTML = miniTable(
+    ['sub_category', 'brand', 'model', 'llm_q', 'baseline_p', 'orr', 'aspiration', 'data'],
+    compact
   );
 }
 

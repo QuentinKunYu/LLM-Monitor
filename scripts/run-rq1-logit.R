@@ -5,6 +5,9 @@ default_raw_file <- file.path(root, "data", "exports", "study1", "full_2026-05-0
 raw_file_env <- Sys.getenv("RQ1_RAW_FILE", unset = "")
 raw_file <- if (nzchar(raw_file_env)) raw_file_env else default_raw_file
 brands_file <- file.path(root, "config", "categories_brands.csv")
+default_baseline_file <- file.path(root, "config", "brand_baseline_test.csv")
+baseline_file_env <- Sys.getenv("RQ1_BASELINE_FILE", unset = "")
+baseline_file <- if (nzchar(baseline_file_env)) baseline_file_env else default_baseline_file
 out_dir <- file.path(root, "data", "analysis", "rq1")
 
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
@@ -26,12 +29,14 @@ clean_name <- function(x) {
 
 write_model_table <- function(model, file) {
   coefs <- summary(model)$coefficients
+  stat_col <- if ("z value" %in% colnames(coefs)) "z value" else "t value"
+  p_col <- if ("Pr(>|z|)" %in% colnames(coefs)) "Pr(>|z|)" else "Pr(>|t|)"
   out <- data.frame(
     term = rownames(coefs),
     estimate = coefs[, "Estimate"],
     std_error = coefs[, "Std. Error"],
-    z_value = coefs[, "z value"],
-    p_value = coefs[, "Pr(>|z|)"],
+    z_value = coefs[, stat_col],
+    p_value = coefs[, p_col],
     odds_ratio = exp(coefs[, "Estimate"]),
     row.names = NULL,
     check.names = FALSE
@@ -42,6 +47,11 @@ write_model_table <- function(model, file) {
 
 raw <- read.csv(raw_file, stringsAsFactors = FALSE, check.names = FALSE)
 focal <- read.csv(brands_file, stringsAsFactors = FALSE, check.names = FALSE)
+baseline <- if (file.exists(baseline_file)) {
+  read.csv(baseline_file, stringsAsFactors = FALSE, check.names = FALSE)
+} else {
+  data.frame()
+}
 
 required_cols <- c(
   "run_id", "category", "sub_category", "model_id", "model_name",
@@ -321,6 +331,170 @@ write.csv(model_visibility_summary, file.path(out_dir, "model_visibility_recomme
 model_bias <- make_visibility_bias(binary, "model_id")
 names(model_bias)[names(model_bias) == "group"] <- "model_id"
 write.csv(model_bias, file.path(out_dir, "model_popularity_bias.csv"), row.names = FALSE, na = "")
+
+normalise_shares <- function(x) {
+  x <- as.numeric(x)
+  total <- sum(x, na.rm = TRUE)
+  if (!is.finite(total) || total <= 0) return(rep(NA_real_, length(x)))
+  x / total
+}
+
+hhi <- function(x) {
+  x <- x[is.finite(x)]
+  sum(x^2)
+}
+
+top_share <- function(x, n = 3) {
+  x <- sort(x[is.finite(x)], decreasing = TRUE)
+  if (!length(x)) return(NA_real_)
+  sum(head(x, n))
+}
+
+kl_div <- function(a, b) {
+  idx <- is.finite(a) & is.finite(b) & a > 0 & b > 0
+  sum(a[idx] * log(a[idx] / b[idx]))
+}
+
+js_div <- function(p, q) {
+  p[!is.finite(p)] <- 0
+  q[!is.finite(q)] <- 0
+  p <- normalise_shares(p)
+  q <- normalise_shares(q)
+  if (any(!is.finite(p)) || any(!is.finite(q))) return(NA_real_)
+  m <- (p + q) / 2
+  0.5 * kl_div(p, m) + 0.5 * kl_div(q, m)
+}
+
+baseline_available <- nrow(baseline) > 0 &&
+  all(c("sub_category", "brand", "baseline_share", "aspiration_score") %in% names(baseline))
+
+if (baseline_available) {
+  baseline$sub_category <- as.character(baseline$sub_category)
+  baseline$brand <- as.character(baseline$brand)
+  baseline$baseline_share <- as.numeric(baseline$baseline_share)
+  baseline$aspiration_score <- as.numeric(baseline$aspiration_score)
+  if (!"data_status" %in% names(baseline)) baseline$data_status <- "unknown"
+  if (!"segment" %in% names(baseline)) baseline$segment <- "uncoded"
+  baseline$baseline_p <- ave(
+    baseline$baseline_share,
+    baseline$sub_category,
+    FUN = normalise_shares
+  )
+
+  brand_model_mentions <- aggregate(
+    rec ~ sub_category + model_id + brand,
+    data = binary,
+    FUN = sum
+  )
+  names(brand_model_mentions)[names(brand_model_mentions) == "rec"] <- "llm_mentions"
+  brand_model_mentions$sub_category <- as.character(brand_model_mentions$sub_category)
+  brand_model_mentions$model_id <- as.character(brand_model_mentions$model_id)
+  brand_model_mentions$brand <- as.character(brand_model_mentions$brand)
+
+  brand_baseline <- merge(
+    brand_model_mentions,
+    baseline,
+    by = c("sub_category", "brand"),
+    all.x = TRUE
+  )
+  brand_baseline$llm_q <- ave(
+    brand_baseline$llm_mentions,
+    paste(brand_baseline$sub_category, brand_baseline$model_id, sep = "|"),
+    FUN = normalise_shares
+  )
+  eps <- 1e-6
+  brand_baseline$over_recommendation_ratio <- (brand_baseline$llm_q + eps) / (brand_baseline$baseline_p + eps)
+  brand_baseline$log_orr <- log(brand_baseline$over_recommendation_ratio)
+  brand_baseline$q_minus_p <- brand_baseline$llm_q - brand_baseline$baseline_p
+  brand_baseline$log_baseline_share <- log(brand_baseline$baseline_p + eps)
+  brand_baseline <- brand_baseline[order(
+    brand_baseline$sub_category,
+    brand_baseline$model_id,
+    -brand_baseline$over_recommendation_ratio
+  ), ]
+  write.csv(
+    brand_baseline,
+    file.path(out_dir, "brand_baseline_overrecommendation_testdata.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+
+  category_model_keys <- unique(brand_baseline[, c("sub_category", "model_id")])
+  baseline_bias_rows <- vector("list", nrow(category_model_keys))
+  for (i in seq_len(nrow(category_model_keys))) {
+    key <- category_model_keys[i, , drop = FALSE]
+    block <- brand_baseline[
+      brand_baseline$sub_category == key$sub_category &
+        brand_baseline$model_id == key$model_id,
+      ,
+      drop = FALSE
+    ]
+    p <- block$baseline_p
+    q <- block$llm_q
+    baseline_asp <- sum(p * block$aspiration_score, na.rm = TRUE)
+    llm_asp <- sum(q * block$aspiration_score, na.rm = TRUE)
+    baseline_bias_rows[[i]] <- data.frame(
+      sub_category = key$sub_category,
+      model_id = key$model_id,
+      js_divergence = js_div(p, q),
+      hhi_baseline = hhi(p),
+      hhi_llm = hhi(q),
+      hhi_amplification = hhi(q) - hhi(p),
+      top3_baseline = top_share(p, 3),
+      top3_llm = top_share(q, 3),
+      top3_amplification = top_share(q, 3) - top_share(p, 3),
+      aspiration_baseline = baseline_asp,
+      aspiration_llm = llm_asp,
+      aspiration_bias = llm_asp - baseline_asp,
+      data_status = paste(unique(block$data_status), collapse = ";"),
+      stringsAsFactors = FALSE
+    )
+  }
+  baseline_bias <- do.call(rbind, baseline_bias_rows)
+  baseline_bias <- baseline_bias[order(-baseline_bias$js_divergence, baseline_bias$sub_category, baseline_bias$model_id), ]
+  write.csv(
+    baseline_bias,
+    file.path(out_dir, "baseline_distribution_bias_testdata.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+
+  baseline_model_bias <- aggregate(
+    cbind(js_divergence, hhi_amplification, top3_amplification, aspiration_bias) ~ model_id + data_status,
+    data = baseline_bias,
+    FUN = mean
+  )
+  baseline_model_bias <- baseline_model_bias[order(-baseline_model_bias$js_divergence), ]
+  write.csv(
+    baseline_model_bias,
+    file.path(out_dir, "baseline_model_bias_testdata.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+
+  brand_model_data <- brand_baseline[
+    is.finite(brand_baseline$log_orr) &
+      is.finite(brand_baseline$log_baseline_share) &
+      is.finite(brand_baseline$aspiration_score),
+    ,
+    drop = FALSE
+  ]
+  if (nrow(brand_model_data) > 0) {
+    brand_model <- lm(
+      log_orr ~ log_baseline_share + aspiration_score + model_id + sub_category,
+      data = brand_model_data
+    )
+    brand_model_coef <- write_model_table(
+      brand_model,
+      file.path(out_dir, "brand_level_orr_model_testdata.csv")
+    )
+  }
+} else {
+  write.csv(data.frame(), file.path(out_dir, "brand_baseline_overrecommendation_testdata.csv"), row.names = FALSE)
+  write.csv(data.frame(), file.path(out_dir, "baseline_distribution_bias_testdata.csv"), row.names = FALSE)
+  write.csv(data.frame(), file.path(out_dir, "baseline_model_bias_testdata.csv"), row.names = FALSE)
+  write.csv(data.frame(), file.path(out_dir, "brand_level_orr_model_testdata.csv"), row.names = FALSE)
+}
 
 visibility_terms <- coef1[grepl("^visibility_group", coef1$term), , drop = FALSE]
 interaction_terms <- coef3[grepl(":visibility_group|visibility_group.*:model_id", coef3$term), , drop = FALSE]

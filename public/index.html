@@ -291,9 +291,33 @@
           </div>
         </div>
         <div id="rq1-csv-status" class="analysis-note">No upload selected.</div>
+        <div class="rq1-upload-row rq1-test-data-row">
+          <div>
+            <label class="field-label" for="rq1-baseline-input">Baseline CSV</label>
+            <p class="analysis-note">Optional: upload real baseline data with <code>baseline_share</code> and <code>aspiration_score</code>. If no file is selected, RQ1 uses bundled <strong>TEST DATA</strong>.</p>
+          </div>
+          <div class="file-picker">
+            <input type="file" id="rq1-baseline-input" class="file-input-native" accept=".csv,text/csv" />
+            <label class="btn btn-outline file-picker-btn" for="rq1-baseline-input">Choose Baseline CSV</label>
+            <span id="rq1-baseline-filename" class="file-picker-name">Using TEST DATA</span>
+          </div>
+        </div>
+        <div id="rq1-baseline-status" class="analysis-note test-data-note">Baseline source: TEST DATA.</div>
         <div id="rq1-status" class="progress-status">Ready to run Study 1 RQ1 logistic models.</div>
         <div id="rq1-results" class="hidden">
           <div id="rq1-key-stats" class="analysis-grid"></div>
+
+          <h3 class="analysis-subtitle">Baseline Distribution Bias <span class="test-data-pill">TEST DATA</span></h3>
+          <p class="analysis-note">Algorithm: compare baseline distribution <code>P(b)</code> from market share / demand power / salience proxy with LLM mention distribution <code>Q(b)</code>. Reports JSD, HHI amplification, and Top-3 amplification.</p>
+          <div id="rq1-baseline-bias-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Aspiration Bias <span class="test-data-pill">TEST DATA</span></h3>
+          <p class="analysis-note">Algorithm: compute <code>sum(Q * aspiration_score) - sum(P * aspiration_score)</code>. Positive values mean LLM recommendations skew more aspirational than the baseline market distribution.</p>
+          <div id="rq1-aspiration-bias-table" class="mini-table-wrap"></div>
+
+          <h3 class="analysis-subtitle">Brand Over-Recommendation <span class="test-data-pill">TEST DATA</span></h3>
+          <p class="analysis-note">Algorithm: brand-level <code>ORR = Q(b) / P(b)</code>. Values above 1 mean the brand is over-recommended relative to the baseline distribution.</p>
+          <div id="rq1-orr-table" class="mini-table-wrap"></div>
 
           <div class="analysis-two-col">
             <div>
