@@ -365,7 +365,14 @@
             </div>
 
             <h3 class="analysis-subtitle">Visibility x Model Interaction</h3>
-            <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the reference model; the other rows test whether each model differs from that reference.</p>
+            <div class="rq-reference-row">
+              <div>
+                <label class="field-label" for="rq-reference-select">Reference model</label>
+                <p class="analysis-note">Choose the comparison baseline. Results are precomputed, so changing this selector only swaps the displayed reference table.</p>
+              </div>
+              <select id="rq-reference-select" class="field-input"></select>
+            </div>
+            <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the selected reference model; the other rows test whether each model differs from that reference.</p>
             <div id="rq1-interaction-table" class="mini-table-wrap"></div>
 
             <h3 class="analysis-subtitle">Category-Model Bias Models <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>

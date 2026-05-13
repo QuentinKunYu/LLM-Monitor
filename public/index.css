@@ -627,6 +627,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
   display: block;
 }
 
+.rq-reference-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  gap: 1rem;
+  align-items: end;
+  padding: 0.9rem 1rem;
+  margin: 0.8rem 0 0.9rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
 /* ── Prompt Preview ────────────────────────────────────────────── */
 .prompt-box {
   font-family: var(--font-mono);
@@ -1085,6 +1097,10 @@ td.visibility-other {
   }
 
   .rq1-upload-row {
+    grid-template-columns: 1fr;
+  }
+
+  .rq-reference-row {
     grid-template-columns: 1fr;
   }
 

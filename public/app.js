@@ -20,6 +20,7 @@ let currentBatchId = null;  // active batch UUID
 let currentBatchRunIds = []; // run UUIDs inside active batch
 let pollInterval = null;    // setInterval handle
 let lastResults = null;     // cached full results for export
+let rqInteractionRows = [];
 
 // ── DOM References ────────────────────────────────────────────────
 const $modelSelect     = document.getElementById('model-select');
@@ -85,6 +86,7 @@ const $rq1RegressionTable = document.getElementById('rq1-regression-table');
 const $rq1CategoryTable = document.getElementById('rq1-category-table');
 const $rq1CategoryBiasTable = document.getElementById('rq1-category-bias-table');
 const $rq1NicheOpportunitiesTable = document.getElementById('rq1-niche-opportunities-table');
+const $rqReferenceSelect = document.getElementById('rq-reference-select');
 const $rq1InteractionTable = document.getElementById('rq1-interaction-table');
 const $rq1BaselineBiasTable = document.getElementById('rq1-baseline-bias-table');
 const $rq1AspirationBiasTable = document.getElementById('rq1-aspiration-bias-table');
@@ -124,11 +126,19 @@ async function init() {
 
 function populateModels() {
   $modelSelect.innerHTML = '';
+  if ($rqReferenceSelect) $rqReferenceSelect.innerHTML = '';
   for (const m of config.models) {
     const opt = document.createElement('option');
     opt.value = m.model_id;
     opt.textContent = m.display_name;
     $modelSelect.appendChild(opt);
+
+    if ($rqReferenceSelect) {
+      const refOpt = document.createElement('option');
+      refOpt.value = m.model_id;
+      refOpt.textContent = m.display_name;
+      $rqReferenceSelect.appendChild(refOpt);
+    }
   }
 }
 
@@ -254,6 +264,9 @@ function wireEvents() {
   $rqTabs.forEach(tab => {
     tab.addEventListener('click', () => switchRqTab(tab.dataset.rqTab));
   });
+  if ($rqReferenceSelect) {
+    $rqReferenceSelect.addEventListener('change', () => renderInteractionTable(rqInteractionRows));
+  }
   document.addEventListener('click', handleMiniTableSort);
   $navExperiment.addEventListener('click', () => switchView('experiment'));
   $navRq.addEventListener('click', () => switchView('rq'));
@@ -1021,6 +1034,7 @@ function renderRq1Results(data) {
   const visibilityRates = tables.visibilityRates || [];
   const modelRows = tables.visibilityModel || [];
   const interactionRows = tables.visibilityModelInteraction || [];
+  const interactionAllRefRows = tables.visibilityModelInteractionAllRefs || [];
   const categoryRows = tables.categoryVisibilityRates || [];
   const categoryBiasRows = tables.categoryPopularityBias || [];
   const nicheOpportunityRows = tables.nicheBrandOpportunities || [];
@@ -1068,7 +1082,9 @@ function renderRq1Results(data) {
   renderCategoryVisibilityTable(categoryRows);
   renderCategoryBiasTable(categoryBiasRows);
   renderNicheOpportunitiesTable(nicheOpportunityRows);
-  renderInteractionTable(interactionRows);
+  rqInteractionRows = interactionAllRefRows.length ? interactionAllRefRows : interactionRows;
+  syncReferenceSelector(rqInteractionRows);
+  renderInteractionTable(rqInteractionRows);
   switchRqTab('overview');
 }
 
@@ -1178,7 +1194,8 @@ function interactionTermLabel(term) {
   if (term === 'visibility_grouphigh_visibility') return referenceModelLabel();
   const modelId = term
     .replace(/^model_id/, '')
-    .replace(/:visibility_grouphigh_visibility$/, '');
+    .replace(/:visibility_grouphigh_visibility$/, '')
+    .replace(/^visibility_grouphigh_visibility:model_id/, '');
   return modelLabel(modelId);
 }
 
@@ -1203,8 +1220,9 @@ function categoryModelTermLabel(term) {
 }
 
 function referenceModelLabel() {
-  const modelIds = (config?.models || []).map(model => model.model_id).sort();
-  const referenceModelId = modelIds[0] || 'claude-opus-4-7';
+  const referenceModelId = $rqReferenceSelect?.value ||
+    (config?.models || []).map(model => model.model_id).sort()[0] ||
+    'claude-opus-4-7';
   return modelLabel(referenceModelId);
 }
 
@@ -1355,7 +1373,11 @@ function renderNicheOpportunitiesTable(rows) {
 }
 
 function renderInteractionTable(rows) {
-  const interactionRows = rows
+  const selectedReference = $rqReferenceSelect?.value || rows[0]?.reference_model_id || '';
+  const scopedRows = rows.some(row => row.reference_model_id)
+    ? rows.filter(row => row.reference_model_id === selectedReference)
+    : rows;
+  const interactionRows = scopedRows
     .filter(row => row.term.includes(':') || row.term === 'visibility_grouphigh_visibility')
     .map(row => ({
       model: interactionTermLabel(row.term),
@@ -1367,6 +1389,17 @@ function renderInteractionTable(rows) {
     ['model', 'estimate', 'odds_ratio', 'p_value'],
     interactionRows
   );
+}
+
+function syncReferenceSelector(rows) {
+  if (!$rqReferenceSelect || !rows.length || !rows.some(row => row.reference_model_id)) return;
+  const availableRefs = new Set(rows.map(row => row.reference_model_id));
+  Array.from($rqReferenceSelect.options).forEach(option => {
+    option.disabled = !availableRefs.has(option.value);
+  });
+  if (!availableRefs.has($rqReferenceSelect.value)) {
+    $rqReferenceSelect.value = rows[0].reference_model_id;
+  }
 }
 
 function renderCategoryVisibilityTable(rows) {

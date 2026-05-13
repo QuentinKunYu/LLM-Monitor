@@ -8,6 +8,7 @@ brands_file <- file.path(root, "config", "categories_brands.csv")
 default_baseline_file <- file.path(root, "config", "brand_baseline_test.csv")
 baseline_file_env <- Sys.getenv("RQ1_BASELINE_FILE", unset = "")
 baseline_file <- if (nzchar(baseline_file_env)) baseline_file_env else default_baseline_file
+reference_model_env <- Sys.getenv("RQ1_REFERENCE_MODEL", unset = "")
 out_dir <- file.path(root, "data", "analysis", "rq1")
 
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
@@ -43,6 +44,22 @@ write_model_table <- function(model, file) {
   )
   write.csv(out, file, row.names = FALSE, na = "")
   invisible(out)
+}
+
+model_table <- function(model) {
+  coefs <- summary(model)$coefficients
+  stat_col <- if ("z value" %in% colnames(coefs)) "z value" else "t value"
+  p_col <- if ("Pr(>|z|)" %in% colnames(coefs)) "Pr(>|z|)" else "Pr(>|t|)"
+  data.frame(
+    term = rownames(coefs),
+    estimate = coefs[, "Estimate"],
+    std_error = coefs[, "Std. Error"],
+    z_value = coefs[, stat_col],
+    p_value = coefs[, p_col],
+    odds_ratio = exp(coefs[, "Estimate"]),
+    row.names = NULL,
+    check.names = FALSE
+  )
 }
 
 raw <- read.csv(raw_file, stringsAsFactors = FALSE, check.names = FALSE)
@@ -113,6 +130,11 @@ for (i in seq_len(nrow(successful))) {
 binary <- do.call(rbind, rows)
 binary$visibility_group <- factor(binary$visibility_group, levels = c("niche", "high_visibility", "other"))
 binary$model_id <- factor(binary$model_id)
+if (nzchar(reference_model_env) && reference_model_env %in% levels(binary$model_id)) {
+  binary$model_id <- relevel(binary$model_id, ref = reference_model_env)
+}
+reference_model_id <- levels(binary$model_id)[1]
+all_model_ids <- levels(binary$model_id)
 binary$sub_category <- factor(binary$sub_category)
 binary$brand <- factor(binary$brand)
 
@@ -142,6 +164,29 @@ coef0 <- write_model_table(model0, file.path(out_dir, "logit_model0_model_catego
 coef1 <- write_model_table(model1, file.path(out_dir, "logit_model1_visibility.csv"))
 coef2 <- write_model_table(model2, file.path(out_dir, "logit_model2_brand_fixed_effects.csv"))
 coef3 <- write_model_table(model3, file.path(out_dir, "logit_model3_visibility_model_interaction.csv"))
+
+interaction_ref_tables <- vector("list", length(all_model_ids))
+for (i in seq_along(all_model_ids)) {
+  ref_model_id <- all_model_ids[i]
+  ref_data <- binary
+  ref_data$model_id <- relevel(factor(as.character(ref_data$model_id)), ref = ref_model_id)
+  ref_model <- glm(rec ~ sub_category + model_id * visibility_group, family = binomial(), data = ref_data)
+  ref_table <- model_table(ref_model)
+  ref_table <- ref_table[
+    ref_table$term == "visibility_grouphigh_visibility" |
+      grepl(":visibility_grouphigh_visibility|visibility_grouphigh_visibility:model_id", ref_table$term),
+    ,
+    drop = FALSE
+  ]
+  ref_table$reference_model_id <- ref_model_id
+  interaction_ref_tables[[i]] <- ref_table
+}
+write.csv(
+  do.call(rbind, interaction_ref_tables),
+  file.path(out_dir, "logit_model3_visibility_model_interaction_all_refs.csv"),
+  row.names = FALSE,
+  na = ""
+)
 
 fit_stats <- data.frame(
   model = c("model0_model_category", "model1_visibility", "model2_brand_fixed_effects", "model3_visibility_model_interaction"),
@@ -605,6 +650,7 @@ summary_lines <- c(
   paste0("Binary brand-level rows: ", nrow(binary)),
   paste0("Unique model/category/replicate cells: ", length(unique(paste(successful$model_id, successful$sub_category, successful$replicate, sep = "|")))),
   paste0("Candidate brand-category rows: ", nrow(candidate_brands)),
+  paste0("Interaction reference model: ", reference_model_id),
   "Candidate universe: pre-defined focal brands from config/categories_brands.csv",
   "",
   "Models estimated:",

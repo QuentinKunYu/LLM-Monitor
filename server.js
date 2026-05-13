@@ -703,6 +703,7 @@ app.post('/api/analysis/rq1', (req, res) => {
       predictorTemplate: path.join(outDir, 'brand_predictors_template.csv'),
       visibilityModel: path.join(outDir, 'logit_model1_visibility.csv'),
       visibilityModelInteraction: path.join(outDir, 'logit_model3_visibility_model_interaction.csv'),
+      visibilityModelInteractionAllRefs: path.join(outDir, 'logit_model3_visibility_model_interaction_all_refs.csv'),
       fitStats: path.join(outDir, 'logit_fit_stats.csv'),
       recommendationRates: path.join(outDir, 'brand_recommendation_rates.csv'),
       visibilityRates: path.join(outDir, 'visibility_recommendation_rates.csv'),
@@ -724,6 +725,7 @@ app.post('/api/analysis/rq1', (req, res) => {
     rq1AnalysisRun.tables = {
       visibilityModel: readCSVIfExists(rq1AnalysisRun.files.visibilityModel),
       visibilityModelInteraction: readCSVIfExists(rq1AnalysisRun.files.visibilityModelInteraction),
+      visibilityModelInteractionAllRefs: readCSVIfExists(rq1AnalysisRun.files.visibilityModelInteractionAllRefs),
       fitStats: readCSVIfExists(rq1AnalysisRun.files.fitStats),
       visibilityRates: readCSVIfExists(rq1AnalysisRun.files.visibilityRates),
       categoryVisibilityRates: readCSVIfExists(rq1AnalysisRun.files.categoryVisibilityRates),
