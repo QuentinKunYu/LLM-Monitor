@@ -350,6 +350,20 @@ top_share <- function(x, n = 3) {
   sum(head(x, n))
 }
 
+entropy <- function(x) {
+  x <- x[is.finite(x) & x > 0]
+  if (!length(x)) return(NA_real_)
+  -sum(x * log(x))
+}
+
+gini <- function(x) {
+  x <- sort(x[is.finite(x)])
+  n <- length(x)
+  total <- sum(x)
+  if (!n || !is.finite(total) || total <= 0) return(NA_real_)
+  (2 * sum(seq_len(n) * x) / (n * total)) - ((n + 1) / n)
+}
+
 kl_div <- function(a, b) {
   idx <- is.finite(a) & is.finite(b) & a > 0 & b > 0
   sum(a[idx] * log(a[idx] / b[idx]))
@@ -375,6 +389,13 @@ if (baseline_available) {
   baseline$aspiration_score <- as.numeric(baseline$aspiration_score)
   if (!"data_status" %in% names(baseline)) baseline$data_status <- "unknown"
   if (!"segment" %in% names(baseline)) baseline$segment <- "uncoded"
+  baseline$segment <- tolower(trimws(as.character(baseline$segment)))
+  baseline$segment[baseline$segment == "" | is.na(baseline$segment)] <- "uncoded"
+  baseline$segment_group <- ifelse(
+    baseline$segment %in% c("premium", "professional", "prosumer", "luxury", "elite", "specialist", "expressive"),
+    "aspirational",
+    ifelse(baseline$segment %in% c("budget", "mass", "mainstream", "mid-tier", "value"), "budget_mainstream", "other")
+  )
   baseline$baseline_p <- ave(
     baseline$baseline_share,
     baseline$sub_category,
@@ -440,9 +461,18 @@ if (baseline_available) {
       hhi_baseline = hhi(p),
       hhi_llm = hhi(q),
       hhi_amplification = hhi(q) - hhi(p),
+      top1_baseline = top_share(p, 1),
+      top1_llm = top_share(q, 1),
+      top1_amplification = top_share(q, 1) - top_share(p, 1),
       top3_baseline = top_share(p, 3),
       top3_llm = top_share(q, 3),
       top3_amplification = top_share(q, 3) - top_share(p, 3),
+      entropy_baseline = entropy(p),
+      entropy_llm = entropy(q),
+      entropy_amplification = entropy(q) - entropy(p),
+      gini_baseline = gini(p),
+      gini_llm = gini(q),
+      gini_amplification = gini(q) - gini(p),
       aspiration_baseline = baseline_asp,
       aspiration_llm = llm_asp,
       aspiration_bias = llm_asp - baseline_asp,
@@ -460,7 +490,15 @@ if (baseline_available) {
   )
 
   baseline_model_bias <- aggregate(
-    cbind(js_divergence, hhi_amplification, top3_amplification, aspiration_bias) ~ model_id + data_status,
+    cbind(
+      js_divergence,
+      hhi_amplification,
+      top1_amplification,
+      top3_amplification,
+      entropy_amplification,
+      gini_amplification,
+      aspiration_bias
+    ) ~ model_id + data_status,
     data = baseline_bias,
     FUN = mean
   )
@@ -489,11 +527,70 @@ if (baseline_available) {
       file.path(out_dir, "brand_level_orr_model_testdata.csv")
     )
   }
+
+  segment_bias <- aggregate(
+    cbind(baseline_p, llm_q) ~ sub_category + model_id + segment_group + segment + data_status,
+    data = brand_baseline,
+    FUN = sum
+  )
+  segment_bias$share_difference <- segment_bias$llm_q - segment_bias$baseline_p
+  segment_bias <- segment_bias[order(
+    segment_bias$sub_category,
+    segment_bias$model_id,
+    segment_bias$segment_group,
+    -abs(segment_bias$share_difference)
+  ), ]
+  write.csv(
+    segment_bias,
+    file.path(out_dir, "segment_share_bias_testdata.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+
+  category_model_metrics <- c(
+    "js_divergence",
+    "hhi_amplification",
+    "top1_amplification",
+    "top3_amplification",
+    "entropy_amplification",
+    "gini_amplification",
+    "aspiration_bias"
+  )
+  category_model_tables <- list()
+  for (metric in category_model_metrics) {
+    metric_data <- baseline_bias[
+      is.finite(baseline_bias[[metric]]),
+      ,
+      drop = FALSE
+    ]
+    if (nrow(metric_data) > 0) {
+      formula <- as.formula(paste(metric, "~ model_id + sub_category"))
+      metric_model <- lm(formula, data = metric_data)
+      metric_table <- write_model_table(
+        metric_model,
+        file.path(out_dir, paste0("category_model_", metric, "_testdata.csv"))
+      )
+      metric_table$metric <- metric
+      category_model_tables[[metric]] <- metric_table[, c("metric", names(metric_table)[names(metric_table) != "metric"])]
+    }
+  }
+  if (length(category_model_tables) > 0) {
+    write.csv(
+      do.call(rbind, category_model_tables),
+      file.path(out_dir, "category_model_bias_models_testdata.csv"),
+      row.names = FALSE,
+      na = ""
+    )
+  } else {
+    write.csv(data.frame(), file.path(out_dir, "category_model_bias_models_testdata.csv"), row.names = FALSE)
+  }
 } else {
   write.csv(data.frame(), file.path(out_dir, "brand_baseline_overrecommendation_testdata.csv"), row.names = FALSE)
   write.csv(data.frame(), file.path(out_dir, "baseline_distribution_bias_testdata.csv"), row.names = FALSE)
   write.csv(data.frame(), file.path(out_dir, "baseline_model_bias_testdata.csv"), row.names = FALSE)
   write.csv(data.frame(), file.path(out_dir, "brand_level_orr_model_testdata.csv"), row.names = FALSE)
+  write.csv(data.frame(), file.path(out_dir, "segment_share_bias_testdata.csv"), row.names = FALSE)
+  write.csv(data.frame(), file.path(out_dir, "category_model_bias_models_testdata.csv"), row.names = FALSE)
 }
 
 visibility_terms <- coef1[grepl("^visibility_group", coef1$term), , drop = FALSE]

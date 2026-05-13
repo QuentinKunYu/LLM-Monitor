@@ -75,7 +75,11 @@ const $rq1BaselineStatus = document.getElementById('rq1-baseline-status');
 const $rq1Status       = document.getElementById('rq1-status');
 const $rq1Results      = document.getElementById('rq1-results');
 const $rq1KeyStats     = document.getElementById('rq1-key-stats');
+const $rq1OverviewTable = document.getElementById('rq1-overview-table');
+const $rqTabs          = document.querySelectorAll('.rq-tab');
+const $rqPanels        = document.querySelectorAll('.rq-panel');
 const $rq1VisibilityChart = document.getElementById('rq1-visibility-chart');
+const $rq1ModelVisibilityChart = document.getElementById('rq1-model-visibility-chart');
 const $rq1ModelBiasChart = document.getElementById('rq1-model-bias-chart');
 const $rq1RegressionTable = document.getElementById('rq1-regression-table');
 const $rq1CategoryTable = document.getElementById('rq1-category-table');
@@ -85,6 +89,9 @@ const $rq1InteractionTable = document.getElementById('rq1-interaction-table');
 const $rq1BaselineBiasTable = document.getElementById('rq1-baseline-bias-table');
 const $rq1AspirationBiasTable = document.getElementById('rq1-aspiration-bias-table');
 const $rq1OrrTable = document.getElementById('rq1-orr-table');
+const $rq1SegmentBiasTable = document.getElementById('rq1-segment-bias-table');
+const $rq1CategoryModelRegressionTable = document.getElementById('rq1-category-model-regression-table');
+const $rq1BaselinePills = document.querySelectorAll('.rq1-baseline-pill');
 
 // ═══════════════════════════════════════════════════════════════════
 // INITIALIZATION
@@ -244,6 +251,10 @@ function wireEvents() {
   $runRq1Btn.addEventListener('click', runRq1Analysis);
   $rq1CsvInput.addEventListener('change', updateRq1CsvStatus);
   $rq1BaselineInput.addEventListener('change', updateRq1BaselineStatus);
+  $rqTabs.forEach(tab => {
+    tab.addEventListener('click', () => switchRqTab(tab.dataset.rqTab));
+  });
+  document.addEventListener('click', handleMiniTableSort);
   $navExperiment.addEventListener('click', () => switchView('experiment'));
   $navRq.addEventListener('click', () => switchView('rq'));
 }
@@ -256,6 +267,15 @@ function getSelectedCategory() {
   const val = $categorySelect.value;
   const [category, subCategory] = val.split('||');
   return { category, subCategory };
+}
+
+function switchRqTab(tabName = 'overview') {
+  $rqTabs.forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.rqTab === tabName);
+  });
+  $rqPanels.forEach(panel => {
+    panel.classList.toggle('active', panel.dataset.rqPanel === tabName);
+  });
 }
 
 function getPromptConditions() {
@@ -409,10 +429,10 @@ function switchView(view, options = {}) {
 
   if ($headerSubtitle) {
     $headerSubtitle.textContent = isRq
-      ? 'Research Question Analysis'
+      ? 'Analysis'
       : `${getSelectedCondition()?.experiment?.toUpperCase() || 'STUDY1'} Brand Recommendation Audit`;
   }
-  if ($conditionBadge) $conditionBadge.textContent = isRq ? 'RQ1' : (getSelectedCondition()?.display_name || 'Context-Free');
+  if ($conditionBadge) $conditionBadge.textContent = isRq ? 'Analysis' : (getSelectedCondition()?.display_name || 'Context-Free');
 
   if (options.replaceUrl !== false) {
     const url = new URL(window.location.href);
@@ -868,7 +888,7 @@ function hidePauseButton() {
 
 async function runRq1Analysis() {
   $runRq1Btn.disabled = true;
-  $rq1Status.textContent = 'Starting RQ1 logistic models...';
+  $rq1Status.textContent = 'Starting analysis models...';
   $rq1Status.className = 'progress-status';
   $rq1Results.classList.add('hidden');
 
@@ -880,13 +900,13 @@ async function runRq1Analysis() {
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to start RQ1 analysis');
+    if (!res.ok) throw new Error(data.error || 'Failed to start analysis');
     pollRq1Analysis();
   } catch (err) {
     $runRq1Btn.disabled = false;
     $rq1Status.textContent = `Error: ${err.message}`;
     $rq1Status.className = 'progress-status cancelled';
-    showToast(`RQ1 analysis failed: ${err.message}`, 'error');
+    showToast(`Analysis failed: ${err.message}`, 'error');
   }
 }
 
@@ -950,14 +970,14 @@ async function hydrateRq1Status() {
     const res = await fetch(`${API}/api/analysis/rq1/status`);
     const data = await res.json();
     if (data.status === 'completed') {
-      $rq1Status.textContent = 'RQ1 analysis completed.';
+      $rq1Status.textContent = 'Analysis completed.';
       $rq1Status.className = 'progress-status completed';
       renderRq1Results(data);
     } else if (data.status === 'running') {
       pollRq1Analysis();
     }
   } catch (err) {
-    console.error('Failed to load RQ1 status:', err);
+    console.error('Failed to load analysis status:', err);
   }
 }
 
@@ -967,28 +987,28 @@ async function pollRq1Analysis() {
     const data = await res.json();
 
     if (data.status === 'running') {
-      $rq1Status.textContent = `Running RQ1 models since ${data.startedAt}...`;
+      $rq1Status.textContent = `Running analysis models since ${data.startedAt}...`;
       setTimeout(pollRq1Analysis, 1200);
       return;
     }
 
     $runRq1Btn.disabled = false;
     if (data.status === 'completed') {
-      $rq1Status.textContent = 'RQ1 analysis completed.';
+      $rq1Status.textContent = 'Analysis completed.';
       $rq1Status.className = 'progress-status completed';
       renderRq1Results(data);
-      showToast('RQ1 analysis completed.', 'success');
+      showToast('Analysis completed.', 'success');
       return;
     }
 
     if (data.status === 'failed') {
-      $rq1Status.textContent = 'RQ1 analysis failed.';
+      $rq1Status.textContent = 'Analysis failed.';
       $rq1Status.className = 'progress-status cancelled';
-      showToast('RQ1 analysis failed.', 'error');
+      showToast('Analysis failed.', 'error');
       return;
     }
 
-    $rq1Status.textContent = 'RQ1 analysis is idle.';
+    $rq1Status.textContent = 'Analysis is idle.';
   } catch (err) {
     $runRq1Btn.disabled = false;
     $rq1Status.textContent = `Error: ${err.message}`;
@@ -1008,12 +1028,16 @@ function renderRq1Results(data) {
   const baselineBiasRows = tables.baselineDistributionBias || [];
   const baselineModelRows = tables.baselineModelBias || [];
   const orrRows = tables.brandBaselineOverrecommendation || [];
+  const segmentBiasRows = tables.segmentShareBias || [];
+  const categoryModelRegressionRows = tables.categoryModelBiasModels || [];
   const highVis = modelRows.find(row => row.term === 'visibility_grouphigh_visibility');
   const strongestCategory = categoryBiasRows[0];
   const strongestModel = modelBiasRows[0];
+  const strongestBaseline = baselineBiasRows[0];
   const baselineMode = data.baselineMode || 'test_data';
 
   $rq1Results.classList.remove('hidden');
+  updateBaselinePills(baselineMode);
   $rq1KeyStats.innerHTML = [
     statCard('High-Visibility OR', highVis ? formatNumber(highVis.odds_ratio, 2) : '—'),
     statCard('Log-Odds', highVis ? formatNumber(highVis.estimate, 3) : '—'),
@@ -1021,19 +1045,31 @@ function renderRq1Results(data) {
     statCard('Rows', visibilityRates.reduce((sum, row) => sum + Number(row.n_observations || 0), 0).toLocaleString()),
     statCard('Strongest Category', strongestCategory ? strongestCategory.sub_category : '—'),
     statCard('Largest Model Gap', strongestModel ? strongestModel.model_id : '—'),
+    statCard('Highest JSD', strongestBaseline ? formatNumber(strongestBaseline.js_divergence, 3) : '—'),
     statCard('Baseline Source', baselineMode === 'test_data' ? 'TEST DATA' : 'Uploaded'),
   ].join('');
 
+  renderOverviewTable({
+    highVis,
+    strongestCategory,
+    strongestModel,
+    strongestBaseline,
+    baselineMode,
+  });
   renderBaselineBiasTable(baselineBiasRows);
   renderAspirationBiasTable(baselineBiasRows, baselineModelRows);
   renderOrrTable(orrRows);
-  renderVisibilityChart(visibilityRates);
+  renderSegmentBiasTable(segmentBiasRows);
+  renderCategoryModelRegressionTable(categoryModelRegressionRows);
+  renderVisibilityChart(visibilityRates, $rq1VisibilityChart);
+  renderVisibilityChart(visibilityRates, $rq1ModelVisibilityChart);
   renderModelBiasChart(modelBiasRows);
   renderRegressionTable(modelRows);
   renderCategoryVisibilityTable(categoryRows);
   renderCategoryBiasTable(categoryBiasRows);
   renderNicheOpportunitiesTable(nicheOpportunityRows);
   renderInteractionTable(interactionRows);
+  switchRqTab('overview');
 }
 
 function statCard(label, value) {
@@ -1045,13 +1081,52 @@ function statCard(label, value) {
   `;
 }
 
-function renderVisibilityChart(rows) {
+function updateBaselinePills(baselineMode) {
+  $rq1BaselinePills.forEach(pill => {
+    pill.textContent = baselineMode === 'test_data' ? 'TEST DATA' : 'UPLOADED';
+    pill.classList.toggle('test-data-pill', baselineMode === 'test_data');
+    pill.classList.toggle('uploaded-data-pill', baselineMode !== 'test_data');
+  });
+}
+
+function renderOverviewTable(items) {
+  const rows = [
+    {
+      result: 'Visibility popularity bias',
+      value: items.highVis ? `OR ${formatNumber(items.highVis.odds_ratio, 2)}` : '—',
+      note: items.highVis ? `p = ${formatP(items.highVis.p_value)}` : 'Needs analysis run',
+    },
+    {
+      result: 'Strongest category gap',
+      value: items.strongestCategory ? items.strongestCategory.sub_category : '—',
+      note: items.strongestCategory ? formatPercent(Number(items.strongestCategory.bias_gap || 0)) : 'Needs analysis run',
+    },
+    {
+      result: 'Largest model visibility gap',
+      value: items.strongestModel ? modelLabel(items.strongestModel.model_id) : '—',
+      note: items.strongestModel ? formatPercent(Number(items.strongestModel.bias_gap || 0)) : 'Needs analysis run',
+    },
+    {
+      result: 'Largest baseline divergence',
+      value: items.strongestBaseline ? `${items.strongestBaseline.sub_category} / ${modelLabel(items.strongestBaseline.model_id)}` : '—',
+      note: items.strongestBaseline ? `JSD ${formatNumber(items.strongestBaseline.js_divergence, 3)}` : 'Needs baseline data',
+    },
+    {
+      result: 'Baseline source',
+      value: items.baselineMode === 'test_data' ? 'TEST DATA' : 'Uploaded CSV',
+      note: items.baselineMode === 'test_data' ? 'Replace before final paper results' : 'Using uploaded baseline',
+    },
+  ];
+  $rq1OverviewTable.innerHTML = miniTable(['result', 'value', 'note'], rows);
+}
+
+function renderVisibilityChart(rows, target = $rq1VisibilityChart) {
   if (!rows.length) {
-    $rq1VisibilityChart.innerHTML = '<div class="bar-label">No chart data available.</div>';
+    target.innerHTML = '<div class="bar-label">No chart data available.</div>';
     return;
   }
   const maxRate = Math.max(...rows.map(row => Number(row.recommendation_rate || 0)), 0.01);
-  $rq1VisibilityChart.innerHTML = rows.map(row => {
+  target.innerHTML = rows.map(row => {
     const rate = Number(row.recommendation_rate || 0);
     const width = Math.max(2, (rate / maxRate) * 100);
     return `
@@ -1107,6 +1182,26 @@ function interactionTermLabel(term) {
   return modelLabel(modelId);
 }
 
+function metricLabel(metric) {
+  const labels = {
+    js_divergence: 'JSD',
+    hhi_amplification: 'HHI amp',
+    top1_amplification: 'Top-1 amp',
+    top3_amplification: 'Top-3 amp',
+    entropy_amplification: 'Entropy amp',
+    gini_amplification: 'Gini amp',
+    aspiration_bias: 'Aspiration',
+  };
+  return labels[metric] || metric;
+}
+
+function categoryModelTermLabel(term) {
+  if (term === '(Intercept)') return 'Intercept';
+  if (term.startsWith('model_id')) return modelLabel(term.replace(/^model_id/, ''));
+  if (term.startsWith('sub_category')) return term.replace(/^sub_category/, '');
+  return term;
+}
+
 function referenceModelLabel() {
   const modelIds = (config?.models || []).map(model => model.model_id).sort();
   const referenceModelId = modelIds[0] || 'claude-opus-4-7';
@@ -1135,12 +1230,15 @@ function renderBaselineBiasTable(rows) {
     sub_category: row.sub_category,
     model: modelLabel(row.model_id),
     jsd: formatNumber(row.js_divergence, 3),
-    hhi_amp: formatNumber(row.hhi_amplification, 3),
+    top1_amp: formatPercent(Number(row.top1_amplification || 0)),
     top3_amp: formatPercent(Number(row.top3_amplification || 0)),
+    hhi_amp: formatNumber(row.hhi_amplification, 3),
+    entropy_amp: formatNumber(row.entropy_amplification, 3),
+    gini_amp: formatNumber(row.gini_amplification, 3),
     data: row.data_status || 'test_data',
   }));
   $rq1BaselineBiasTable.innerHTML = miniTable(
-    ['sub_category', 'model', 'jsd', 'hhi_amp', 'top3_amp', 'data'],
+    ['sub_category', 'model', 'jsd', 'top1_amp', 'top3_amp', 'hhi_amp', 'entropy_amp', 'gini_amp', 'data'],
     compact
   );
 }
@@ -1188,6 +1286,43 @@ function renderOrrTable(rows) {
     }));
   $rq1OrrTable.innerHTML = miniTable(
     ['sub_category', 'brand', 'model', 'llm_q', 'baseline_p', 'orr', 'aspiration', 'data'],
+    compact
+  );
+}
+
+function renderSegmentBiasTable(rows) {
+  const compact = rows
+    .slice()
+    .sort((a, b) => Math.abs(Number(b.share_difference || 0)) - Math.abs(Number(a.share_difference || 0)))
+    .slice(0, 24)
+    .map(row => ({
+      sub_category: row.sub_category,
+      model: modelLabel(row.model_id),
+      segment_group: row.segment_group,
+      segment: row.segment,
+      llm_q: formatPercent(Number(row.llm_q || 0)),
+      baseline_p: formatPercent(Number(row.baseline_p || 0)),
+      q_minus_p: formatPercent(Number(row.share_difference || 0)),
+      data: row.data_status || 'test_data',
+    }));
+  $rq1SegmentBiasTable.innerHTML = miniTable(
+    ['sub_category', 'model', 'segment_group', 'segment', 'llm_q', 'baseline_p', 'q_minus_p', 'data'],
+    compact
+  );
+}
+
+function renderCategoryModelRegressionTable(rows) {
+  const compact = rows
+    .filter(row => row.term === '(Intercept)' || row.term.startsWith('model_id'))
+    .slice(0, 56)
+    .map(row => ({
+      metric: metricLabel(row.metric),
+      predictor: categoryModelTermLabel(row.term),
+      estimate: formatNumber(row.estimate, 3),
+      p_value: formatP(row.p_value),
+    }));
+  $rq1CategoryModelRegressionTable.innerHTML = miniTable(
+    ['metric', 'predictor', 'estimate', 'p_value'],
     compact
   );
 }
@@ -1252,14 +1387,94 @@ function renderCategoryVisibilityTable(rows) {
 
 function miniTable(headers, rows) {
   if (!rows.length) return '<div class="analysis-output">No rows available.</div>';
+  const numericHeaders = new Set(headers.filter(header =>
+    rows.some(row => Number.isFinite(parseSortNumber(row[header])))
+  ));
   return `
     <table class="mini-table">
-      <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+      <thead><tr>${headers.map(h => {
+        const label = escapeHtml(h);
+        if (!numericHeaders.has(h)) return `<th>${label}</th>`;
+        return `
+          <th>
+            <button type="button" class="mini-table-sort" data-sort-key="${label}">
+              <span>${label}</span>
+              <span class="sort-indicator">↕</span>
+            </button>
+          </th>
+        `;
+      }).join('')}</tr></thead>
       <tbody>
-        ${rows.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('')}
+        ${rows.map(row => `<tr>${headers.map(h => {
+          const value = row[h] ?? '';
+          const sortValue = parseSortNumber(value);
+          const sortAttr = Number.isFinite(sortValue) ? ` data-sort-value="${sortValue}"` : '';
+          return `<td${sortAttr}>${escapeHtml(value)}</td>`;
+        }).join('')}</tr>`).join('')}
       </tbody>
     </table>
   `;
+}
+
+function handleMiniTableSort(event) {
+  const button = event.target.closest('.mini-table-sort');
+  if (!button) return;
+
+  const table = button.closest('table');
+  const th = button.closest('th');
+  const tbody = table?.querySelector('tbody');
+  if (!table || !th || !tbody) return;
+
+  const headerCells = Array.from(th.parentElement.children);
+  const columnIndex = headerCells.indexOf(th);
+  const nextDir = button.dataset.sortDir === 'desc' ? 'asc' : 'desc';
+
+  table.querySelectorAll('.mini-table-sort').forEach(otherButton => {
+    if (otherButton !== button) {
+      otherButton.dataset.sortDir = '';
+      const indicator = otherButton.querySelector('.sort-indicator');
+      if (indicator) indicator.textContent = '↕';
+    }
+  });
+
+  button.dataset.sortDir = nextDir;
+  const indicator = button.querySelector('.sort-indicator');
+  if (indicator) indicator.textContent = nextDir === 'desc' ? '↓' : '↑';
+
+  const sortedRows = Array.from(tbody.querySelectorAll('tr')).sort((a, b) => {
+    const aValue = Number(a.children[columnIndex]?.dataset.sortValue);
+    const bValue = Number(b.children[columnIndex]?.dataset.sortValue);
+    if (!Number.isFinite(aValue) && !Number.isFinite(bValue)) return 0;
+    if (!Number.isFinite(aValue)) return 1;
+    if (!Number.isFinite(bValue)) return -1;
+    return nextDir === 'desc' ? bValue - aValue : aValue - bValue;
+  });
+
+  sortedRows.forEach(row => tbody.appendChild(row));
+}
+
+function parseSortNumber(value) {
+  if (typeof value === 'number') return value;
+  const text = String(value ?? '').trim();
+  if (!text || text === '—') return NaN;
+  if (text.startsWith('<')) {
+    const lessThanValue = Number(text.replace(/[<\s,]/g, ''));
+    return Number.isFinite(lessThanValue) ? lessThanValue : NaN;
+  }
+  const isPercent = text.endsWith('%');
+  const cleaned = text.replace(/[%,$,\s]/g, '');
+  const number = Number(cleaned);
+  if (!Number.isFinite(number)) return NaN;
+  return isPercent ? number / 100 : number;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function formatNumber(value, digits = 2) {

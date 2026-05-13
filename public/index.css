@@ -570,6 +570,63 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-weight: 700;
 }
 
+.uploaded-data-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.09);
+  color: var(--success);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.rq-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 1.2rem 0 1rem;
+  padding: 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.rq-tab {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.rq-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rq-tab.active {
+  background: var(--accent);
+  color: white;
+}
+
+.rq-panel {
+  display: none;
+}
+
+.rq-panel.active {
+  display: block;
+}
+
 /* ── Prompt Preview ────────────────────────────────────────────── */
 .prompt-box {
   font-family: var(--font-mono);
@@ -710,6 +767,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-radius: var(--radius-md);
 }
 
+.mini-table-compact {
+  max-height: 220px;
+}
+
 .mini-table {
   width: 100%;
   border-collapse: collapse;
@@ -729,6 +790,31 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: var(--bg-input);
   position: sticky;
   top: 0;
+}
+
+.mini-table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mini-table-sort:hover {
+  color: var(--text-accent);
+}
+
+.sort-indicator {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 /* ── Focal Brands Grid ─────────────────────────────────────────── */
@@ -999,6 +1085,10 @@ td.visibility-other {
   }
 
   .rq1-upload-row {
+    grid-template-columns: 1fr;
+  }
+
+  .rq-tabs {
     grid-template-columns: 1fr;
   }
 

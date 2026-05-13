@@ -715,6 +715,8 @@ app.post('/api/analysis/rq1', (req, res) => {
       baselineModelBias: path.join(outDir, 'baseline_model_bias_testdata.csv'),
       brandBaselineOverrecommendation: path.join(outDir, 'brand_baseline_overrecommendation_testdata.csv'),
       brandLevelOrrModel: path.join(outDir, 'brand_level_orr_model_testdata.csv'),
+      segmentShareBias: path.join(outDir, 'segment_share_bias_testdata.csv'),
+      categoryModelBiasModels: path.join(outDir, 'category_model_bias_models_testdata.csv'),
     };
     rq1AnalysisRun.summary = fs.existsSync(summaryFile)
       ? fs.readFileSync(summaryFile, 'utf8')
@@ -733,6 +735,8 @@ app.post('/api/analysis/rq1', (req, res) => {
       baselineModelBias: readCSVIfExists(rq1AnalysisRun.files.baselineModelBias),
       brandBaselineOverrecommendation: readCSVIfExists(rq1AnalysisRun.files.brandBaselineOverrecommendation),
       brandLevelOrrModel: readCSVIfExists(rq1AnalysisRun.files.brandLevelOrrModel),
+      segmentShareBias: readCSVIfExists(rq1AnalysisRun.files.segmentShareBias),
+      categoryModelBiasModels: readCSVIfExists(rq1AnalysisRun.files.categoryModelBiasModels),
     };
   });
 

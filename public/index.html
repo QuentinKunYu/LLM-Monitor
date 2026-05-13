@@ -28,7 +28,7 @@
       </div>
       <nav class="header-nav" aria-label="Primary view">
         <button class="nav-tab active" type="button" data-view="experiment" id="nav-experiment">Experiment</button>
-        <button class="nav-tab" type="button" data-view="rq" id="nav-rq">RQ Analysis</button>
+        <button class="nav-tab" type="button" data-view="rq" id="nav-rq">Analysis</button>
       </nav>
       <div class="header-badges">
         <span class="badge badge-condition" id="condition-badge">Context-Free</span>
@@ -252,13 +252,13 @@
           <div>
             <h2 class="card-title">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
-              RQ1 Analysis
+              Analysis
             </h2>
             <p class="card-description">Documented popularity bias using Study 1 brand-level binary recommendation data.</p>
             <p class="analysis-note">Unit of analysis: one candidate brand x model x category x replicate. <code>rec = 1</code> when the brand appears anywhere in the top-5 recommendation list.</p>
           </div>
           <button id="run-rq1-btn" class="btn btn-sm btn-outline">
-            Run RQ1
+            Run Analysis
           </button>
         </div>
         <div class="analysis-grid">
@@ -282,7 +282,7 @@
         <div class="rq1-upload-row">
           <div>
             <label class="field-label" for="rq1-csv-input">Study 1 CSV</label>
-            <p class="analysis-note">Optional: upload experiment <code>raw_results_cleaned.csv</code>. If no file is selected, RQ1 uses the local default Study 1 CSV path.</p>
+            <p class="analysis-note">Optional: upload experiment <code>raw_results_cleaned.csv</code>. If no file is selected, analysis uses the local default Study 1 CSV path.</p>
           </div>
           <div class="file-picker">
             <input type="file" id="rq1-csv-input" class="file-input-native" accept=".csv,text/csv" />
@@ -294,7 +294,7 @@
         <div class="rq1-upload-row rq1-test-data-row">
           <div>
             <label class="field-label" for="rq1-baseline-input">Baseline CSV</label>
-            <p class="analysis-note">Optional: upload real baseline data with <code>baseline_share</code> and <code>aspiration_score</code>. If no file is selected, RQ1 uses bundled <strong>TEST DATA</strong>.</p>
+            <p class="analysis-note">Optional: upload real baseline data with <code>baseline_share</code> and <code>aspiration_score</code>. If no file is selected, analysis uses bundled <strong>TEST DATA</strong>.</p>
           </div>
           <div class="file-picker">
             <input type="file" id="rq1-baseline-input" class="file-input-native" accept=".csv,text/csv" />
@@ -303,54 +303,93 @@
           </div>
         </div>
         <div id="rq1-baseline-status" class="analysis-note test-data-note">Baseline source: TEST DATA.</div>
-        <div id="rq1-status" class="progress-status">Ready to run Study 1 RQ1 logistic models.</div>
+        <div id="rq1-status" class="progress-status">Ready to run Study 1 analysis models.</div>
         <div id="rq1-results" class="hidden">
           <div id="rq1-key-stats" class="analysis-grid"></div>
 
-          <h3 class="analysis-subtitle">Baseline Distribution Bias <span class="test-data-pill">TEST DATA</span></h3>
-          <p class="analysis-note">Algorithm: compare baseline distribution <code>P(b)</code> from market share / demand power / salience proxy with LLM mention distribution <code>Q(b)</code>. Reports JSD, HHI amplification, and Top-3 amplification.</p>
-          <div id="rq1-baseline-bias-table" class="mini-table-wrap"></div>
+          <div class="rq-tabs" role="tablist" aria-label="analysis sections">
+            <button type="button" class="rq-tab active" data-rq-tab="overview">Overview</button>
+            <button type="button" class="rq-tab" data-rq-tab="popularity">Popularity Bias</button>
+            <button type="button" class="rq-tab" data-rq-tab="aspiration">Aspiration Bias</button>
+            <button type="button" class="rq-tab" data-rq-tab="models">Model Differences</button>
+            <button type="button" class="rq-tab" data-rq-tab="details">Details</button>
+          </div>
 
-          <h3 class="analysis-subtitle">Aspiration Bias <span class="test-data-pill">TEST DATA</span></h3>
-          <p class="analysis-note">Algorithm: compute <code>sum(Q * aspiration_score) - sum(P * aspiration_score)</code>. Positive values mean LLM recommendations skew more aspirational than the baseline market distribution.</p>
-          <div id="rq1-aspiration-bias-table" class="mini-table-wrap"></div>
+          <section class="rq-panel active" data-rq-panel="overview">
+            <div class="analysis-two-col">
+              <div>
+                <h3 class="analysis-subtitle">Main Evidence</h3>
+                <p class="analysis-note">Use this as the quick read: visibility bias from logistic regression, plus baseline distribution bias once real baseline data is uploaded.</p>
+                <div id="rq1-overview-table" class="mini-table-wrap mini-table-compact"></div>
+              </div>
+              <div>
+                <h3 class="analysis-subtitle">Recommendation Probability by Visibility</h3>
+                <p class="analysis-note">Algorithm: group binary rows by <code>visibility_group</code>, then compute <code>mean(rec)</code>.</p>
+                <div id="rq1-visibility-chart" class="bar-chart"></div>
+              </div>
+            </div>
+          </section>
 
-          <h3 class="analysis-subtitle">Brand Over-Recommendation <span class="test-data-pill">TEST DATA</span></h3>
-          <p class="analysis-note">Algorithm: brand-level <code>ORR = Q(b) / P(b)</code>. Values above 1 mean the brand is over-recommended relative to the baseline distribution.</p>
-          <div id="rq1-orr-table" class="mini-table-wrap"></div>
+          <section class="rq-panel" data-rq-panel="popularity">
+            <h3 class="analysis-subtitle">Baseline Distribution Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
+            <p class="analysis-note">Algorithm: compare baseline distribution <code>P(b)</code> with LLM mention distribution <code>Q(b)</code>. Reports JSD, Top-1/Top-3 amplification, HHI, entropy, and Gini.</p>
+            <div id="rq1-baseline-bias-table" class="mini-table-wrap"></div>
 
-          <div class="analysis-two-col">
-            <div>
+            <h3 class="analysis-subtitle">Brand Over-Recommendation <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
+            <p class="analysis-note">Algorithm: brand-level <code>ORR = Q(b) / P(b)</code>. Values above 1 mean the brand is over-recommended relative to the baseline distribution.</p>
+            <div id="rq1-orr-table" class="mini-table-wrap"></div>
+          </section>
+
+          <section class="rq-panel" data-rq-panel="aspiration">
+            <h3 class="analysis-subtitle">Aspiration Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
+            <p class="analysis-note">Algorithm: compute <code>sum(Q * aspiration_score) - sum(P * aspiration_score)</code>. Positive values mean LLM recommendations skew more aspirational than the baseline market distribution.</p>
+            <div id="rq1-aspiration-bias-table" class="mini-table-wrap"></div>
+
+            <h3 class="analysis-subtitle">Segment Share Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
+            <p class="analysis-note">Algorithm: sum <code>Q(b)</code> and <code>P(b)</code> within budget/mainstream vs aspirational brand segments, then report <code>Q - P</code>.</p>
+            <div id="rq1-segment-bias-table" class="mini-table-wrap"></div>
+          </section>
+
+          <section class="rq-panel" data-rq-panel="models">
+            <div class="analysis-two-col">
+              <div>
               <h3 class="analysis-subtitle">Recommendation Probability by Visibility</h3>
               <p class="analysis-note">Algorithm: group binary rows by <code>visibility_group</code>, then compute <code>mean(rec)</code>. This is the observed recommendation probability for high-visibility vs niche brands.</p>
-              <div id="rq1-visibility-chart" class="bar-chart"></div>
+              <div id="rq1-model-visibility-chart" class="bar-chart"></div>
             </div>
             <div>
               <h3 class="analysis-subtitle">Model Differences</h3>
               <p class="analysis-note">Algorithm: for each model, compute <code>bias_gap = P(rec | high_visibility) - P(rec | niche)</code>. Larger gaps mean stronger high-visibility bias.</p>
               <div id="rq1-model-bias-chart" class="bar-chart"></div>
             </div>
-          </div>
+            </div>
 
-          <h3 class="analysis-subtitle">Category Heterogeneity: Strongest Popularity Bias</h3>
-          <p class="analysis-note">Algorithm: within each category, compute <code>high_visibility_rate - niche_rate</code>, then sort categories from largest gap to smallest.</p>
-          <div id="rq1-category-bias-table" class="mini-table-wrap"></div>
+            <h3 class="analysis-subtitle">Visibility x Model Interaction</h3>
+            <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the reference model; the other rows test whether each model differs from that reference.</p>
+            <div id="rq1-interaction-table" class="mini-table-wrap"></div>
 
-          <h3 class="analysis-subtitle">Niche Brands Still Recommended</h3>
-          <p class="analysis-note">Algorithm: filter to niche brands with at least one recommendation, then rank by <code>recommendation_rate = total_mentions / total_opportunities</code>.</p>
-          <div id="rq1-niche-opportunities-table" class="mini-table-wrap"></div>
+            <h3 class="analysis-subtitle">Category-Model Bias Models <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
+            <p class="analysis-note">Algorithm: linear models <code>bias_metric ~ model_id + sub_category</code> using JSD, HHI amplification, Top-1/Top-3 amplification, entropy, Gini, and aspiration bias.</p>
+            <div id="rq1-category-model-regression-table" class="mini-table-wrap"></div>
+          </section>
 
-          <h3 class="analysis-subtitle">Visibility x Model Interaction</h3>
-          <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the reference model, Claude Opus 4.7; the other rows test whether each model differs from that reference.</p>
-          <div id="rq1-interaction-table" class="mini-table-wrap"></div>
+          <section class="rq-panel" data-rq-panel="details">
+            <h3 class="analysis-subtitle">Category Heterogeneity: Strongest Popularity Bias</h3>
+            <p class="analysis-note">Algorithm: within each category, compute <code>high_visibility_rate - niche_rate</code>, then sort categories from largest gap to smallest.</p>
+            <div id="rq1-category-bias-table" class="mini-table-wrap"></div>
 
-          <h3 class="analysis-subtitle">Logistic Regression Table</h3>
-          <p class="analysis-note">Algorithm: baseline RQ1 logit model <code>rec ~ model_id + sub_category + visibility_group</code>. The high-visibility odds ratio estimates popularity bias after model and category fixed effects.</p>
-          <div id="rq1-regression-table" class="mini-table-wrap"></div>
+            <h3 class="analysis-subtitle">Niche Brands Still Recommended</h3>
+            <p class="analysis-note">Algorithm: filter to niche brands with at least one recommendation, then rank by <code>recommendation_rate = total_mentions / total_opportunities</code>.</p>
+            <div id="rq1-niche-opportunities-table" class="mini-table-wrap"></div>
 
-          <h3 class="analysis-subtitle">Category x Visibility Rates</h3>
-          <p class="analysis-note">Algorithm: group rows by <code>sub_category x visibility_group</code>, then report <code>mean(rec)</code>, mentions, and total observations.</p>
-          <div id="rq1-category-table" class="mini-table-wrap"></div>
+            <h3 class="analysis-subtitle">Logistic Regression Table</h3>
+            <p class="analysis-note">Algorithm: baseline logit model <code>rec ~ model_id + sub_category + visibility_group</code>. The high-visibility odds ratio estimates popularity bias after model and category fixed effects.</p>
+            <div id="rq1-regression-table" class="mini-table-wrap"></div>
+
+            <h3 class="analysis-subtitle">Category x Visibility Rates</h3>
+            <p class="analysis-note">Algorithm: group rows by <code>sub_category x visibility_group</code>, then report <code>mean(rec)</code>, mentions, and total observations.</p>
+            <div id="rq1-category-table" class="mini-table-wrap"></div>
+          </section>
         </div>
       </section>
     </section>
