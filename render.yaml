@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: llm-brand-experiment
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    disk:
+      name: llm-brand-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: APP_PASSWORD
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false

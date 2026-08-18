@@ -4,7 +4,9 @@ const { parse } = require('csv-parse/sync');
 const { extractBrands, standardiseBrands, norm } = require('../lib/brand-extractor');
 const { calculateMetrics } = require('../lib/metrics');
 
-const exportDir = process.argv[2] || path.join(__dirname, '..', 'data', 'exports', 'study1', 'full_2026-05-05_all_models');
+const ROOT = path.join(__dirname, '..');
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
+const exportDir = process.argv[2] || path.join(DATA_DIR, 'exports', 'study1', 'full_2026-05-05_all_models');
 const stateFile = path.join(exportDir, 'state.json');
 const rawOut = path.join(exportDir, 'raw_results_cleaned.csv');
 const metricsOut = path.join(exportDir, 'metrics_cleaned.csv');
@@ -35,7 +37,7 @@ function normaliseForIssue(value) {
 }
 
 function loadCSV(filename) {
-  return parse(fs.readFileSync(path.join(__dirname, '..', 'config', filename), 'utf8'), {
+  return parse(fs.readFileSync(path.join(ROOT, 'config', filename), 'utf8'), {
     columns: true,
     skip_empty_lines: true,
     trim: true,

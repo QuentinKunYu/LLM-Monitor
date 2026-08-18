@@ -3,6 +3,8 @@ const path = require('path');
 const { parse } = require('csv-parse/sync');
 const { calculateMetrics } = require('../lib/metrics');
 
+const ROOT = path.join(__dirname, '..');
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
 const API = process.env.EXPERIMENT_API || 'http://localhost:3000';
 const REPLICATES = Number(process.env.REPLICATES || 20);
 const TEMPERATURE = Number(process.env.TEMPERATURE || 0.7);
@@ -14,7 +16,7 @@ const PERSONA_FILTER = (process.env.PERSONAS || '').split(',').map(s => s.trim()
 const CONDITION_ID = process.env.CONDITION || 'synthetic-profile';
 
 const runStamp = process.env.RUN_STAMP || new Date().toISOString().replace(/[:.]/g, '-');
-const outputDir = path.join(__dirname, '..', 'data', 'exports', 'study2', runStamp);
+const outputDir = path.join(DATA_DIR, 'exports', 'study2', runStamp);
 const stateFile = path.join(outputDir, 'state.json');
 const rawCsvFile = path.join(outputDir, 'raw_results.csv');
 const metricsCsvFile = path.join(outputDir, 'metrics.csv');
@@ -39,7 +41,7 @@ function writeCSV(file, rows, headers) {
 }
 
 function loadCSV(filename) {
-  return parse(fs.readFileSync(path.join(__dirname, '..', 'config', filename), 'utf8'), {
+  return parse(fs.readFileSync(path.join(ROOT, 'config', filename), 'utf8'), {
     columns: true,
     skip_empty_lines: true,
     trim: true,

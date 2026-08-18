@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('csv-parse/sync');
 
-const outDir = path.join(__dirname, '..', 'data', 'exports', 'study2', 'prompt_examples');
+const ROOT = path.join(__dirname, '..');
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
+const outDir = path.join(DATA_DIR, 'exports', 'study2', 'prompt_examples');
 const outFile = path.join(outDir, 'study2b_prompt_examples.csv');
 
 const categories = [
@@ -11,7 +13,7 @@ const categories = [
 ];
 
 function loadCSV(filename) {
-  return parse(fs.readFileSync(path.join(__dirname, '..', 'config', filename), 'utf8'), {
+  return parse(fs.readFileSync(path.join(ROOT, 'config', filename), 'utf8'), {
     columns: true,
     skip_empty_lines: true,
     trim: true,

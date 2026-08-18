@@ -1,10 +1,23 @@
 const fs = require('fs');
 const path = require('path');
+const {
+  REASON_FIELD_NAMES,
+  BRAND_REASON_LONG_HEADERS,
+  buildBrandReasonRows,
+} = require('../lib/followup-reasons');
+const { exportSimplifiedResults } = require('../lib/simplified-export');
 
+const ROOT = path.join(__dirname, '..');
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
 const API = process.env.EXPERIMENT_API || 'http://localhost:3000';
 const REPLICATES = Number(process.env.REPLICATES || 40);
 const TEMPERATURE = Number(process.env.TEMPERATURE || 0.7);
 const MAX_OUTPUT_TOKENS = Number(process.env.MAX_OUTPUT_TOKENS || 800);
+const FOLLOWUP_REASONS = process.env.FOLLOWUP_REASONS === 'true';
+const REASON_MAX_OUTPUT_TOKENS = Number(process.env.REASON_MAX_OUTPUT_TOKENS || 800);
+const DRY_RUN = process.env.DRY_RUN === 'true';
+const SKIP_QUOTA = process.env.SKIP_QUOTA === 'true';
+const RETRY_SKIPPED = process.env.RETRY_SKIPPED === 'true';
 const WEB_SEARCH = process.env.WEB_SEARCH === 'true';
 const MODEL_FILTER = (process.env.MODELS || '').split(',').map(s => s.trim()).filter(Boolean);
 const CATEGORY_FILTER = (process.env.CATEGORIES || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -21,9 +34,10 @@ function inferStudyFolder(conditions) {
 }
 
 const studyFolder = inferStudyFolder(CONDITION_FILTER);
-const outputDir = path.join(__dirname, '..', 'data', 'exports', studyFolder, runStamp);
+const outputDir = path.join(DATA_DIR, 'exports', studyFolder, runStamp);
 const stateFile = path.join(outputDir, 'state.json');
 const rawCsvFile = path.join(outputDir, 'raw_results.csv');
+const brandReasonsLongCsvFile = path.join(outputDir, 'brand_reasons_long.csv');
 const metricsCsvFile = path.join(outputDir, 'metrics.csv');
 const reportFile = path.join(outputDir, 'quality_report.md');
 
@@ -47,9 +61,16 @@ function writeCSV(file, rows, headers) {
 
 function loadState() {
   if (!fs.existsSync(stateFile)) {
-    return { completed: {}, rawResults: [], metrics: [], qualityReports: [] };
+    return { completed: {}, failed: {}, skipped: {}, rawResults: [], metrics: [], qualityReports: [] };
   }
-  return JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+  const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+  state.completed ||= {};
+  state.failed ||= {};
+  state.skipped ||= {};
+  state.rawResults ||= [];
+  state.metrics ||= [];
+  state.qualityReports ||= [];
+  return state;
 }
 
 function saveState(state) {
@@ -61,7 +82,7 @@ function exportArtifacts(state) {
   const rawHeaders = [
     'run_id', 'category', 'sub_category', 'model_id', 'model_name', 'replicate',
     'prompt_condition', 'prompt', 'response_text', 'brand_1', 'brand_2',
-    'brand_3', 'brand_4', 'brand_5', 'timestamp', 'temperature',
+    'brand_3', 'brand_4', 'brand_5', ...REASON_FIELD_NAMES, 'timestamp', 'temperature',
     'max_output_tokens', 'notes',
   ];
   const metricHeaders = [
@@ -70,8 +91,10 @@ function exportArtifacts(state) {
   ];
 
   writeCSV(rawCsvFile, state.rawResults, rawHeaders);
+  writeCSV(brandReasonsLongCsvFile, buildBrandReasonRows(state.rawResults), BRAND_REASON_LONG_HEADERS);
   writeCSV(metricsCsvFile, state.metrics, metricHeaders);
   writeQualityReport(state.qualityReports);
+  exportSimplifiedResults({ runDir: outputDir, study: studyFolder });
 }
 
 function removeExistingRunRows(state, modelId, subCategory, promptCondition) {
@@ -113,6 +136,15 @@ function analyseRun(data) {
   const blankRows = results.filter(row => [1, 2, 3, 4, 5].every(k => !row[`brand_${k}`]));
   if (blankRows.length > 0) {
     issues.push(`${blankRows.length} rows have no extracted brands`);
+  }
+
+  const reasonIssueRows = results.filter(row => (
+    FOLLOWUP_REASONS &&
+    !String(row.response_text || '').startsWith('[ERROR]') &&
+    row.reason_status !== 'completed'
+  ));
+  if (reasonIssueRows.length > 0) {
+    issues.push(`${reasonIssueRows.length} rows are missing completed follow-up reasons`);
   }
 
   const brandValues = [];
@@ -168,6 +200,8 @@ function analyseRun(data) {
     completed: data.progress?.completed || 0,
     total: data.progress?.total || 0,
     errors: data.progress?.errors || 0,
+    reasonIssueRows: reasonIssueRows.length,
+    quotaLimited: Boolean(data.quotaLimited || reasonIssueRows.some(row => /quota|rate limit|429/i.test(row.reason_error || row.reason_status || ''))),
     issues,
     errorSamples,
   };
@@ -187,6 +221,9 @@ function writeQualityReport(reports) {
     lines.push(`## ${heading}`);
     lines.push('');
     lines.push(`Status: ${report.status}; completed ${report.completed}/${report.total}; errors ${report.errors}`);
+    if (FOLLOWUP_REASONS) {
+      lines.push(`Follow-up reason issues: ${report.reasonIssueRows || 0}`);
+    }
     if (!report.issues.length) {
       lines.push('');
       lines.push('No obvious spelling/parsing issues detected.');
@@ -263,6 +300,7 @@ async function main() {
   console.log(`Categories: ${subcategories.map(c => c.subCategory).join(', ')}`);
   console.log(`Prompt conditions: ${promptConditions.map(c => c.id).join(', ')}`);
   console.log(`Replicates: ${REPLICATES}`);
+  console.log(`Follow-up reasons: ${FOLLOWUP_REASONS ? 'on' : 'off'}`);
 
   for (const condition of promptConditions) {
     for (const model of models) {
@@ -271,10 +309,15 @@ async function main() {
         if (
           state.completed[key] &&
           state.completed[key].status === 'completed' &&
+          Boolean(state.completed[key].followupReasons) === FOLLOWUP_REASONS &&
           state.completed[key].errors === 0 &&
           state.completed[key].completed === REPLICATES
         ) {
           console.log(`[skip] ${key}`);
+          continue;
+        }
+        if (state.skipped?.[key] && !RETRY_SKIPPED) {
+          console.log(`[skip-quota] ${key}`);
           continue;
         }
 
@@ -293,6 +336,10 @@ async function main() {
             temperature: TEMPERATURE,
             maxOutputTokens: MAX_OUTPUT_TOKENS,
             webSearch: WEB_SEARCH,
+            followupReasons: FOLLOWUP_REASONS,
+            reasonMaxOutputTokens: REASON_MAX_OUTPUT_TOKENS,
+            bypassCache: FOLLOWUP_REASONS || process.env.BYPASS_CACHE === 'true',
+            dryRun: DRY_RUN,
           }),
         });
 
@@ -306,13 +353,26 @@ async function main() {
           status: data.status,
           completed: data.progress?.completed || 0,
           errors: data.progress?.errors || 0,
+          followupReasons: FOLLOWUP_REASONS,
           finishedAt: new Date().toISOString(),
         };
-      if (completion.status === 'completed' && completion.errors === 0 && completion.completed === REPLICATES) {
+      if (quality.quotaLimited && SKIP_QUOTA) {
+        delete state.completed[key];
+        if (state.failed) delete state.failed[key];
+        state.skipped[key] = {
+          ...completion,
+          reason: 'quota_or_rate_limit',
+        };
+      } else if (completion.status === 'completed' &&
+          completion.errors === 0 &&
+          completion.completed === REPLICATES &&
+          quality.reasonIssueRows === 0) {
         state.completed[key] = completion;
         if (state.failed) delete state.failed[key];
+        if (state.skipped) delete state.skipped[key];
       } else {
           delete state.completed[key];
+          if (state.skipped) delete state.skipped[key];
           if (!state.failed) state.failed = {};
           state.failed[key] = completion;
         }
@@ -328,6 +388,7 @@ async function main() {
 
   exportArtifacts(state);
   console.log(`Raw CSV: ${rawCsvFile}`);
+  console.log(`Brand reasons long CSV: ${brandReasonsLongCsvFile}`);
   console.log(`Metrics CSV: ${metricsCsvFile}`);
   console.log(`Quality report: ${reportFile}`);
 }

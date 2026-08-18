@@ -390,14 +390,22 @@ coffee maker,Breville,BREVILLE,other
 coffee maker,Breville,Breville,other
 coffee maker,Hamilton Beach,HAMILTON BEACH,other
 coffee maker,Hamilton Beach,Hamilton Beach,other
+coffee maker,De'Longhi,DE'LONGHI,other
+coffee maker,De'Longhi,De'Longhi,other
+coffee maker,De'Longhi,DeLonghi,other
+coffee maker,De'Longhi,De Longhi,other
+coffee maker,De'Longhi,Delonghi,other
 cat food,Purina,PURINA,high_visibility
 cat food,Purina,Purina,high_visibility
 cat food,Purina,Purina Pro Plan,high_visibility
 cat food,Purina,Pro Plan,high_visibility
+cat food,Purina,Purina One,high_visibility
+cat food,Purina,Purina ONE,high_visibility
 cat food,Friskies,FRISKIES,high_visibility
 cat food,Friskies,Friskies,high_visibility
 cat food,Fancy Feast,FANCY FEAST,high_visibility
 cat food,Fancy Feast,Fancy Feast,high_visibility
+cat food,Fancy Feast,Purina Fancy Feast,high_visibility
 cat food,Tiki Cat,TIKI CAT,niche
 cat food,Tiki Cat,Tiki Cat,niche
 cat food,Weruva,WERUVA,niche
@@ -408,14 +416,19 @@ cat food,Instinct,Nature's Variety Instinct,niche
 cat food,Royal Canin,ROYAL CANIN,other
 cat food,Royal Canin,Royal Canin,other
 cat food,Hill's Science Diet,HILL'S SCIENCE DIET,other
+cat food,Hill's Science Diet,Hill's,other
 cat food,Hill's Science Diet,Hill's Science Diet,other
 cat food,Hill's Science Diet,Hills Science Diet,other
 cat food,Blue Buffalo,BLUE BUFFALO,other
 cat food,Blue Buffalo,Blue Buffalo,other
 cat food,Wellness,WELLNESS,other
 cat food,Wellness,Wellness,other
+cat food,Wellness,Wellness Core,other
 cat food,Iams,IAMS,other
 cat food,Iams,Iams,other
+cat food,Smallbatch,SmallBatch,other
+cat food,Smallbatch,Smallbatch,other
+cat food,Smallbatch,SmallBatch Pets,other
 boat cruises,Carnival,CARNIVAL,high_visibility
 boat cruises,Carnival,Carnival,high_visibility
 boat cruises,Carnival,Carnival Cruise Line,high_visibility
@@ -440,3 +453,9 @@ boat cruises,Princess Cruises,Princess Cruises,other
 boat cruises,Celebrity Cruises,CELEBRITY CRUISES,other
 boat cruises,Celebrity Cruises,Celebrity,other
 boat cruises,Celebrity Cruises,Celebrity Cruises,other
+hiking jacket,REI Co-op,REI,other
+hiking jacket,REI Co-op,REI Co-op,other
+hiking jacket,REI Co-op,REI Coop,other
+hiking jacket,REI Co-op,Rei Co-op,other
+hiking jacket,Lululemon,lululemon,other
+hiking jacket,Lululemon,Lululemon,other

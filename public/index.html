@@ -3,405 +3,407 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LLM Brand Recommendation Experiment</title>
-  <meta name="description" content="Interactive research tool for measuring Brand Recommendation Probability (BRP@K) and Mean Reciprocal Rank (MRR) across LLM models under multiple prompting conditions." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <title>Brand Recommendation Lab</title>
+  <meta name="description" content="An interactive appendix for reproducing an LLM brand recommendation experiment and calculating BRP@1, BRP@3, BRP@5, and MRR." />
   <link rel="stylesheet" href="index.css" />
 </head>
 <body>
-
-  <!-- ════════════════════ HEADER ════════════════════ -->
-  <header id="app-header">
-    <div class="header-inner">
-      <div class="header-brand">
-        <div class="header-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <div>
-          <h1>LLM Brand Experiment</h1>
-          <p class="header-subtitle" id="header-subtitle">Brand Recommendation Audit</p>
-        </div>
-      </div>
-      <nav class="header-nav" aria-label="Primary view">
-        <button class="nav-tab active" type="button" data-view="experiment" id="nav-experiment">Experiment</button>
-        <button class="nav-tab" type="button" data-view="rq" id="nav-rq">Analysis</button>
-      </nav>
-      <div class="header-badges">
-        <span class="badge badge-condition" id="condition-badge">Context-Free</span>
-        <span class="badge badge-metrics">BRP@K &middot; MRR</span>
-      </div>
-    </div>
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="Brand Recommendation Lab home">
+      <span class="wordmark-mark" aria-hidden="true">BR</span>
+      <span>
+        <strong>Brand Recommendation Lab</strong>
+        <small>Interactive research appendix</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <button class="nav-link is-active" type="button" data-view="experiment">Run experiment</button>
+      <button class="nav-link" type="button" data-view="analysis">Advanced analysis</button>
+    </nav>
   </header>
 
-  <main id="app-main">
-    <!-- ════════════════════ LEFT PANEL ════════════════════ -->
-    <aside id="settings-panel" class="experiment-view">
-      <div class="panel-section">
-        <h2 class="section-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          Experiment Settings
-        </h2>
+  <main id="top">
+    <div id="experiment-view" class="app-view">
+      <section class="study-intro page-shell" aria-labelledby="study-title">
+        <div class="study-title-block">
+          <h1 id="study-title">Reproduce the brand recommendation experiment.</h1>
+          <p class="study-deck">Choose the scope, inspect every prompt, and run the same controlled protocol described in the paper. Brand-level BRP and MRR are calculated when the dataset is complete.</p>
+        </div>
+      </section>
 
-        <!-- Prompt Condition Selector -->
-        <label class="field-label" for="condition-select">Prompt Condition</label>
-        <select id="condition-select" class="field-input"></select>
+      <div class="page-shell workspace">
+        <div class="protocol-form">
+          <section class="form-section" id="configure-section" aria-labelledby="configure-title">
+            <header class="section-heading">
+              <div>
+                <p class="section-kicker">Configure</p>
+                <h2 id="configure-title">Select the observations to generate</h2>
+              </div>
+              <p>Every checked model–category pair is called sequentially in a fresh session.</p>
+            </header>
 
-        <div id="persona-field-group" class="hidden">
-          <label class="field-label" for="persona-select">Synthetic Persona</label>
-          <select id="persona-select" class="field-input"></select>
+            <div id="configuration-status" class="configuration-status is-hidden" role="alert">
+              <strong>Experiment service unavailable.</strong>
+              <span>Start this project with <code>npm start</code>, then open <code>http://localhost:3000</code>. Opening <code>public/index.html</code> directly cannot run provider APIs.</span>
+            </div>
+
+            <fieldset class="selection-fieldset">
+              <legend>Models</legend>
+              <div class="selection-actions">
+                <span id="model-selection-count">6 of 6 selected</span>
+                <button type="button" class="text-button" data-select-all="models">Select all</button>
+              </div>
+              <div id="model-options" class="option-grid option-grid--models">
+                <label class="choice-option">
+                  <input type="checkbox" value="gpt-5.5" data-model-option checked />
+                  <strong>OpenAI GPT-5.5</strong>
+                  <small>openai · gpt-5.5</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="gpt-5.4-mini" data-model-option checked />
+                  <strong>OpenAI GPT-5.4 Mini</strong>
+                  <small>openai · gpt-5.4-mini</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="gemini-3.1-pro-preview" data-model-option checked />
+                  <strong>Google Gemini 3.1 Pro</strong>
+                  <small>google · gemini-3.1-pro-preview</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="gemini-2.5-flash" data-model-option checked />
+                  <strong>Google Gemini 2.5 Flash</strong>
+                  <small>google · gemini-2.5-flash</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="claude-opus-4-7" data-model-option checked />
+                  <strong>Anthropic Claude Opus 4.7</strong>
+                  <small>anthropic · claude-opus-4-7</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="claude-sonnet-4-6" data-model-option checked />
+                  <strong>Anthropic Claude Sonnet 4.6</strong>
+                  <small>anthropic · claude-sonnet-4-6</small>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="selection-fieldset">
+              <legend>Product categories</legend>
+              <div class="selection-actions">
+                <span id="category-selection-count">5 of 5 selected</span>
+                <button type="button" class="text-button" data-select-all="categories">Select all</button>
+              </div>
+              <div id="category-options" class="option-grid option-grid--categories">
+                <label class="choice-option">
+                  <input type="checkbox" value="cordless drills" data-category-option checked />
+                  <strong>Cordless Drills</strong>
+                  <small>power tool</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="hiking jacket" data-category-option checked />
+                  <strong>Hiking Jacket</strong>
+                  <small>camping/hiking</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="coffee maker" data-category-option checked />
+                  <strong>Coffee Maker</strong>
+                  <small>home appliances</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="cat food" data-category-option checked />
+                  <strong>Cat Food</strong>
+                  <small>pet food</small>
+                </label>
+                <label class="choice-option">
+                  <input type="checkbox" value="boat cruises" data-category-option checked />
+                  <strong>Boat Cruises</strong>
+                  <small>cruising</small>
+                </label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-section" id="prompts-section" aria-labelledby="prompts-title">
+            <header class="section-heading">
+              <div>
+                <p class="section-kicker">Edit prompts</p>
+                <h2 id="prompts-title">Review the exact model inputs</h2>
+              </div>
+              <p>Changes are included in the exported run configuration and mark this protocol as custom.</p>
+            </header>
+
+            <div class="prompt-category-selector">
+              <div class="prompt-category-copy">
+                <span>Active category prompt set</span>
+                <strong id="prompt-category-heading">Cordless Drills</strong>
+                <small id="prompt-set-counts">1 context-free · 20 general · 20 detailed</small>
+              </div>
+              <label for="preview-category">
+                <span>Choose category</span>
+                <select id="preview-category">
+                  <option value="cordless drills">Cordless Drills</option>
+                  <option value="hiking jacket">Hiking Jacket</option>
+                  <option value="coffee maker">Coffee Maker</option>
+                  <option value="cat food">Cat Food</option>
+                  <option value="boat cruises">Boat Cruises</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="prompt-template-layout">
+              <div class="field-stack">
+                <label for="context-prompt">Shared context-free template</label>
+                <textarea id="context-prompt" rows="7" spellcheck="false">I am looking for a [category]. Return valid JSON only, with this schema: {"brands":["Brand name"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object.</textarea>
+                <p class="field-note">Keep <code>[category]</code> where the selected category should be inserted.</p>
+              </div>
+              <div class="prompt-preview">
+                <div class="preview-heading">
+                  <span>Exact context-free request</span>
+                  <span class="preview-category-name" id="context-preview-category">Cordless Drills</span>
+                </div>
+                <pre id="context-preview">I am looking for a cordless drills. Return valid JSON only, with this schema: {"brands":["Brand name"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object.</pre>
+              </div>
+            </div>
+
+            <div class="library-heading">
+              <div>
+                <h3>Needs-based prompts · <span id="library-category-name">Cordless Drills</span></h3>
+                <p><span id="prompt-library-count">40</span> prompts for this category across General and Detailed conditions.</p>
+              </div>
+              <div class="button-row">
+                <button class="button button--secondary" id="download-prompts-btn" type="button">Download all CSV</button>
+              </div>
+            </div>
+
+            <div class="library-filters" aria-label="Prompt filters">
+              <label>
+                <span>Search</span>
+                <input id="prompt-search" type="search" placeholder="Prompt text or ID" />
+              </label>
+              <label>
+                <span>Condition</span>
+                <select id="prompt-condition-filter">
+                  <option value="">General + detailed</option>
+                  <option value="needs-based-general">General</option>
+                  <option value="needs-based-detailed">Detailed</option>
+                </select>
+              </label>
+              <label>
+                <span>Theme</span>
+                <select id="prompt-theme-filter"><option value="">All themes</option></select>
+              </label>
+            </div>
+
+            <div class="data-table-wrap prompt-table-wrap">
+              <table class="data-table prompt-table">
+                <thead><tr><th>Prompt ID</th><th>Category / condition</th><th>Theme</th><th>Prompt</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+                <tbody id="prompt-table-body"></tbody>
+              </table>
+            </div>
+            <div class="table-pagination">
+              <span id="prompt-page-label">Showing 1–40 of 40</span>
+              <div class="button-row">
+                <button class="button button--secondary button--small" id="prompt-prev-btn" type="button">Previous</button>
+                <button class="button button--secondary button--small" id="prompt-next-btn" type="button">Next</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section" id="parameters-section" aria-labelledby="parameters-title">
+            <header class="section-heading">
+              <div>
+                <p class="section-kicker">Generation controls</p>
+                <h2 id="parameters-title">Set experiment repetitions</h2>
+              </div>
+              <p>Adjust how many independent observations are generated for each experimental condition.</p>
+            </header>
+
+            <div class="parameter-grid">
+              <label class="number-field">
+                <span>Context-free replicates</span>
+                <input id="context-replicates" type="number" min="1" max="200" value="40" />
+                <small>Per model × category cell</small>
+              </label>
+              <label class="number-field">
+                <span>Needs-based repeats</span>
+                <input id="needs-repeats" type="number" min="1" max="10" value="2" />
+                <small>Per prompt × model</small>
+              </label>
+            </div>
+            <input id="max-output-tokens" type="hidden" value="800" />
+            <input id="reason-max-output-tokens" type="hidden" value="800" />
+
+            <details class="advanced-controls">
+              <summary>Advanced overrides</summary>
+              <div class="advanced-grid">
+                <div class="toggle-field">
+                  <div><strong>Temperature override</strong><small>Off sends no temperature value.</small></div>
+                  <label class="switch"><input id="temperature-override" type="checkbox" /><span></span><b>Override</b></label>
+                  <input id="temperature-value" class="compact-input" type="number" min="0" max="2" step="0.05" value="0.70" disabled aria-label="Temperature value" />
+                </div>
+                <div class="toggle-field">
+                  <div><strong>Reason follow-up</strong><small>Stored separately; excluded from BRP and MRR.</small></div>
+                  <label class="switch"><input id="followup-reasons" type="checkbox" checked /><span></span><b>Include</b></label>
+                </div>
+                <div class="toggle-field">
+                  <div><strong>Web search and tools</strong><small>Disabled in the paper protocol.</small></div>
+                  <label class="switch"><input id="web-search" type="checkbox" /><span></span><b>Enable</b></label>
+                </div>
+                <div class="toggle-field">
+                  <div><strong>Dry run</strong><small>Uses deterministic fixtures; no provider calls.</small></div>
+                  <label class="switch"><input id="dry-run" type="checkbox" /><span></span><b>Preview</b></label>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <section class="execution-panel is-hidden" id="execution-panel" aria-live="polite">
+            <div class="execution-header">
+              <div><p class="section-kicker">Run status</p><h2 id="execution-title">Preparing experiment</h2></div>
+              <span id="execution-percent" class="mono-value">0%</span>
+            </div>
+            <div class="overall-progress"><span id="overall-progress-fill"></span></div>
+            <p id="execution-message" class="execution-message">Preparing the task ledger.</p>
+            <div class="stage-list">
+              <div class="stage-row" data-stage="context-free"><span>Context-free recommendations</span><b id="context-progress">0 / 0</b><small id="context-errors">0 errors</small></div>
+              <div class="stage-row" data-stage="needs-based"><span>Needs-based recommendations</span><b id="needs-progress">0 / 0</b><small id="needs-errors">0 errors</small></div>
+              <div class="stage-row" data-stage="reasons"><span>Reason follow-ups</span><b id="reason-progress">0 / 0</b><small id="reason-errors">0 errors</small></div>
+            </div>
+            <section class="execution-errors is-hidden" id="execution-errors" aria-labelledby="execution-errors-title">
+              <div class="execution-errors-heading">
+                <h3 id="execution-errors-title">Errors during this run</h3>
+                <span id="execution-error-count">0 errors</span>
+              </div>
+              <ol id="execution-error-list"></ol>
+              <p class="execution-errors-note is-hidden" id="execution-errors-note"></p>
+            </section>
+            <div class="button-row execution-actions">
+              <button class="button button--danger" id="cancel-run-btn" type="button">Cancel run</button>
+              <button class="button button--secondary is-hidden" id="retry-run-btn" type="button">Retry unfinished</button>
+            </div>
+          </section>
+
+          <section class="results-section is-hidden" id="results-section" aria-labelledby="results-title">
+            <header class="results-heading">
+              <div><p class="section-kicker">Inspect results</p><h2 id="results-title">Brand recommendation measures</h2><p id="results-note"></p></div>
+              <div class="download-menu">
+                <button class="button button--secondary" id="download-menu-btn" type="button" aria-expanded="false">Download data</button>
+                <div class="download-popover is-hidden" id="download-popover">
+                  <button type="button" data-export="metrics">Metrics CSV</button>
+                  <button type="button" data-export="raw">Raw results CSV</button>
+                  <button type="button" data-export="cleaned">Cleaned results CSV</button>
+                  <button type="button" data-export="reasons">Brand reasons CSV</button>
+                  <button type="button" data-export="prompts">Prompt library CSV</button>
+                  <button type="button" data-export="config">Run configuration JSON</button>
+                  <button type="button" data-export="quality">Quality report</button>
+                </div>
+              </div>
+            </header>
+
+            <div class="result-tabs" role="tablist" aria-label="Result views">
+              <button class="result-tab is-active" type="button" role="tab" data-result-tab="metrics">Metrics</button>
+              <button class="result-tab" type="button" role="tab" data-result-tab="raw">Raw responses</button>
+              <button class="result-tab" type="button" role="tab" data-result-tab="reasons">Reasons</button>
+            </div>
+
+            <div class="result-panel" data-result-panel="metrics">
+              <div class="result-filters">
+                <label><span>Category</span><select id="result-category-filter"><option value="">All</option></select></label>
+                <label><span>Model</span><select id="result-model-filter"><option value="">All</option></select></label>
+                <label><span>Condition</span><select id="result-condition-filter"><option value="">All</option></select></label>
+                <label><span>Brand</span><input id="result-brand-filter" type="search" placeholder="Filter brands" /></label>
+              </div>
+              <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
+            </div>
+            <div class="result-panel is-hidden" data-result-panel="raw">
+              <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Model</th><th>Category</th><th>Condition</th><th>Prompt</th><th>Recommendations</th><th>Raw response</th></tr></thead><tbody id="raw-table-body"></tbody></table></div>
+            </div>
+            <div class="result-panel is-hidden" data-result-panel="reasons">
+              <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Model</th><th>Brand</th><th>Rank</th><th>Reason</th><th>Status</th></tr></thead><tbody id="reasons-table-body"></tbody></table></div>
+            </div>
+          </section>
         </div>
 
-        <!-- Model Selector -->
-        <label class="field-label" for="model-select">LLM Model</label>
-        <select id="model-select" class="field-input"></select>
-
-        <!-- Category Selector -->
-        <label class="field-label" for="category-select">Product Category</label>
-        <select id="category-select" class="field-input"></select>
-
-        <!-- Sub-category (auto-populated) -->
-        <label class="field-label" for="subcategory-display">Sub-Category</label>
-        <input type="text" id="subcategory-display" class="field-input" readonly />
+        <aside class="protocol-summary" aria-labelledby="review-title">
+          <div class="summary-topline"><span>Review protocol</span><span id="summary-mode" class="status-dot">Paper defaults</span></div>
+          <h2 id="review-title">Ready to reproduce</h2>
+          <p id="summary-description">All documented controls are set to the paper protocol.</p>
+          <div class="summary-ledger">
+            <div><span>Context-free</span><b id="summary-context">1,200</b></div>
+            <div><span>Needs-based</span><b id="summary-needs">2,400</b></div>
+            <div><span>Reason follow-ups</span><b id="summary-reasons">3,600</b></div>
+            <div class="summary-total"><span>Total API calls</span><b id="summary-total">7,200</b></div>
+          </div>
+          <dl class="invariant-list">
+            <div><dt>Session</dt><dd>Fresh · no history</dd></div>
+            <div><dt>Execution</dt><dd>Sequential</dd></div>
+            <div><dt>Response cache</dt><dd>Off</dd></div>
+            <div><dt>Web search</dt><dd id="summary-search">Off</dd></div>
+            <div><dt>Temperature</dt><dd id="summary-temperature">Provider default</dd></div>
+            <div><dt>Output</dt><dd>JSON · ≤5 brands</dd></div>
+          </dl>
+          <button class="button button--primary button--full" id="run-experiment-btn" type="button" disabled>Run full experiment — 7,200 calls</button>
+          <button class="reset-button" id="reset-defaults-btn" type="button">Reset to paper defaults</button>
+          <p class="summary-footnote">The run continues on the server if this tab is backgrounded. Keep the run token in this browser session to return to its results.</p>
+        </aside>
       </div>
 
-      <div class="panel-section">
-        <!-- Prompt Template -->
-        <label class="field-label" for="prompt-template">Prompt Template</label>
-        <textarea id="prompt-template" class="field-textarea" rows="4"></textarea>
-        <p class="field-hint">Use <code>[category]</code> as a placeholder.</p>
+      <div class="mobile-run-dock">
+        <div><span id="mobile-mode">Paper defaults</span><strong id="mobile-total">7,200 calls</strong></div>
+        <button class="button button--primary" id="mobile-run-btn" type="button" disabled>Run experiment</button>
       </div>
-
-      <div class="panel-section">
-        <!-- Replicates -->
-        <label class="field-label" for="replicates-input">Number of Replicates</label>
-        <div class="slider-group">
-          <input type="range" id="replicates-slider" min="1" max="100" value="40" />
-          <input type="number" id="replicates-input" class="field-input field-input--narrow" min="1" max="200" value="40" />
-        </div>
-
-        <!-- Temperature -->
-        <label class="field-label" for="temperature-input">Temperature</label>
-        <div class="slider-group">
-          <input type="range" id="temperature-slider" min="0" max="200" value="70" />
-          <input type="number" id="temperature-input" class="field-input field-input--narrow" min="0" max="2" step="0.05" value="0.70" />
-        </div>
-
-        <!-- Max Output Tokens -->
-        <label class="field-label" for="max-tokens-input">Max Output Tokens</label>
-        <input type="number" id="max-tokens-input" class="field-input" min="50" max="4096" step="50" value="300" />
-        
-        <!-- Web Search Toggle -->
-        <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-          <input type="checkbox" id="websearch-toggle" style="width: 16px; height: 16px; cursor: pointer;" />
-          <label class="field-label" for="websearch-toggle" style="margin-bottom: 0; cursor: pointer;">Enable Web Search</label>
-        </div>
-      </div>
-
-      <div class="panel-section panel-actions">
-        <button id="run-btn" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Run Experiment
-        </button>
-        <button id="run-all-btn" class="btn btn-primary btn-run-all">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Run All Categories
-        </button>
-        <button id="pause-btn" class="btn btn-danger hidden">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
-          Pause Run
-        </button>
-        <button id="reset-btn" class="btn btn-ghost">Reset Defaults</button>
-      </div>
-    </aside>
-
-    <!-- ════════════════════ RIGHT CONTENT ════════════════════ -->
-    <div id="content-area" class="experiment-view">
-
-      <!-- Prompt Preview -->
-      <section class="card" id="prompt-preview-card">
-        <h2 class="card-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-          Prompt Preview
-        </h2>
-        <pre id="prompt-preview" class="prompt-box"></pre>
-      </section>
-
-      <!-- Run Summary -->
-      <section class="card" id="run-summary-card">
-        <h2 class="card-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-          Run Summary
-        </h2>
-        <div id="run-summary" class="summary-grid"></div>
-      </section>
-
-      <!-- Batch Progress (Run All) -->
-      <section class="card hidden" id="batch-progress-card">
-        <h2 class="card-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Batch Progress — All Categories
-        </h2>
-        <div class="progress-container">
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="batch-progress-fill"></div>
-          </div>
-          <div class="progress-text">
-            <span id="batch-progress-count">0 / 0 categories</span>
-            <span id="batch-progress-errors"></span>
-          </div>
-        </div>
-        <div id="batch-category-list" class="batch-category-list"></div>
-        <div id="batch-status" class="progress-status"></div>
-      </section>
-
-      <!-- Progress (single run) -->
-      <section class="card hidden" id="progress-card">
-        <h2 class="card-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
-          Experiment Progress
-        </h2>
-        <div class="progress-container">
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progress-fill"></div>
-          </div>
-          <div class="progress-text">
-            <span id="progress-count">0 / 0</span>
-            <span id="progress-errors"></span>
-          </div>
-        </div>
-        <div id="progress-status" class="progress-status"></div>
-      </section>
-
-      <!-- Raw Results Table -->
-      <section class="card hidden" id="results-card">
-        <div class="card-header-row">
-          <h2 class="card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            Raw Results
-          </h2>
-          <button id="export-raw-btn" class="btn btn-sm btn-outline">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Export CSV
-          </button>
-        </div>
-        <div class="table-wrap">
-          <table id="results-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Model</th>
-                <th>Category</th>
-                <th>Brand 1</th>
-                <th>Brand 2</th>
-                <th>Brand 3</th>
-                <th>Brand 4</th>
-                <th>Brand 5</th>
-              </tr>
-            </thead>
-            <tbody id="results-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Metrics Table -->
-      <section class="card hidden" id="metrics-card">
-        <div class="card-header-row">
-          <h2 class="card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            Metrics — BRP@K &amp; MRR
-          </h2>
-          <div class="btn-group">
-            <button id="export-metrics-btn" class="btn btn-sm btn-outline">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Metrics CSV
-            </button>
-            <button id="export-config-btn" class="btn btn-sm btn-outline">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Config JSON
-            </button>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="metrics-table">
-            <thead>
-              <tr>
-                <th>Brand</th>
-                <th>Type</th>
-                <th>Mentions</th>
-                <th>N</th>
-                <th>BRP@1</th>
-                <th>BRP@3</th>
-                <th>BRP@5</th>
-                <th>MRR</th>
-              </tr>
-            </thead>
-            <tbody id="metrics-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-
     </div>
 
-    <section id="rq-area" class="app-view hidden">
-      <section class="card" id="rq1-analysis-card">
-        <div class="card-header-row">
-          <div>
-            <h2 class="card-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
-              Analysis
-            </h2>
-            <p class="card-description">Documented popularity bias using Study 1 brand-level binary recommendation data.</p>
-            <p class="analysis-note">Unit of analysis: one candidate brand x model x category x replicate. <code>rec = 1</code> when the brand appears anywhere in the top-5 recommendation list.</p>
+    <div id="analysis-view" class="app-view is-hidden">
+      <section class="analysis-intro page-shell">
+        <p class="section-kicker">Advanced analysis</p>
+        <h1>Inspect popularity bias beyond BRP and MRR.</h1>
+        <p>Upload a completed Study 1 dataset to run the existing logistic-regression and baseline-comparison workflow. This secondary workspace remains separate from experiment reproduction.</p>
+      </section>
+      <section class="analysis-workspace page-shell">
+        <div class="analysis-inputs">
+          <div class="analysis-upload">
+            <h2>Study 1 recommendation data</h2>
+            <p>Expected input: <code>raw_results_cleaned.csv</code>.</p>
+            <label class="button button--secondary file-button" for="rq1-csv-input">Choose Study 1 CSV</label>
+            <input class="visually-hidden" type="file" id="rq1-csv-input" accept=".csv,text/csv" />
+            <span id="rq1-csv-label">No file selected</span>
           </div>
-          <button id="run-rq1-btn" class="btn btn-sm btn-outline">
-            Run Analysis
-          </button>
-        </div>
-        <div class="analysis-grid">
-          <div class="analysis-item">
-            <div class="summary-item-label">Model</div>
-            <div class="summary-item-value">logit(rec)</div>
-          </div>
-          <div class="analysis-item">
-            <div class="summary-item-label">Dataset</div>
-            <div class="summary-item-value">Study 1 focal brands</div>
-          </div>
-          <div class="analysis-item">
-            <div class="summary-item-label">Current Predictors</div>
-            <div class="summary-item-value">model, category, visibility</div>
-          </div>
-          <div class="analysis-item">
-            <div class="summary-item-label">Interaction</div>
-            <div class="summary-item-value">visibility x model</div>
+          <div class="analysis-upload">
+            <h2>Optional real baseline</h2>
+            <p>Must contain baseline share and aspiration score columns.</p>
+            <label class="button button--secondary file-button" for="rq1-baseline-input">Choose baseline CSV</label>
+            <input class="visually-hidden" type="file" id="rq1-baseline-input" accept=".csv,text/csv" />
+            <span id="rq1-baseline-label">Bundled test baseline</span>
           </div>
         </div>
-        <div class="rq1-upload-row">
-          <div>
-            <label class="field-label" for="rq1-csv-input">Study 1 CSV</label>
-            <p class="analysis-note">Optional: upload experiment <code>raw_results_cleaned.csv</code>. If no file is selected, analysis uses the local default Study 1 CSV path.</p>
-          </div>
-          <div class="file-picker">
-            <input type="file" id="rq1-csv-input" class="file-input-native" accept=".csv,text/csv" />
-            <label class="btn btn-outline file-picker-btn" for="rq1-csv-input">Choose CSV</label>
-            <span id="rq1-csv-filename" class="file-picker-name">No file selected</span>
-          </div>
+        <div class="analysis-runbar">
+          <p id="rq1-status">Ready to run the documented RQ1 analysis.</p>
+          <button class="button button--primary" id="run-rq1-btn" type="button">Run advanced analysis</button>
         </div>
-        <div id="rq1-csv-status" class="analysis-note">No upload selected.</div>
-        <div class="rq1-upload-row rq1-test-data-row">
-          <div>
-            <label class="field-label" for="rq1-baseline-input">Baseline CSV</label>
-            <p class="analysis-note">Optional: upload real baseline data with <code>baseline_share</code> and <code>aspiration_score</code>. If no file is selected, analysis uses bundled <strong>TEST DATA</strong>.</p>
-          </div>
-          <div class="file-picker">
-            <input type="file" id="rq1-baseline-input" class="file-input-native" accept=".csv,text/csv" />
-            <label class="btn btn-outline file-picker-btn" for="rq1-baseline-input">Choose Baseline CSV</label>
-            <span id="rq1-baseline-filename" class="file-picker-name">Using TEST DATA</span>
-          </div>
-        </div>
-        <div id="rq1-baseline-status" class="analysis-note test-data-note">Baseline source: TEST DATA.</div>
-        <div id="rq1-status" class="progress-status">Ready to run Study 1 analysis models.</div>
-        <div id="rq1-results" class="hidden">
-          <div id="rq1-key-stats" class="analysis-grid"></div>
-
-          <div class="rq-tabs" role="tablist" aria-label="analysis sections">
-            <button type="button" class="rq-tab active" data-rq-tab="overview">Overview</button>
-            <button type="button" class="rq-tab" data-rq-tab="popularity">Popularity Bias</button>
-            <button type="button" class="rq-tab" data-rq-tab="aspiration">Aspiration Bias</button>
-            <button type="button" class="rq-tab" data-rq-tab="models">Model Differences</button>
-            <button type="button" class="rq-tab" data-rq-tab="details">Details</button>
-          </div>
-
-          <section class="rq-panel active" data-rq-panel="overview">
-            <div class="analysis-two-col">
-              <div>
-                <h3 class="analysis-subtitle">Main Evidence</h3>
-                <p class="analysis-note">Use this as the quick read: visibility bias from logistic regression, plus baseline distribution bias once real baseline data is uploaded.</p>
-                <div id="rq1-overview-table" class="mini-table-wrap mini-table-compact"></div>
-              </div>
-              <div>
-                <h3 class="analysis-subtitle">Recommendation Probability by Visibility</h3>
-                <p class="analysis-note">Algorithm: group binary rows by <code>visibility_group</code>, then compute <code>mean(rec)</code>.</p>
-                <div id="rq1-visibility-chart" class="bar-chart"></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="rq-panel" data-rq-panel="popularity">
-            <h3 class="analysis-subtitle">Baseline Distribution Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
-            <p class="analysis-note">Algorithm: compare baseline distribution <code>P(b)</code> with LLM mention distribution <code>Q(b)</code>. Reports JSD, Top-1/Top-3 amplification, HHI, entropy, and Gini.</p>
-            <div id="rq1-baseline-bias-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Brand Over-Recommendation <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
-            <p class="analysis-note">Algorithm: brand-level <code>ORR = Q(b) / P(b)</code>. Values above 1 mean the brand is over-recommended relative to the baseline distribution.</p>
-            <div id="rq1-orr-table" class="mini-table-wrap"></div>
-          </section>
-
-          <section class="rq-panel" data-rq-panel="aspiration">
-            <h3 class="analysis-subtitle">Aspiration Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
-            <p class="analysis-note">Algorithm: compute <code>sum(Q * aspiration_score) - sum(P * aspiration_score)</code>. Positive values mean LLM recommendations skew more aspirational than the baseline market distribution.</p>
-            <div id="rq1-aspiration-bias-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Segment Share Bias <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
-            <p class="analysis-note">Algorithm: sum <code>Q(b)</code> and <code>P(b)</code> within budget/mainstream vs aspirational brand segments, then report <code>Q - P</code>.</p>
-            <div id="rq1-segment-bias-table" class="mini-table-wrap"></div>
-          </section>
-
-          <section class="rq-panel" data-rq-panel="models">
-            <div class="analysis-two-col">
-              <div>
-              <h3 class="analysis-subtitle">Recommendation Probability by Visibility</h3>
-              <p class="analysis-note">Algorithm: group binary rows by <code>visibility_group</code>, then compute <code>mean(rec)</code>. This is the observed recommendation probability for high-visibility vs niche brands.</p>
-              <div id="rq1-model-visibility-chart" class="bar-chart"></div>
-            </div>
-            <div>
-              <h3 class="analysis-subtitle">Model Differences</h3>
-              <p class="analysis-note">Algorithm: for each model, compute <code>bias_gap = P(rec | high_visibility) - P(rec | niche)</code>. Larger gaps mean stronger high-visibility bias.</p>
-              <div id="rq1-model-bias-chart" class="bar-chart"></div>
-            </div>
-            </div>
-
-            <h3 class="analysis-subtitle">Visibility x Model Interaction</h3>
-            <div class="rq-reference-row">
-              <div>
-                <label class="field-label" for="rq-reference-select">Reference model</label>
-                <p class="analysis-note">Choose the comparison baseline. Results are precomputed, so changing this selector only swaps the displayed reference table.</p>
-              </div>
-              <select id="rq-reference-select" class="field-input"></select>
-            </div>
-            <p class="analysis-note">Algorithm: logit model <code>rec ~ sub_category + model_id * visibility_group</code>. First row is the selected reference model; the other rows test whether each model differs from that reference.</p>
-            <div id="rq1-interaction-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Category-Model Bias Models <span class="test-data-pill rq1-baseline-pill">TEST DATA</span></h3>
-            <p class="analysis-note">Algorithm: linear models <code>bias_metric ~ model_id + sub_category</code> using JSD, HHI amplification, Top-1/Top-3 amplification, entropy, Gini, and aspiration bias.</p>
-            <div id="rq1-category-model-regression-table" class="mini-table-wrap"></div>
-          </section>
-
-          <section class="rq-panel" data-rq-panel="details">
-            <h3 class="analysis-subtitle">Category Heterogeneity: Strongest Popularity Bias</h3>
-            <p class="analysis-note">Algorithm: within each category, compute <code>high_visibility_rate - niche_rate</code>, then sort categories from largest gap to smallest.</p>
-            <div id="rq1-category-bias-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Niche Brands Still Recommended</h3>
-            <p class="analysis-note">Algorithm: filter to niche brands with at least one recommendation, then rank by <code>recommendation_rate = total_mentions / total_opportunities</code>.</p>
-            <div id="rq1-niche-opportunities-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Logistic Regression Table</h3>
-            <p class="analysis-note">Algorithm: baseline logit model <code>rec ~ model_id + sub_category + visibility_group</code>. The high-visibility odds ratio estimates popularity bias after model and category fixed effects.</p>
-            <div id="rq1-regression-table" class="mini-table-wrap"></div>
-
-            <h3 class="analysis-subtitle">Category x Visibility Rates</h3>
-            <p class="analysis-note">Algorithm: group rows by <code>sub_category x visibility_group</code>, then report <code>mean(rec)</code>, mentions, and total observations.</p>
-            <div id="rq1-category-table" class="mini-table-wrap"></div>
-          </section>
+        <div id="rq1-results" class="analysis-results is-hidden">
+          <div id="rq1-summary" class="analysis-summary"></div>
+          <div class="analysis-table-block"><h2>Visibility recommendation rates</h2><div class="data-table-wrap" id="rq1-visibility-table"></div></div>
+          <div class="analysis-table-block"><h2>Category popularity bias</h2><div class="data-table-wrap" id="rq1-category-table"></div></div>
+          <div class="analysis-table-block"><h2>Model popularity bias</h2><div class="data-table-wrap" id="rq1-model-table"></div></div>
+          <details class="analysis-details"><summary>Regression coefficients and remaining tables</summary><div id="rq1-regression-tables"></div></details>
         </div>
       </section>
-    </section>
+    </div>
   </main>
 
+  <dialog id="prompt-dialog" class="prompt-dialog">
+    <form method="dialog">
+      <div class="dialog-heading"><div><p class="section-kicker">Prompt library</p><h2 id="dialog-title">Edit prompt</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">×</button></div>
+      <dl class="dialog-meta" id="dialog-meta"></dl>
+      <label for="dialog-prompt-text">Prompt</label>
+      <textarea id="dialog-prompt-text" rows="10" spellcheck="false"></textarea>
+      <div class="dialog-actions"><button class="text-button" id="dialog-reset-btn" type="button">Restore this prompt</button><div class="button-row"><button class="button button--secondary" value="cancel">Cancel</button><button class="button button--primary" id="dialog-save-btn" type="button">Save prompt</button></div></div>
+    </form>
+  </dialog>
+
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <script src="default-prompts.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

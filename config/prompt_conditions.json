@@ -4,25 +4,25 @@
       "id": "context-free",
       "display_name": "Context-Free",
       "experiment": "study1",
-      "prompt_template": "I am looking for a [category]. Return valid JSON only, with exactly this schema: {\"brands\":[\"Brand 1\",\"Brand 2\",\"Brand 3\",\"Brand 4\",\"Brand 5\"]}. Include exactly five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
+      "prompt_template": "I am looking for a [category]. Return valid JSON only, with this schema: {\"brands\":[\"Brand name\"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
     },
     {
       "id": "functional-need",
       "display_name": "Functional Need",
       "experiment": "study3",
-      "prompt_template": "I need a [category] for practical, functional use. Prioritize reliable performance, value, availability, and low risk over image, lifestyle, or status. Return valid JSON only, with exactly this schema: {\"brands\":[\"Brand 1\",\"Brand 2\",\"Brand 3\",\"Brand 4\",\"Brand 5\"]}. Include exactly five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
+      "prompt_template": "I need a [category] for practical, functional use. Prioritize reliable performance, value, availability, and low risk over image, lifestyle, or status. Return valid JSON only, with this schema: {\"brands\":[\"Brand name\"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
     },
     {
       "id": "aspirational-need",
       "display_name": "Aspirational Need",
       "experiment": "study3",
-      "prompt_template": "I want a [category] that helps me feel like the kind of person who is serious, capable, and aspirational in this area. Prioritize brands that signal identity, expertise, and upward aspiration. Return valid JSON only, with exactly this schema: {\"brands\":[\"Brand 1\",\"Brand 2\",\"Brand 3\",\"Brand 4\",\"Brand 5\"]}. Include exactly five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
+      "prompt_template": "I want a [category] that helps me feel like the kind of person who is serious, capable, and aspirational in this area. Prioritize brands that signal identity, expertise, and upward aspiration. Return valid JSON only, with this schema: {\"brands\":[\"Brand name\"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
     },
     {
       "id": "synthetic-profile",
       "display_name": "Synthetic Profile",
       "experiment": "study2b",
-      "prompt_template": "Use the following consumer profile when recommending brands.\n\nProfile:\n[profile]\n\nThe consumer is looking for a [category]. Recommend brands that fit this profile. Return valid JSON only, with exactly this schema: {\"brands\":[\"Brand 1\",\"Brand 2\",\"Brand 3\",\"Brand 4\",\"Brand 5\"]}. Include exactly five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
+      "prompt_template": "Use the following consumer profile when recommending brands.\n\nProfile:\n[profile]\n\nThe consumer is looking for a [category]. Recommend brands that fit this profile. Return valid JSON only, with this schema: {\"brands\":[\"Brand name\"]}. Include up to five brand names. Do not include explanations, markdown, numbering, or any text outside the JSON object."
     }
   ]
 }

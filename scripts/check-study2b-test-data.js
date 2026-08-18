@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { calculateMetrics } = require('../lib/metrics');
 
-const outDir = path.join(__dirname, '..', 'data', 'exports', 'study2', 'fixture_check');
+const ROOT = path.join(__dirname, '..');
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
+const outDir = path.join(DATA_DIR, 'exports', 'study2', 'fixture_check');
 const rawOut = path.join(outDir, 'raw_results.csv');
 const metricsOut = path.join(outDir, 'metrics.csv');
 const reportOut = path.join(outDir, 'quality_report.md');

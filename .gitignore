@@ -1,6 +1,8 @@
 node_modules/
 .env*
+!.env.example
 *.csv.bak
 .DS_Store
 *.code-workspace
 data/
+outputs/

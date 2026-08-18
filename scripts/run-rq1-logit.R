@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
 root <- normalizePath(getwd(), mustWork = TRUE)
-default_raw_file <- file.path(root, "data", "exports", "study1", "full_2026-05-05_all_models", "raw_results_cleaned.csv")
+data_dir_env <- Sys.getenv("DATA_DIR", unset = "")
+data_dir <- if (nzchar(data_dir_env)) normalizePath(data_dir_env, mustWork = FALSE) else file.path(root, "data")
+default_raw_file <- file.path(data_dir, "exports", "study1", "full_2026-05-05_all_models", "raw_results_cleaned.csv")
 raw_file_env <- Sys.getenv("RQ1_RAW_FILE", unset = "")
 raw_file <- if (nzchar(raw_file_env)) raw_file_env else default_raw_file
 brands_file <- file.path(root, "config", "categories_brands.csv")
@@ -9,7 +11,7 @@ default_baseline_file <- file.path(root, "config", "brand_baseline_test.csv")
 baseline_file_env <- Sys.getenv("RQ1_BASELINE_FILE", unset = "")
 baseline_file <- if (nzchar(baseline_file_env)) baseline_file_env else default_baseline_file
 reference_model_env <- Sys.getenv("RQ1_REFERENCE_MODEL", unset = "")
-out_dir <- file.path(root, "data", "analysis", "rq1")
+out_dir <- file.path(data_dir, "analysis", "rq1")
 
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 

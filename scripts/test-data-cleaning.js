@@ -154,6 +154,36 @@ const cases = [
     raw: ['Princess', 'Celebrity', 'Carnival Cruise Line'],
     expected: ['Princess Cruises', 'Celebrity Cruises', 'Carnival'],
   },
+  {
+    name: 'observed coffee maker DeLonghi variants',
+    category: 'coffee maker',
+    raw: ['DeLonghi', "De'Longhi", 'De Longhi', 'Delonghi', 'Breville'],
+    expected: ["De'Longhi", 'Breville'],
+  },
+  {
+    name: 'observed hiking jacket REI variants',
+    category: 'hiking jacket',
+    raw: ['REI', 'REI Co-op', 'REI Coop', 'Patagonia'],
+    expected: ['REI Co-op', 'Patagonia'],
+  },
+  {
+    name: 'observed hiking jacket Lululemon variants',
+    category: 'hiking jacket',
+    raw: ['lululemon', 'Lululemon', 'Patagonia'],
+    expected: ['Lululemon', 'Patagonia'],
+  },
+  {
+    name: 'observed cat food subbrand variants',
+    category: 'cat food',
+    raw: ['Purina ONE', 'Purina One', 'Purina Fancy Feast', "Hill's", 'Wellness Core'],
+    expected: ['Purina', 'Fancy Feast', "Hill's Science Diet", 'Wellness'],
+  },
+  {
+    name: 'observed cat food Smallbatch variants',
+    category: 'cat food',
+    raw: ['SmallBatch', 'Smallbatch', 'SmallBatch Pets', 'Tiki Cat'],
+    expected: ['Smallbatch', 'Tiki Cat'],
+  },
 ];
 
 for (const testCase of cases) {
