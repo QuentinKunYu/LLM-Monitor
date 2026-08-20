@@ -3,34 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brand Recommendation Lab</title>
+  <title>LLMs as a new brand intermediary</title>
   <meta name="description" content="An interactive appendix for reproducing an LLM brand recommendation experiment and calculating BRP@1, BRP@3, BRP@5, and MRR." />
-  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="index.css?v=20260820-6" />
 </head>
 <body>
   <header class="site-header">
-    <a class="wordmark" href="#top" aria-label="Brand Recommendation Lab home">
+    <a class="wordmark" href="#top" aria-label="LLMs as a new brand intermediary home">
       <span class="wordmark-mark" aria-hidden="true">BR</span>
       <span>
-        <strong>Brand Recommendation Lab</strong>
+        <strong>LLMs as a new brand intermediary</strong>
         <small>Interactive research appendix</small>
       </span>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <button class="nav-link is-active" type="button" data-view="experiment">Run experiment</button>
-      <button class="nav-link" type="button" data-view="analysis">Advanced analysis</button>
+      <span class="nav-link is-active">Run experiment</span>
+      <a class="nav-link" href="/analysis.html">Results</a>
     </nav>
   </header>
 
   <main id="top">
     <div id="experiment-view" class="app-view">
-      <section class="study-intro page-shell" aria-labelledby="study-title">
-        <div class="study-title-block">
-          <h1 id="study-title">Reproduce the brand recommendation experiment.</h1>
-          <p class="study-deck">Choose the scope, inspect every prompt, and run the same controlled protocol described in the paper. Brand-level BRP and MRR are calculated when the dataset is complete.</p>
-        </div>
-      </section>
-
       <div class="page-shell workspace">
         <div class="protocol-form">
           <section class="form-section" id="configure-section" aria-labelledby="configure-title">
@@ -39,7 +32,6 @@
                 <p class="section-kicker">Configure</p>
                 <h2 id="configure-title">Select the observations to generate</h2>
               </div>
-              <p>Every checked model–category pair is called sequentially in a fresh session.</p>
             </header>
 
             <div id="configuration-status" class="configuration-status is-hidden" role="alert">
@@ -129,7 +121,6 @@
                 <p class="section-kicker">Edit prompts</p>
                 <h2 id="prompts-title">Review the exact model inputs</h2>
               </div>
-              <p>Changes are included in the exported run configuration and mark this protocol as custom.</p>
             </header>
 
             <div class="prompt-category-selector">
@@ -168,7 +159,6 @@
             <div class="library-heading">
               <div>
                 <h3>Needs-based prompts · <span id="library-category-name">Cordless Drills</span></h3>
-                <p><span id="prompt-library-count">40</span> prompts for this category across General and Detailed conditions.</p>
               </div>
               <div class="button-row">
                 <button class="button button--secondary" id="download-prompts-btn" type="button">Download all CSV</button>
@@ -215,8 +205,27 @@
                 <p class="section-kicker">Generation controls</p>
                 <h2 id="parameters-title">Set experiment repetitions</h2>
               </div>
-              <p>Adjust how many independent observations are generated for each experimental condition.</p>
             </header>
+
+            <fieldset class="condition-selector">
+              <legend>Conditions to run</legend>
+              <div class="condition-toggle-grid">
+                <label class="condition-option">
+                  <input id="include-context-free" type="checkbox" checked />
+                  <span>
+                    <strong>Context-free</strong>
+                    <small>Category-only recommendation prompts</small>
+                  </span>
+                </label>
+                <label class="condition-option">
+                  <input id="include-needs-based" type="checkbox" checked />
+                  <span>
+                    <strong>Needs-based</strong>
+                    <small>General and detailed need prompts</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
 
             <div class="parameter-grid">
               <label class="number-field">
@@ -285,11 +294,12 @@
 
           <section class="results-section is-hidden" id="results-section" aria-labelledby="results-title">
             <header class="results-heading">
-              <div><p class="section-kicker">Inspect results</p><h2 id="results-title">Brand recommendation measures</h2><p id="results-note"></p></div>
+              <div><p class="section-kicker">Inspect results</p><h2 id="results-title">Brand recommendation measures</h2></div>
               <div class="download-menu">
                 <button class="button button--secondary" id="download-menu-btn" type="button" aria-expanded="false">Download data</button>
                 <div class="download-popover is-hidden" id="download-popover">
                   <button type="button" data-export="metrics">Metrics CSV</button>
+                  <button type="button" data-export="theme-metrics">Metrics by theme CSV</button>
                   <button type="button" data-export="raw">Raw results CSV</button>
                   <button type="button" data-export="cleaned">Cleaned results CSV</button>
                   <button type="button" data-export="reasons">Brand reasons CSV</button>
@@ -308,26 +318,46 @@
 
             <div class="result-panel" data-result-panel="metrics">
               <div class="result-filters">
+                <label><span>Analysis level</span><select id="result-analysis-level"><option value="primary">Primary · Condition</option><option value="theme">Secondary · Theme</option></select></label>
                 <label><span>Category</span><select id="result-category-filter"><option value="">All</option></select></label>
                 <label><span>Model</span><select id="result-model-filter"><option value="">All</option></select></label>
                 <label><span>Condition</span><select id="result-condition-filter"><option value="">All</option></select></label>
+                <label><span>Theme</span><select id="result-theme-filter" disabled><option value="">All themes</option></select></label>
                 <label><span>Brand</span><input id="result-brand-filter" type="search" placeholder="Filter brands" /></label>
               </div>
-              <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
+              <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
             </div>
             <div class="result-panel is-hidden" data-result-panel="raw">
+              <div class="result-filters">
+                <label><span>Category</span><select id="raw-category-filter"><option value="">All</option></select></label>
+                <label><span>Model</span><select id="raw-model-filter"><option value="">All</option></select></label>
+                <label><span>Condition</span><select id="raw-condition-filter"><option value="">All</option></select></label>
+                <label><span>Theme</span><select id="raw-theme-filter"><option value="">All themes</option></select></label>
+                <label><span>Brand or response</span><input id="raw-text-filter" type="search" placeholder="Search response text" /></label>
+              </div>
+              <p class="filter-result-count" id="raw-results-count"></p>
               <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Model</th><th>Category</th><th>Condition</th><th>Prompt</th><th>Recommendations</th><th>Raw response</th></tr></thead><tbody id="raw-table-body"></tbody></table></div>
             </div>
             <div class="result-panel is-hidden" data-result-panel="reasons">
-              <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Model</th><th>Brand</th><th>Rank</th><th>Reason</th><th>Status</th></tr></thead><tbody id="reasons-table-body"></tbody></table></div>
+              <div class="result-filters">
+                <label><span>Category</span><select id="reason-category-filter"><option value="">All</option></select></label>
+                <label><span>Model</span><select id="reason-model-filter"><option value="">All</option></select></label>
+                <label><span>Condition</span><select id="reason-condition-filter"><option value="">All</option></select></label>
+                <label><span>Theme</span><select id="reason-theme-filter"><option value="">All themes</option></select></label>
+                <label><span>Brand or reason</span><input id="reason-text-filter" type="search" placeholder="Search reasons" /></label>
+              </div>
+              <p class="filter-result-count" id="reason-results-count"></p>
+              <div class="data-table-wrap"><table class="data-table reason-table">
+                <thead><tr><th>Rank</th><th>Brand</th><th>Reason from this follow-up</th><th>Status</th></tr></thead>
+                <tbody id="reasons-table-body"></tbody>
+              </table></div>
             </div>
           </section>
         </div>
 
         <aside class="protocol-summary" aria-labelledby="review-title">
-          <div class="summary-topline"><span>Review protocol</span><span id="summary-mode" class="status-dot">Paper defaults</span></div>
+          <div class="summary-topline"><span>Review protocol</span><span id="summary-mode" class="status-dot" hidden></span></div>
           <h2 id="review-title">Ready to reproduce</h2>
-          <p id="summary-description">All documented controls are set to the paper protocol.</p>
           <div class="summary-ledger">
             <div><span>Context-free</span><b id="summary-context">1,200</b></div>
             <div><span>Needs-based</span><b id="summary-needs">2,400</b></div>
@@ -344,7 +374,6 @@
           </dl>
           <button class="button button--primary button--full" id="run-experiment-btn" type="button" disabled>Run full experiment — 7,200 calls</button>
           <button class="reset-button" id="reset-defaults-btn" type="button">Reset to paper defaults</button>
-          <p class="summary-footnote">The run continues on the server if this tab is backgrounded. Keep the run token in this browser session to return to its results.</p>
         </aside>
       </div>
 
@@ -354,42 +383,6 @@
       </div>
     </div>
 
-    <div id="analysis-view" class="app-view is-hidden">
-      <section class="analysis-intro page-shell">
-        <p class="section-kicker">Advanced analysis</p>
-        <h1>Inspect popularity bias beyond BRP and MRR.</h1>
-        <p>Upload a completed Study 1 dataset to run the existing logistic-regression and baseline-comparison workflow. This secondary workspace remains separate from experiment reproduction.</p>
-      </section>
-      <section class="analysis-workspace page-shell">
-        <div class="analysis-inputs">
-          <div class="analysis-upload">
-            <h2>Study 1 recommendation data</h2>
-            <p>Expected input: <code>raw_results_cleaned.csv</code>.</p>
-            <label class="button button--secondary file-button" for="rq1-csv-input">Choose Study 1 CSV</label>
-            <input class="visually-hidden" type="file" id="rq1-csv-input" accept=".csv,text/csv" />
-            <span id="rq1-csv-label">No file selected</span>
-          </div>
-          <div class="analysis-upload">
-            <h2>Optional real baseline</h2>
-            <p>Must contain baseline share and aspiration score columns.</p>
-            <label class="button button--secondary file-button" for="rq1-baseline-input">Choose baseline CSV</label>
-            <input class="visually-hidden" type="file" id="rq1-baseline-input" accept=".csv,text/csv" />
-            <span id="rq1-baseline-label">Bundled test baseline</span>
-          </div>
-        </div>
-        <div class="analysis-runbar">
-          <p id="rq1-status">Ready to run the documented RQ1 analysis.</p>
-          <button class="button button--primary" id="run-rq1-btn" type="button">Run advanced analysis</button>
-        </div>
-        <div id="rq1-results" class="analysis-results is-hidden">
-          <div id="rq1-summary" class="analysis-summary"></div>
-          <div class="analysis-table-block"><h2>Visibility recommendation rates</h2><div class="data-table-wrap" id="rq1-visibility-table"></div></div>
-          <div class="analysis-table-block"><h2>Category popularity bias</h2><div class="data-table-wrap" id="rq1-category-table"></div></div>
-          <div class="analysis-table-block"><h2>Model popularity bias</h2><div class="data-table-wrap" id="rq1-model-table"></div></div>
-          <details class="analysis-details"><summary>Regression coefficients and remaining tables</summary><div id="rq1-regression-tables"></div></details>
-        </div>
-      </section>
-    </div>
   </main>
 
   <dialog id="prompt-dialog" class="prompt-dialog">
@@ -404,6 +397,6 @@
 
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
   <script src="default-prompts.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260820-6"></script>
 </body>
 </html>

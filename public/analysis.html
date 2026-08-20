@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results · LLMs as a new brand intermediary</title>
+  <meta name="description" content="Brand recommendation metrics, raw model responses, and recommendation reasons." />
+  <link rel="stylesheet" href="index.css?v=20260820-6" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="/?new=1" aria-label="LLMs as a new brand intermediary home">
+      <span class="wordmark-mark" aria-hidden="true">BR</span>
+      <span>
+        <strong>LLMs as a new brand intermediary</strong>
+        <small>Interactive research appendix</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="nav-link" href="/?new=1">Run experiment</a>
+      <span class="nav-link is-active">Results</span>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="page-shell analysis-results-page">
+      <section class="results-section" id="results-section" aria-labelledby="results-title">
+        <header class="results-heading">
+          <div><p class="section-kicker">Inspect results</p><h1 id="results-title">Brand recommendation measures</h1></div>
+          <div class="download-menu">
+            <button class="button button--secondary" id="download-menu-btn" type="button" aria-expanded="false">Download data</button>
+            <div class="download-popover is-hidden" id="download-popover">
+              <button type="button" data-export="metrics">Metrics CSV</button>
+              <button type="button" data-export="theme-metrics">Metrics by theme CSV</button>
+              <button type="button" data-export="raw">Raw results CSV</button>
+              <button type="button" data-export="cleaned">Cleaned results CSV</button>
+              <button type="button" data-export="reasons">Brand reasons CSV</button>
+              <button type="button" data-export="prompts">Prompt library CSV</button>
+              <button type="button" data-export="config">Run configuration JSON</button>
+              <button type="button" data-export="quality">Quality report</button>
+            </div>
+          </div>
+        </header>
+
+        <div class="result-tabs" role="tablist" aria-label="Result views">
+          <button class="result-tab is-active" type="button" role="tab" data-result-tab="metrics">Metrics</button>
+          <button class="result-tab" type="button" role="tab" data-result-tab="raw">Raw responses</button>
+          <button class="result-tab" type="button" role="tab" data-result-tab="reasons">Reasons</button>
+        </div>
+
+        <div class="result-panel" data-result-panel="metrics">
+          <div class="result-filters">
+            <label><span>Analysis level</span><select id="result-analysis-level"><option value="primary">Primary · Condition</option><option value="theme">Secondary · Theme</option></select></label>
+            <label><span>Category</span><select id="result-category-filter"><option value="">All</option></select></label>
+            <label><span>Model</span><select id="result-model-filter"><option value="">All</option></select></label>
+            <label><span>Condition</span><select id="result-condition-filter"><option value="">All</option></select></label>
+            <label><span>Theme</span><select id="result-theme-filter" disabled><option value="">All themes</option></select></label>
+            <label><span>Brand</span><input id="result-brand-filter" type="search" placeholder="Filter brands" /></label>
+          </div>
+          <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
+        </div>
+
+        <div class="result-panel is-hidden" data-result-panel="raw">
+          <div class="result-filters">
+            <label><span>Category</span><select id="raw-category-filter"><option value="">All</option></select></label>
+            <label><span>Model</span><select id="raw-model-filter"><option value="">All</option></select></label>
+            <label><span>Condition</span><select id="raw-condition-filter"><option value="">All</option></select></label>
+            <label><span>Theme</span><select id="raw-theme-filter"><option value="">All themes</option></select></label>
+            <label><span>Brand or response</span><input id="raw-text-filter" type="search" placeholder="Search response text" /></label>
+          </div>
+          <p class="filter-result-count" id="raw-results-count"></p>
+          <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Model</th><th>Category</th><th>Condition</th><th>Prompt</th><th>Recommendations</th><th>Raw response</th></tr></thead><tbody id="raw-table-body"></tbody></table></div>
+        </div>
+
+        <div class="result-panel is-hidden" data-result-panel="reasons">
+          <div class="result-filters">
+            <label><span>Category</span><select id="reason-category-filter"><option value="">All</option></select></label>
+            <label><span>Model</span><select id="reason-model-filter"><option value="">All</option></select></label>
+            <label><span>Condition</span><select id="reason-condition-filter"><option value="">All</option></select></label>
+            <label><span>Theme</span><select id="reason-theme-filter"><option value="">All themes</option></select></label>
+            <label><span>Brand or reason</span><input id="reason-text-filter" type="search" placeholder="Search reasons" /></label>
+          </div>
+          <p class="filter-result-count" id="reason-results-count"></p>
+          <div class="data-table-wrap"><table class="data-table reason-table">
+            <thead><tr><th>Rank</th><th>Brand</th><th>Reason from this follow-up</th><th>Status</th></tr></thead>
+            <tbody id="reasons-table-body"></tbody>
+          </table></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <script src="analysis.js?v=20260820-6"></script>
+</body>
+</html>

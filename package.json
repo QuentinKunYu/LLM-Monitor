@@ -1,7 +1,7 @@
 {
   "name": "llm-brand-experiment",
   "version": "1.0.0",
-  "description": "Interactive web application for context-free LLM brand recommendation experiments. Measures BRP@K and MRR for focal brands.",
+  "description": "Interactive web application for context-free LLM brand recommendation experiments. Measures BRP@K and MRR for every observed brand.",
   "main": "server.js",
   "repository": {
     "type": "git",
@@ -24,8 +24,7 @@
     "run:study3-needs": "node scripts/run-needs-based-prompts.js",
     "export:study3-simplified": "node scripts/export-study3-simplified.js",
     "test:study2b-fixture": "node scripts/check-study2b-test-data.js",
-    "examples:study2b-prompts": "node scripts/build-study2b-prompt-examples.js",
-    "analysis:rq1": "Rscript scripts/run-rq1-logit.R"
+    "examples:study2b-prompts": "node scripts/build-study2b-prompt-examples.js"
   },
   "dependencies": {
     "express": "^4.21.0",

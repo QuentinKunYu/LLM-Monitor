@@ -1,10 +1,14 @@
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
+const { parse } = require('csv-parse/sync');
 const {
   buildRepeatedPromptTasks,
   calculateNeedsMetrics,
   summariseNeedsPrompts,
 } = require('../lib/study3-needs');
+
+const ROOT = path.join(__dirname, '..');
 
 const fixturePrompts = [
   {
@@ -23,13 +27,6 @@ const fixturePrompts = [
     prompt_id: 'drill_weekend_01',
     prompt: 'Need a drill for weekend projects. Return JSON with up to five brands.',
   },
-];
-
-const focalBrands = [
-  { brand: 'Ryobi', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'DeWalt', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Milwaukee', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Festool', visibility_group: 'niche', sub_category: 'cordless drills' },
 ];
 
 const models = [
@@ -100,7 +97,7 @@ const rawRows = [
   },
 ];
 
-const { metrics, metricsByTheme, conditionSummary, themeSummary } = calculateNeedsMetrics(rawRows, focalBrands);
+const { metrics, metricsByTheme, conditionSummary, themeSummary } = calculateNeedsMetrics(rawRows);
 
 const ryobiOverall = metrics.find(row => row.prompt_condition === 'needs-based-general' && row.brand === 'Ryobi');
 assert(ryobiOverall, 'Overall metrics should include Ryobi in needs-based-general');

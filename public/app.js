@@ -52,8 +52,7 @@ async function init() {
     }
     renderConfigurationOptions();
     resetToPaperDefaults({ announce: false });
-    hydrateAnalysisStatus();
-    resumeRunFromSession();
+    if (!new URLSearchParams(window.location.search).has('new')) resumeRunFromSession();
   } catch (error) {
     state.serviceAvailable = false;
     $('configuration-status').classList.remove('is-hidden');
@@ -87,6 +86,8 @@ function browserFallbackConfig() {
       models: models.map(model => model.model_id),
       categories: categoryItems.map(item => item.sub_category),
       promptTemplate: $('context-prompt').defaultValue.trim(),
+      includeContextFree: $('include-context-free').defaultChecked,
+      includeNeedsBased: $('include-needs-based').defaultChecked,
       contextFreeReplicates: Number($('context-replicates').defaultValue),
       needsRepeats: Number($('needs-repeats').defaultValue),
       maxOutputTokens: Number($('max-output-tokens').defaultValue),
@@ -96,7 +97,6 @@ function browserFallbackConfig() {
 }
 
 function wireStaticEvents() {
-  $$('.nav-link').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
   document.addEventListener('change', handleProtocolChange);
   document.addEventListener('input', handleProtocolInput);
   document.addEventListener('click', handleDocumentClick);
@@ -115,9 +115,6 @@ function wireStaticEvents() {
   $('dialog-save-btn').addEventListener('click', savePromptEdit);
   $('dialog-reset-btn').addEventListener('click', restoreEditingPrompt);
   $('download-menu-btn').addEventListener('click', toggleDownloadMenu);
-  $('run-rq1-btn').addEventListener('click', runAdvancedAnalysis);
-  $('rq1-csv-input').addEventListener('change', updateAnalysisFileLabels);
-  $('rq1-baseline-input').addEventListener('change', updateAnalysisFileLabels);
 }
 
 function handleDocumentClick(event) {
@@ -140,7 +137,7 @@ function handleProtocolChange(event) {
   if (event.target.id === 'temperature-override') {
     $('temperature-value').disabled = !event.target.checked;
   }
-  if (event.target.matches('[data-model-option], [data-category-option], #temperature-override, #followup-reasons, #web-search, #dry-run')) {
+  if (event.target.matches('[data-model-option], [data-category-option], #include-context-free, #include-needs-based, #temperature-override, #followup-reasons, #web-search, #dry-run')) {
     if (event.target.matches('[data-category-option]')) setActivePromptCategory(event.target.value);
     updateSelectionCounts();
     updateProtocolUI();
@@ -152,17 +149,24 @@ function handleProtocolInput(event) {
   if (event.target.matches('#context-prompt, #context-replicates, #needs-repeats, #max-output-tokens, #reason-max-output-tokens, #temperature-value')) {
     updateProtocolUI();
   }
-  if (event.target.matches('#result-category-filter, #result-model-filter, #result-condition-filter, #result-brand-filter')) {
+  if (event.target.matches('#result-analysis-level, #result-category-filter, #result-model-filter, #result-condition-filter, #result-theme-filter, #result-brand-filter')) {
+    if (event.target.id === 'result-category-filter') {
+      populateResultThemeFilter(state.lastResults?.metricsByTheme || []);
+    }
     renderMetricsTable();
   }
-}
-
-function switchView(view) {
-  const experiment = view !== 'analysis';
-  $('experiment-view').classList.toggle('is-hidden', !experiment);
-  $('analysis-view').classList.toggle('is-hidden', experiment);
-  $$('.nav-link').forEach(button => button.classList.toggle('is-active', button.dataset.view === view));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (event.target.matches('#raw-category-filter, #raw-model-filter, #raw-condition-filter, #raw-theme-filter, #raw-text-filter')) {
+    if (event.target.id === 'raw-category-filter') {
+      populateObservationThemeFilter('raw', state.lastResults?.results || []);
+    }
+    renderRawTable();
+  }
+  if (event.target.matches('#reason-category-filter, #reason-model-filter, #reason-condition-filter, #reason-theme-filter, #reason-text-filter')) {
+    if (event.target.id === 'reason-category-filter') {
+      populateObservationThemeFilter('reason', state.lastResults?.results || []);
+    }
+    renderReasonsTable();
+  }
 }
 
 function renderConfigurationOptions() {
@@ -201,6 +205,8 @@ function resetToPaperDefaults({ announce = true } = {}) {
   $$('[data-model-option]').forEach(input => { input.checked = defaults.models.includes(input.value); });
   $$('[data-category-option]').forEach(input => { input.checked = defaults.categories.includes(input.value); });
   $('context-prompt').value = defaults.promptTemplate;
+  $('include-context-free').checked = defaults.includeContextFree !== false;
+  $('include-needs-based').checked = defaults.includeNeedsBased !== false;
   $('context-replicates').value = defaults.contextFreeReplicates;
   $('needs-repeats').value = defaults.needsRepeats;
   $('max-output-tokens').value = defaults.maxOutputTokens;
@@ -238,6 +244,8 @@ function protocolSnapshot() {
     models: selectedModelIds(),
     categories: selectedCategories(),
     promptTemplate: $('context-prompt').value.trim(),
+    includeContextFree: $('include-context-free').checked,
+    includeNeedsBased: $('include-needs-based').checked,
     contextFreeReplicates: integerValue('context-replicates', 40),
     needsRepeats: integerValue('needs-repeats', 2),
     maxOutputTokens: integerValue('max-output-tokens', 800),
@@ -252,8 +260,12 @@ function protocolSnapshot() {
 
 function protocolCounts(snapshot = protocolSnapshot()) {
   const selectedPromptCount = snapshot.needsPrompts.filter(prompt => snapshot.categories.includes(prompt.sub_category)).length;
-  const contextFreeCalls = snapshot.models.length * snapshot.categories.length * snapshot.contextFreeReplicates;
-  const needsBasedCalls = selectedPromptCount * snapshot.models.length * snapshot.needsRepeats;
+  const contextFreeCalls = snapshot.includeContextFree
+    ? snapshot.models.length * snapshot.categories.length * snapshot.contextFreeReplicates
+    : 0;
+  const needsBasedCalls = snapshot.includeNeedsBased
+    ? selectedPromptCount * snapshot.models.length * snapshot.needsRepeats
+    : 0;
   const recommendationCalls = contextFreeCalls + needsBasedCalls;
   const reasonCalls = snapshot.followupReasons ? recommendationCalls : 0;
   return {
@@ -272,6 +284,8 @@ function isPaperDefaults(snapshot = protocolSnapshot()) {
     equalArrays(snapshot.models, defaults.models) &&
     equalArrays(snapshot.categories, defaults.categories) &&
     snapshot.promptTemplate === defaults.promptTemplate &&
+    snapshot.includeContextFree &&
+    snapshot.includeNeedsBased &&
     snapshot.contextFreeReplicates === defaults.contextFreeReplicates &&
     snapshot.needsRepeats === defaults.needsRepeats &&
     snapshot.maxOutputTokens === defaults.maxOutputTokens &&
@@ -292,16 +306,13 @@ function updateProtocolUI() {
   const modeLabel = paper ? 'Paper defaults' : 'Custom run';
   const total = formatInteger(counts.totalCalls);
 
-  $('summary-mode').textContent = offline ? 'Service offline' : modeLabel;
-  $('summary-mode').classList.toggle('is-custom', !paper && !offline);
-  $('summary-mode').classList.toggle('is-offline', offline);
+  const summaryMode = $('summary-mode');
+  summaryMode.textContent = offline ? 'Service offline' : modeLabel;
+  summaryMode.hidden = paper && !offline;
+  summaryMode.classList.toggle('is-custom', !paper && !offline);
+  summaryMode.classList.toggle('is-offline', offline);
   $('mobile-mode').textContent = offline ? 'Service offline' : modeLabel;
   $('review-title').textContent = offline ? 'Experiment service unavailable' : paper ? 'Ready to reproduce' : 'Review custom protocol';
-  $('summary-description').textContent = offline
-    ? 'Call totals below reflect your current selection. Start the Node server to run provider APIs.'
-    : paper
-      ? 'All documented controls are set to the paper protocol.'
-      : 'At least one setting differs from the documented paper protocol.';
   $('summary-context').textContent = formatInteger(counts.contextFreeCalls);
   $('summary-needs').textContent = formatInteger(counts.needsBasedCalls);
   $('summary-reasons').textContent = formatInteger(counts.reasonCalls);
@@ -309,11 +320,21 @@ function updateProtocolUI() {
   $('mobile-total').textContent = `${total} calls`;
   $('summary-search').textContent = snapshot.webSearch ? 'On · custom' : 'Off';
   $('summary-temperature').textContent = snapshot.temperature === null ? 'Provider default' : String(snapshot.temperature);
-  $('run-experiment-btn').textContent = `Run full experiment — ${total} calls`;
+  const runLabel = snapshot.includeContextFree && snapshot.includeNeedsBased
+    ? 'Run full experiment'
+    : snapshot.includeContextFree
+      ? 'Run context-free'
+      : 'Run needs-based';
+  $('run-experiment-btn').textContent = `${runLabel} — ${total} calls`;
   $('mobile-run-btn').textContent = snapshot.dryRun ? 'Run dry preview' : 'Run experiment';
   $('model-selection-count').textContent = `${snapshot.models.length} of ${state.config.models.length} selected`;
   $('category-selection-count').textContent = `${snapshot.categories.length} of ${flatCategories().length} selected`;
-  const invalid = snapshot.models.length === 0 || snapshot.categories.length === 0 || !snapshot.promptTemplate.includes('[category]');
+  $('context-replicates').disabled = !snapshot.includeContextFree;
+  $('needs-repeats').disabled = !snapshot.includeNeedsBased;
+  const invalid = snapshot.models.length === 0 || snapshot.categories.length === 0 ||
+    (!snapshot.includeContextFree && !snapshot.includeNeedsBased) ||
+    (snapshot.includeContextFree && !snapshot.promptTemplate.includes('[category]')) ||
+    (snapshot.includeNeedsBased && snapshot.needsPrompts.length === 0);
   $('run-experiment-btn').disabled = invalid || offline;
   $('mobile-run-btn').disabled = invalid || offline;
 }
@@ -398,7 +419,6 @@ function renderPromptLibrary() {
   $('prompt-category-heading').textContent = titleCase(category);
   $('library-category-name').textContent = titleCase(category);
   $('prompt-set-counts').textContent = `1 context-free · ${generalCount} general · ${detailedCount} detailed`;
-  $('prompt-library-count').textContent = categoryPrompts.length;
 }
 
 function renderPromptThemeOptions() {
@@ -447,8 +467,9 @@ function restoreEditingPrompt() {
 function validateProtocol(snapshot) {
   if (!snapshot.models.length) throw new Error('Select at least one model.');
   if (!snapshot.categories.length) throw new Error('Select at least one category.');
-  if (!snapshot.promptTemplate.includes('[category]')) throw new Error('The context-free prompt must include [category].');
-  if (!snapshot.needsPrompts.length) throw new Error('The needs-based prompt library is empty.');
+  if (!snapshot.includeContextFree && !snapshot.includeNeedsBased) throw new Error('Select at least one condition to run.');
+  if (snapshot.includeContextFree && !snapshot.promptTemplate.includes('[category]')) throw new Error('The context-free prompt must include [category].');
+  if (snapshot.includeNeedsBased && !snapshot.needsPrompts.length) throw new Error('The needs-based prompt library is empty.');
 }
 
 async function startExperiment() {
@@ -629,12 +650,15 @@ async function retryExperiment() {
 }
 
 async function loadExperimentResults() {
-  const response = await fetch(`${API}/api/experiments/${state.currentRunId}/results`, { headers: runTokenHeaders() });
+  window.location.assign('/analysis.html');
+}
+
+async function loadArchivedResults() {
+  const response = await fetch(`${API}/api/archive/results`);
+  if (!response.ok) return;
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'Results could not be loaded.');
   state.lastResults = data;
-  applyResultConfiguration(data);
-  renderResults(data);
+  renderResults(data, { scroll: false });
 }
 
 function applyResultConfiguration(data) {
@@ -646,6 +670,8 @@ function applyResultConfiguration(data) {
     $$('[data-category-option]').forEach(input => { input.checked = config.categories.includes(input.value); });
   }
   if (config.promptTemplate) $('context-prompt').value = config.promptTemplate;
+  $('include-context-free').checked = config.includeContextFree !== false;
+  $('include-needs-based').checked = config.includeNeedsBased !== false;
   if (config.contextFreeReplicates) $('context-replicates').value = config.contextFreeReplicates;
   if (config.needsRepeats) $('needs-repeats').value = config.needsRepeats;
   if (config.maxOutputTokens) $('max-output-tokens').value = config.maxOutputTokens;
@@ -664,17 +690,16 @@ function applyResultConfiguration(data) {
   updateProtocolUI();
 }
 
-function renderResults(data) {
+function renderResults(data, { scroll = true } = {}) {
   $('results-section').classList.remove('is-hidden');
-  const completeness = data.completeness || {};
-  $('results-note').textContent = completeness.complete
-    ? `${formatInteger(completeness.successfulRecommendations)} recommendation observations and ${formatInteger(completeness.completedReasons)} reason follow-ups passed completeness checks.`
-    : `${formatInteger(completeness.successfulRecommendations)} of ${formatInteger(completeness.expectedRecommendations)} recommendations completed. Metrics use the successful denominator and are provisional.`;
   populateResultConditionFilter(data.metrics || []);
+  populateResultThemeFilter(data.metricsByTheme || []);
+  populateObservationFilters('raw', data.results || []);
+  populateObservationFilters('reason', data.results || []);
   renderMetricsTable();
   renderRawTable();
   renderReasonsTable();
-  $('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (scroll) $('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function populateResultConditionFilter(metrics) {
@@ -684,31 +709,79 @@ function populateResultConditionFilter(metrics) {
   if (conditions.includes(current)) $('result-condition-filter').value = current;
 }
 
+function populateResultThemeFilter(metrics) {
+  const current = $('result-theme-filter').value;
+  const category = $('result-category-filter').value;
+  const themes = [...new Set(metrics
+    .filter(row => !category || row.sub_category === category)
+    .map(row => row.theme)
+    .filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+  $('result-theme-filter').innerHTML = `<option value="">All themes</option>${themes.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(titleCase(value))}</option>`).join('')}`;
+  if (themes.includes(current)) $('result-theme-filter').value = current;
+}
+
+function populateSelectFilter(id, values, allLabel, labelFor = value => value) {
+  const select = $(id);
+  const current = select.value;
+  select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>${values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(labelFor(value))}</option>`).join('')}`;
+  if (values.includes(current)) select.value = current;
+}
+
+function populateObservationFilters(prefix, rows) {
+  const values = field => [...new Set(rows.map(row => row[field]).filter(Boolean))]
+    .sort((a, b) => String(a).localeCompare(String(b)));
+  populateSelectFilter(`${prefix}-category-filter`, values('sub_category'), 'All categories', titleCase);
+  populateSelectFilter(`${prefix}-model-filter`, values('model_id'), 'All models', shortModelId);
+  populateSelectFilter(`${prefix}-condition-filter`, values('prompt_condition'), 'All conditions', conditionLabel);
+  populateObservationThemeFilter(prefix, rows);
+}
+
+function populateObservationThemeFilter(prefix, rows) {
+  const category = $(`${prefix}-category-filter`).value;
+  const themes = [...new Set(rows
+    .filter(row => (!category || row.sub_category === category) && row.theme)
+    .map(row => row.theme))]
+    .sort((a, b) => String(a).localeCompare(String(b)));
+  populateSelectFilter(`${prefix}-theme-filter`, themes, 'All themes', titleCase);
+}
+
 function renderMetricsTable() {
-  const metrics = state.lastResults?.metrics || [];
+  const analysisLevel = $('result-analysis-level').value;
+  const metrics = analysisLevel === 'theme'
+    ? (state.lastResults?.metricsByTheme || [])
+    : (state.lastResults?.metrics || []);
   const category = $('result-category-filter').value;
   const model = $('result-model-filter').value;
   const condition = $('result-condition-filter').value;
+  const theme = $('result-theme-filter').value;
   const brand = $('result-brand-filter').value.trim().toLowerCase();
+  $('result-theme-filter').disabled = analysisLevel !== 'theme';
   const filtered = metrics.filter(row => (
     (!category || row.sub_category === category) &&
     (!model || row.model_id === model) &&
     (!condition || row.prompt_condition === condition) &&
+    (analysisLevel !== 'theme' || !theme || row.theme === theme) &&
     (!brand || String(row.brand).toLowerCase().includes(brand))
   ));
+  const groupHeading = analysisLevel === 'theme'
+    ? 'Theme'
+    : 'Grouping';
+  $('result-group-heading').textContent = groupHeading;
   $('metrics-table-body').innerHTML = filtered.length ? filtered.slice(0, 500).map(row => `
     <tr class="${row.provisional ? 'provisional-row' : ''}">
       <td>${escapeHtml(row.brand)}</td>
       <td>${escapeHtml(titleCase(row.sub_category))}</td>
       <td title="${escapeHtml(row.model_id)}">${escapeHtml(shortModelId(row.model_id))}</td>
       <td>${escapeHtml(conditionLabel(row.prompt_condition))}</td>
+      <td>${escapeHtml(analysisLevel === 'theme' ? row.theme : 'Overall')}</td>
       ${metricCell(row['BRP@1'])}
       ${metricCell(row['BRP@3'])}
       ${metricCell(row['BRP@5'])}
       ${metricCell(row.MRR)}
       <td>${escapeHtml(row.denominator || row.n_replicates)}${row.provisional ? ' / provisional' : ''}</td>
     </tr>
-  `).join('') : `<tr><td colspan="9">No metric rows match these filters.</td></tr>`;
+  `).join('') : `<tr><td colspan="10">No metric rows match these filters.</td></tr>`;
 }
 
 function metricCell(value) {
@@ -716,18 +789,44 @@ function metricCell(value) {
   return `<td class="metric-cell"><span class="metric-value">${number.toFixed(4)}</span><div class="metric-bar"><span style="width:${number * 100}%"></span></div></td>`;
 }
 
+function brandsForRow(row) {
+  return [1, 2, 3, 4, 5].map(rank => row[`brand_${rank}`]).filter(Boolean);
+}
+
+function filterObservationRows(prefix, rows) {
+  const category = $(`${prefix}-category-filter`).value;
+  const model = $(`${prefix}-model-filter`).value;
+  const condition = $(`${prefix}-condition-filter`).value;
+  const theme = $(`${prefix}-theme-filter`).value;
+  const query = $(`${prefix}-text-filter`).value.trim().toLowerCase();
+  return rows.filter(row => {
+    const searchable = prefix === 'reason'
+      ? [...brandsForRow(row), ...[1, 2, 3, 4, 5].map(rank => row[`reason_${rank}`] || '')].join(' ')
+      : [row.prompt, row.response_text, ...brandsForRow(row)].join(' ');
+    return (
+      (!category || row.sub_category === category) &&
+      (!model || row.model_id === model) &&
+      (!condition || row.prompt_condition === condition) &&
+      (!theme || row.theme === theme) &&
+      (!query || searchable.toLowerCase().includes(query))
+    );
+  });
+}
+
 function renderRawTable() {
-  const rows = state.lastResults?.results || [];
-  $('raw-table-body').innerHTML = rows.slice(0, 250).map(row => `
+  const rows = filterObservationRows('raw', state.lastResults?.results || []);
+  const shown = rows.slice(0, 250);
+  $('raw-results-count').textContent = `${formatInteger(rows.length)} responses match · showing ${formatInteger(shown.length)}`;
+  $('raw-table-body').innerHTML = shown.length ? shown.map(row => `
     <tr>
       <td>${escapeHtml(shortModelId(row.model_id))}</td>
       <td>${escapeHtml(titleCase(row.sub_category))}</td>
       <td>${escapeHtml(conditionLabel(row.prompt_condition))}</td>
       <td>${escapeHtml(truncate(row.prompt, 180))}</td>
-      <td>${[1,2,3,4,5].map(rank => row[`brand_${rank}`]).filter(Boolean).map(escapeHtml).join(' · ') || '—'}</td>
+      <td>${brandsForRow(row).map(escapeHtml).join(' · ') || '—'}</td>
       <td><details><summary>View response</summary><pre>${escapeHtml(row.response_text || '')}</pre></details></td>
     </tr>
-  `).join('');
+  `).join('') : '<tr><td colspan="6">No raw responses match these filters.</td></tr>';
 }
 
 function reasonRows() {
@@ -736,16 +835,49 @@ function reasonRows() {
     for (let rank = 1; rank <= 5; rank += 1) {
       const brand = row[`brand_${rank}`];
       if (!brand) continue;
-      output.push({ model_id: row.model_id, brand, rank, reason: row[`reason_${rank}`] || '', status: row.reason_status || 'not requested' });
+      output.push({
+        model_id: row.model_id,
+        sub_category: row.sub_category,
+        prompt_condition: row.prompt_condition,
+        theme: row.theme || '',
+        prompt_id: row.prompt_id || '',
+        replicate: row.replicate || row.repeat_index || '',
+        brand,
+        rank,
+        reason: row[`reason_${rank}`] || '',
+        status: row.reason_status || 'not requested',
+      });
     }
   }
   return output;
 }
 
 function renderReasonsTable() {
-  $('reasons-table-body').innerHTML = reasonRows().slice(0, 300).map(row => `
-    <tr><td>${escapeHtml(shortModelId(row.model_id))}</td><td>${escapeHtml(row.brand)}</td><td>${row.rank}</td><td>${escapeHtml(row.reason || '—')}</td><td>${escapeHtml(row.status)}</td></tr>
-  `).join('');
+  const rows = filterObservationRows('reason', state.lastResults?.results || []);
+  const shown = rows.slice(0, 50);
+  $('reason-results-count').textContent = `${formatInteger(rows.length)} response groups match · showing ${formatInteger(shown.length)}`;
+  $('reasons-table-body').innerHTML = shown.length ? shown.map((row, index) => {
+    const reasons = [1, 2, 3, 4, 5].map(rank => ({
+      rank,
+      brand: row[`brand_${rank}`] || '',
+      reason: row[`reason_${rank}`] || '',
+    })).filter(item => item.brand);
+    const status = row.reason_status || 'not requested';
+    const promptLabel = row.prompt_id || (row.prompt_condition === 'context-free' ? 'Context-free request' : 'Needs-based request');
+    const replicate = row.replicate || row.repeat_index || '—';
+    return `
+      <tr class="reason-group-summary">
+        <td colspan="4">
+          <span class="reason-response-kicker">Response group ${index + 1}</span>
+          <strong>${escapeHtml(shortModelId(row.model_id))} · ${escapeHtml(titleCase(row.sub_category))}</strong>
+          <small>${escapeHtml(conditionLabel(row.prompt_condition))}${row.theme ? ` · ${escapeHtml(titleCase(row.theme))}` : ''} · ${escapeHtml(promptLabel)} · replicate ${escapeHtml(replicate)}</small>
+          <span class="reason-together"><b>Recommended together:</b> ${brandsForRow(row).map(escapeHtml).join(' · ') || '—'}</span>
+          <details><summary>View original prompt</summary><p>${escapeHtml(row.prompt || '—')}</p></details>
+        </td>
+      </tr>
+      ${reasons.map((item, reasonIndex) => `<tr class="reason-group-row ${reasonIndex === reasons.length - 1 ? 'is-end' : ''}"><td>${item.rank}</td><td><strong>${escapeHtml(item.brand)}</strong></td><td>${escapeHtml(item.reason || '—')}</td><td><span class="reason-status ${status === 'completed' ? 'is-complete' : 'is-error'}">${escapeHtml(titleCase(status))}</span></td></tr>`).join('')}
+      <tr class="reason-group-spacer" aria-hidden="true"><td colspan="4"></td></tr>`;
+  }).join('') : '<tr><td colspan="4">No reason groups match these filters.</td></tr>';
 }
 
 function switchResultTab(tab) {
@@ -764,6 +896,7 @@ function exportArtifact(type) {
   const results = state.lastResults.results || [];
   const config = state.lastResults.config || {};
   if (type === 'metrics') return downloadCSV('metrics.csv', state.lastResults.metrics || []);
+  if (type === 'theme-metrics') return downloadCSV('metrics_by_theme.csv', state.lastResults.metricsByTheme || []);
   if (type === 'raw') return downloadCSV('raw_results.csv', results);
   if (type === 'cleaned') return downloadCSV('cleaned_results.csv', results.map(cleanResultRow));
   if (type === 'reasons') return downloadCSV('brand_reasons.csv', reasonRows());
@@ -796,12 +929,14 @@ function qualityReport(data) {
 function resumeRunFromSession() {
   try {
     const saved = JSON.parse(sessionStorage.getItem('brandLabRun') || 'null');
-    if (!saved?.runId || !saved?.runToken) return;
+    if (!saved?.runId || !saved?.runToken) return false;
     state.currentRunId = saved.runId;
     state.currentRunToken = saved.runToken;
     pollExperiment();
+    return true;
   } catch (_) {
     sessionStorage.removeItem('brandLabRun');
+    return false;
   }
 }
 
@@ -827,89 +962,6 @@ function statusTitle(status, stage) {
   if (status === 'cancelling') return 'Stopping experiment';
   const labels = { 'context-free': 'Running context-free observations', 'needs-based': 'Running needs-based observations', reasons: 'Collecting reasons' };
   return labels[stage] || 'Running experiment';
-}
-
-async function runAdvancedAnalysis() {
-  $('run-rq1-btn').disabled = true;
-  $('rq1-status').textContent = 'Starting RQ1 analysis…';
-  try {
-    const payload = {};
-    const rawFile = $('rq1-csv-input').files?.[0];
-    const baselineFile = $('rq1-baseline-input').files?.[0];
-    if (rawFile) { payload.filename = rawFile.name; payload.csvText = await rawFile.text(); }
-    if (baselineFile) { payload.baselineFilename = baselineFile.name; payload.baselineCsvText = await baselineFile.text(); }
-    const response = await fetch(`${API}/api/analysis/rq1`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Analysis could not start.');
-    pollAdvancedAnalysis();
-  } catch (error) {
-    $('run-rq1-btn').disabled = false;
-    $('rq1-status').textContent = error.message;
-    toast(error.message, 'error');
-  }
-}
-
-async function hydrateAnalysisStatus() {
-  try {
-    const response = await fetch(`${API}/api/analysis/rq1/status`);
-    if (!response.ok) return;
-    const data = await response.json();
-    if (data.status === 'running') pollAdvancedAnalysis();
-    if (data.status === 'completed') renderAdvancedAnalysis(data);
-  } catch (_) { /* Secondary workspace can remain idle. */ }
-}
-
-async function pollAdvancedAnalysis() {
-  try {
-    const response = await fetch(`${API}/api/analysis/rq1/status`);
-    const data = await response.json();
-    if (data.status === 'running') {
-      $('rq1-status').textContent = 'Running logistic-regression and baseline comparisons…';
-      setTimeout(pollAdvancedAnalysis, 1400);
-      return;
-    }
-    $('run-rq1-btn').disabled = false;
-    if (data.status === 'completed') return renderAdvancedAnalysis(data);
-    throw new Error(data.error || 'RQ1 analysis failed.');
-  } catch (error) {
-    $('run-rq1-btn').disabled = false;
-    $('rq1-status').textContent = error.message;
-    toast(error.message, 'error');
-  }
-}
-
-function renderAdvancedAnalysis(data) {
-  $('rq1-status').textContent = `Completed using ${data.sourceFilename || 'the configured Study 1 dataset'}.`;
-  $('rq1-results').classList.remove('is-hidden');
-  const tables = data.tables || {};
-  const highVis = (tables.visibilityModel || []).find(row => row.term === 'visibility_grouphigh_visibility');
-  $('rq1-summary').innerHTML = [
-    ['High-visibility OR', highVis ? formatNumber(highVis.odds_ratio, 2) : '—'],
-    ['p-value', highVis ? formatP(highVis.p_value) : '—'],
-    ['Baseline source', data.baselineMode === 'test_data' ? 'TEST DATA' : 'Uploaded'],
-    ['Finished', data.finishedAt ? new Date(data.finishedAt).toLocaleString() : '—'],
-  ].map(([label, value]) => `<div class="analysis-stat"><span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b></div>`).join('');
-  $('rq1-visibility-table').innerHTML = genericTable(tables.visibilityRates || []);
-  $('rq1-category-table').innerHTML = genericTable(tables.categoryPopularityBias || []);
-  $('rq1-model-table').innerHTML = genericTable(tables.modelPopularityBias || []);
-  const remaining = [
-    ['Regression coefficients', tables.visibilityModel || []],
-    ['Model interaction', tables.visibilityModelInteraction || []],
-    ['Baseline distribution bias', tables.baselineDistributionBias || []],
-    ['Niche brand opportunities', tables.nicheBrandOpportunities || []],
-  ];
-  $('rq1-regression-tables').innerHTML = remaining.map(([title, rows]) => `<div class="analysis-table-block"><h2>${escapeHtml(title)}</h2><div class="data-table-wrap">${genericTable(rows)}</div></div>`).join('');
-}
-
-function updateAnalysisFileLabels() {
-  $('rq1-csv-label').textContent = $('rq1-csv-input').files?.[0]?.name || 'No file selected';
-  $('rq1-baseline-label').textContent = $('rq1-baseline-input').files?.[0]?.name || 'Bundled test baseline';
-}
-
-function genericTable(rows) {
-  if (!rows.length) return '<p class="field-note">No rows available.</p>';
-  const headers = Object.keys(rows[0]);
-  return `<table class="data-table"><thead><tr>${headers.map(header => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0, 250).map(row => `<tr>${headers.map(header => `<td>${escapeHtml(row[header])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
 function promptCsvRows(prompts) {
@@ -972,7 +1024,6 @@ function equalArrays(left, right) {
 
 function formatInteger(value) { return Number(value || 0).toLocaleString('en-US'); }
 function formatNumber(value, digits = 2) { const number = Number(value); return Number.isFinite(number) ? number.toFixed(digits) : '—'; }
-function formatP(value) { const number = Number(value); return !Number.isFinite(number) ? '—' : number < 0.001 ? '< .001' : number.toFixed(3); }
 function conditionLabel(value) { return value === 'context-free' ? 'Context-free' : value === 'needs-based-general' ? 'Needs · general' : value === 'needs-based-detailed' ? 'Needs · detailed' : value || '—'; }
 function shortModelName(value) { return String(value || '').replace(/^OpenAI\s+|^Google\s+|^Anthropic\s+/, ''); }
 function shortModelId(value) { return String(value || '').replace(/^gemini-/, 'Gemini ').replace(/^claude-/, 'Claude ').replace(/^gpt-/, 'GPT-'); }

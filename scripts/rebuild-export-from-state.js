@@ -52,19 +52,6 @@ function buildAliasMap() {
   return aliasMap;
 }
 
-function buildFocalIndex() {
-  const index = {};
-  for (const row of loadCSV('categories_brands.csv')) {
-    if (!index[row.sub_category]) index[row.sub_category] = [];
-    index[row.sub_category].push({
-      brand: row.brand,
-      visibility_group: row.visibility_group,
-      sub_category: row.sub_category,
-    });
-  }
-  return index;
-}
-
 function analyseRows(modelId, subCategory, rows) {
   const issues = [];
   const errorRows = rows.filter(row => String(row.response_text || '').startsWith('[ERROR]'));
@@ -122,7 +109,6 @@ function analyseRows(modelId, subCategory, rows) {
 
 const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
 const aliasMap = buildAliasMap();
-const focalIndex = buildFocalIndex();
 
 const cleanedRows = state.rawResults.map(row => {
   const next = { ...row };
@@ -147,7 +133,7 @@ for (const [key, rows] of Object.entries(grouped)) {
   const [modelId, subCategory] = key.split('|');
   const successfulRows = rows.filter(row => !String(row.response_text || '').startsWith('[ERROR]'));
   const promptCondition = rows[0]?.prompt_condition || '';
-  cleanedMetrics.push(...calculateMetrics(successfulRows, focalIndex[subCategory] || [], subCategory, modelId, promptCondition));
+  cleanedMetrics.push(...calculateMetrics(successfulRows, subCategory, modelId, promptCondition));
   reports.push(analyseRows(modelId, subCategory, rows));
 }
 
@@ -158,7 +144,7 @@ writeCSV(rawOut, cleanedRows, [
   'max_output_tokens', 'notes',
 ]);
 writeCSV(metricsOut, cleanedMetrics, [
-  'sub_category', 'model_id', 'prompt_condition', 'brand', 'visibility_group', 'total_mentions',
+  'sub_category', 'model_id', 'prompt_condition', 'brand', 'total_mentions',
   'n_replicates', 'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
 ]);
 

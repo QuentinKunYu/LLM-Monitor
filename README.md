@@ -1,130 +1,77 @@
-# LLM Brand Experiment
+# LLM Brand Recommendation Experiment
 
-This is an interactive research appendix for reproducing the LLM brand recommendation experiment, editing its prompt library, and calculating BRP@1, BRP@3, BRP@5, and MRR.
+This repository contains the companion app for a study of brand recommendations made by large language models. It runs the experiment, keeps the exact prompts and raw responses, and calculates brand recommendation probability (BRP@1, BRP@3, and BRP@5) and mean reciprocal rank (MRR).
 
-The GitHub repo does not include private API keys or research data. To run RQ1, upload the Study 1 experiment CSV in the web app.
+The app has two pages:
 
-## What You Need
+- `Run experiment` configures and starts a new run.
+- `Existing analysis` reads completed results and provides metric, raw-response, and reason views.
 
-- Node.js 20 or newer
-- R
-- Provider API keys configured in the server environment if you want to run new LLM experiments
-- A Study 1 CSV if you want to run RQ1 analysis
+Private API keys and full research datasets are not committed to the repository.
 
-## 1. Download and Install
+## Study design
 
-Open Terminal and run:
+The paper-default protocol covers six models and five product categories. It includes:
+
+- 1,200 category-only recommendations;
+- 2,400 needs-based recommendations drawn from the 200-prompt library;
+- one reason follow-up after each successful recommendation.
+
+Each request starts in a fresh session, web search is off, and models return up to five ordered brand names as JSON. Calls run sequentially so that the saved artifacts reflect the order in which the experiment was conducted.
+
+There is no predefined list of brands. Metrics are calculated for every brand found in the responses. Theme is available as a secondary breakdown of the needs-based conditions; it reuses the same observations and does not create more API calls.
+
+## Run locally
+
+Node.js 20 or newer is required.
 
 ```bash
 git clone https://github.com/QuentinKunYu/LLM-Moniter.git
 cd LLM-Moniter
 npm install
-```
-
-Copy the environment template if you plan to run provider calls or protect a
-public deployment:
-
-```bash
 cp .env.example .env
-```
-
-Keep `.env` private. It is ignored by Git and must never be committed.
-
-## 2. Start the App
-
-Run:
-
-```bash
 npm start
 ```
 
-Then open this in a browser:
+Open `http://localhost:3000` for the experiment page or `http://localhost:3000/analysis.html` for the results page.
+
+Provider credentials are only needed for live runs:
 
 ```text
-http://localhost:3000
+OPENAI_API_KEY=
+GOOGLE_API_KEY=
+ANTHROPIC_API_KEY=
 ```
 
-## 3. Run a New Experiment
+Keep `.env` private. The browser does not ask participants or visitors to supply provider keys.
 
-In the web app:
+## Running an experiment
 
-1. Open `Run experiment`.
-2. Keep the paper defaults or select a custom model/category scope.
-3. Review or edit the context-free template and 200-prompt needs library.
-4. Configure the selected providers in `.env` with `OPENAI_API_KEY`, `GOOGLE_API_KEY`, and/or `ANTHROPIC_API_KEY`. The public interface never asks visitors for credentials.
-5. Click the run button. A full paper-default run contains 3,600 recommendation calls and 3,600 separate reason follow-ups.
-6. Inspect the automatically calculated BRP and MRR tables, then download the research artifacts.
+1. Select the models and product categories.
+2. Review the category-only template and needs-based prompt library.
+3. Check the call count in the protocol summary.
+4. Use `Dry run` if you want to test the interface without making provider calls.
+5. Start the run and keep the run token if you need to return to the results later.
 
-Enable `Dry run` under Advanced overrides to test the complete interface without provider calls or API keys. `Reset to paper defaults` restores all documented controls. On a public deployment, set `APP_PASSWORD` so untrusted visitors cannot spend the server account's provider quota.
+The server saves raw recommendation responses, parsed brands, reason follow-ups, run state, metric tables, and quality reports. `Reset to paper defaults` restores the documented protocol after a custom test.
 
-## 4. Run RQ1 Analysis
+## Checks
 
-In the web app:
-
-1. Click `Advanced analysis`
-2. Click `Choose CSV`
-3. Select your Study 1 `raw_results_cleaned.csv`
-4. Click `Run RQ1`
-
-The page will show:
-
-- Overall popularity bias
-- Category heterogeneity
-- Niche brands that still get recommended
-- Model differences
-- Visibility x model interaction
-- Logistic regression results
-
-## Study 1 CSV Format
-
-The RQ1 CSV should include these columns:
-
-```text
-run_id
-category
-sub_category
-model_id
-model_name
-replicate
-prompt_condition
-response_text
-brand_1
-brand_2
-brand_3
-brand_4
-brand_5
-```
-
-Extra columns are fine.
-
-## Useful Commands
-
-Start the web app:
-
-```bash
-npm start
-```
-
-Run the automated checks:
+Run the automated checks before committing changes:
 
 ```bash
 npm run check
 ```
 
-## Public Hosting
+The suite covers the experiment ledger, metric calculations, prompt fixtures, data cleaning, authentication, and dry-run behavior.
 
-For a shared version that other people can use without installing Node or R,
-deploy the app as a Docker web service.
+## Public deployment
 
-Recommended Render settings:
+The app can be deployed as a Docker web service. Use persistent storage for experiment outputs and set an application password before exposing provider-backed runs.
 
-- Root directory: this project folder
-- Environment: Docker
-- Persistent disk mount path: `/var/data`
-- Environment variables:
-  - `DATA_DIR=/var/data`
-  - `APP_PASSWORD=your-shared-password`
-  - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` as needed
+```text
+DATA_DIR=/var/data
+APP_PASSWORD=choose-a-password
+```
 
-When `APP_PASSWORD` is set, browsers will ask for a username and password.
-The username can be anything; the password must match `APP_PASSWORD`.
+On Render, mount the persistent disk at `/var/data` and add the provider keys as server-side environment variables. When `APP_PASSWORD` is set, the username may be anything; the password must match the configured value.

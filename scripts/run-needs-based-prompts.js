@@ -100,26 +100,17 @@ function buildAliasMap(aliasRows) {
   return aliasMap;
 }
 
-function buildCategoryIndex(categoriesBrands) {
+function buildCategoryIndex(categoryRows) {
   const categoryIndex = {};
-  const focalBrands = [];
-  for (const row of categoriesBrands) {
+  for (const row of categoryRows) {
     if (!categoryIndex[row.sub_category]) {
       categoryIndex[row.sub_category] = {
         category: row.category,
         sub_category: row.sub_category,
-        brands: [],
       };
     }
-    const brandRow = {
-      brand: row.brand,
-      visibility_group: row.visibility_group,
-      sub_category: row.sub_category,
-    };
-    categoryIndex[row.sub_category].brands.push(brandRow);
-    focalBrands.push(brandRow);
   }
-  return { categoryIndex, focalBrands };
+  return categoryIndex;
 }
 
 function loadState() {
@@ -176,8 +167,8 @@ function writeProgress(progress) {
   fs.writeFileSync(progressFile, JSON.stringify(progress, null, 2));
 }
 
-function exportArtifacts(state, focalBrands, prompts) {
-  const analysis = calculateNeedsMetrics(state.rawResults, focalBrands);
+function exportArtifacts(state, prompts) {
+  const analysis = calculateNeedsMetrics(state.rawResults);
   const rawRows = addCleanedBrandFields(state.rawResults);
   const rawHeaders = [
     'run_id', 'study', 'category', 'sub_category', 'model_id', 'model_name',
@@ -188,7 +179,7 @@ function exportArtifacts(state, focalBrands, prompts) {
     'max_output_tokens', 'notes',
   ];
   const metricHeaders = [
-    'sub_category', 'model_id', 'prompt_condition', 'brand', 'visibility_group',
+    'sub_category', 'model_id', 'prompt_condition', 'brand',
     'total_mentions', 'n_replicates', 'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
   ];
   const metricByThemeHeaders = [
@@ -290,7 +281,7 @@ function buildPromptSummaryRows(prompts) {
 function validatePromptCategories(prompts, categoryIndex) {
   const unknown = [...new Set(prompts.map(row => row.sub_category).filter(sub => !categoryIndex[sub]))];
   if (unknown.length) {
-    throw new Error(`Needs prompt CSV has sub_category values not in config/categories_brands.csv: ${unknown.join(', ')}`);
+    throw new Error(`Needs prompt CSV has sub_category values not in config/categories.csv: ${unknown.join(', ')}`);
   }
 }
 
@@ -468,7 +459,7 @@ async function main() {
   fs.mkdirSync(outputDir, { recursive: true });
 
   const prompts = filterPrompts(loadNeedsPrompts(PROMPTS_FILE));
-  const { categoryIndex, focalBrands } = buildCategoryIndex(loadCSV('categories_brands.csv'));
+  const categoryIndex = buildCategoryIndex(loadCSV('categories.csv'));
   validatePromptCategories(prompts, categoryIndex);
 
   const aliasMap = buildAliasMap(loadCSV('brand_alias_dictionary.csv'));
@@ -486,7 +477,7 @@ async function main() {
   if (RECLEAN_ONLY) {
     const result = recleanExistingRows(state, aliasMap);
     saveState(state);
-    exportArtifacts(state, focalBrands, prompts);
+    exportArtifacts(state, prompts);
     exportSimplifiedArtifacts();
     writeProgress({
       status: Object.keys(state.skipped || {}).length ? 'completed_with_skips' : 'completed',
@@ -603,7 +594,7 @@ async function main() {
     }
 
     saveState(state);
-    exportArtifacts(state, focalBrands, prompts);
+    exportArtifacts(state, prompts);
     writeProgress({
       status: 'running',
       outputDir,
@@ -631,7 +622,7 @@ async function main() {
         message: row.response_text,
       };
       saveState(state);
-      exportArtifacts(state, focalBrands, prompts);
+      exportArtifacts(state, prompts);
       exportSimplifiedArtifacts();
       writeProgress({
         status: 'paused_quota',
@@ -651,7 +642,7 @@ async function main() {
     }
   }
 
-  exportArtifacts(state, focalBrands, prompts);
+  exportArtifacts(state, prompts);
   const simplifiedFiles = exportSimplifiedArtifacts();
   writeProgress({
     status: Object.keys(state.skipped || {}).length ? 'completed_with_skips' : 'completed',

@@ -75,39 +75,6 @@ test('APP_PASSWORD protects HTTP endpoints with basic auth', async () => {
   }
 });
 
-test('DATA_DIR controls uploaded analysis file storage', async () => {
-  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-brand-data-'));
-  const server = await startServer({
-    APP_PASSWORD: 'secret',
-    DATA_DIR: dataDir,
-  });
-
-  const csvText = [
-    'run_id,category,sub_category,model_id,model_name,replicate,prompt_condition,response_text,brand_1,brand_2,brand_3,brand_4,brand_5',
-    'run1,coffee,espresso,gpt-test,Test Model,1,control,"Brand A, Brand B",Brand A,Brand B,,,',
-  ].join('\n');
-
-  try {
-    const response = await fetch(`${server.baseUrl}/api/analysis/rq1`, {
-      method: 'POST',
-      headers: {
-        Authorization: basicAuth('secret'),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        csvText,
-        filename: 'sample.csv',
-      }),
-    });
-
-    assert.equal(response.status, 200);
-    assert.equal(fs.existsSync(path.join(dataDir, 'uploads', 'rq1')), true);
-    assert.equal(fs.readdirSync(path.join(dataDir, 'uploads', 'rq1')).length, 1);
-  } finally {
-    await server.stop();
-  }
-});
-
 test('unified dry run is token-scoped and never persists supplied API keys', async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-brand-experiment-'));
   const server = await startServer({ DATA_DIR: dataDir });
@@ -180,6 +147,9 @@ test('unified dry run is token-scoped and never persists supplied API keys', asy
       headers: { 'X-Run-Token': created.runToken },
     });
     const resultText = await resultResponse.text();
+    const resultData = JSON.parse(resultText);
+    assert.equal(resultData.metrics.length > 0, true);
+    assert.equal(resultData.metricsByTheme.length > 0, true);
     for (const secret of Object.values(secretValues)) assert.equal(resultText.includes(secret), false);
 
     const persisted = fs.readFileSync(path.join(dataDir, 'experiments', `${created.runId}.json`), 'utf8');

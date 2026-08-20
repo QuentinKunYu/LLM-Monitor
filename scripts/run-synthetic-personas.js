@@ -156,17 +156,7 @@ function analyseRun(data, persona) {
   };
 }
 
-function buildFocalIndex(categories) {
-  const index = {};
-  for (const category of categories) {
-    for (const sub of category.sub_categories) {
-      index[sub.sub_category] = sub.brands;
-    }
-  }
-  return index;
-}
-
-function buildMetrics(rawRows, focalIndex) {
+function buildMetrics(rawRows) {
   const grouped = {};
   for (const row of rawRows) {
     if (String(row.response_text || '').startsWith('[ERROR]')) continue;
@@ -179,7 +169,7 @@ function buildMetrics(rawRows, focalIndex) {
   for (const [key, rows] of Object.entries(grouped)) {
     const [promptCondition, modelId, subCategory] = key.split('|');
     const personaCount = new Set(rows.map(row => row.persona_id)).size;
-    const metricRows = calculateMetrics(rows, focalIndex[subCategory] || [], subCategory, modelId, promptCondition);
+    const metricRows = calculateMetrics(rows, subCategory, modelId, promptCondition);
     for (const row of metricRows) {
       row.persona_type = 'synthetic';
       row.n_personas = personaCount;
@@ -189,7 +179,7 @@ function buildMetrics(rawRows, focalIndex) {
   return metrics;
 }
 
-function exportArtifacts(state, focalIndex) {
+function exportArtifacts(state) {
   const rawHeaders = [
     'run_id', 'category', 'sub_category', 'model_id', 'model_name', 'replicate',
     'prompt_condition', 'persona_id', 'persona_type', 'profile_text', 'prompt',
@@ -198,12 +188,12 @@ function exportArtifacts(state, focalIndex) {
   ];
   const metricHeaders = [
     'sub_category', 'model_id', 'prompt_condition', 'persona_type', 'n_personas',
-    'brand', 'visibility_group', 'total_mentions', 'n_replicates',
+    'brand', 'total_mentions', 'n_replicates',
     'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
   ];
 
   writeCSV(rawCsvFile, state.rawResults, rawHeaders);
-  writeCSV(metricsCsvFile, buildMetrics(state.rawResults, focalIndex), metricHeaders);
+  writeCSV(metricsCsvFile, buildMetrics(state.rawResults), metricHeaders);
   writeQualityReport(state.qualityReports);
 }
 
@@ -244,7 +234,6 @@ async function main() {
   const state = loadState();
   const config = await getJSON(`${API}/api/config`);
   const condition = loadPromptCondition(config);
-  const focalIndex = buildFocalIndex(config.categories);
 
   const allSubcategories = [];
   for (const category of config.categories) {
@@ -332,7 +321,7 @@ async function main() {
         }
 
         saveState(state);
-        exportArtifacts(state, focalIndex);
+        exportArtifacts(state);
 
         const issueSummary = quality.issues.length ? quality.issues.join(' | ') : 'no obvious issues';
         console.log(`[done] ${key}: ${quality.completed}/${quality.total}, errors=${quality.errors}, ${issueSummary}`);
@@ -340,7 +329,7 @@ async function main() {
     }
   }
 
-  exportArtifacts(state, focalIndex);
+  exportArtifacts(state);
   console.log(`Raw CSV: ${rawCsvFile}`);
   console.log(`Metrics CSV: ${metricsCsvFile}`);
   console.log(`Quality report: ${reportFile}`);

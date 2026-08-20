@@ -86,7 +86,7 @@ function exportArtifacts(state) {
     'max_output_tokens', 'notes',
   ];
   const metricHeaders = [
-    'sub_category', 'model_id', 'prompt_condition', 'brand', 'visibility_group', 'total_mentions',
+    'sub_category', 'model_id', 'prompt_condition', 'brand', 'total_mentions',
     'n_replicates', 'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
   ];
 

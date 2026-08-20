@@ -6,7 +6,7 @@
  * This Express server powers the context-free brand recommendation
  * experiment.  It exposes REST endpoints for:
  *
- *   GET  /api/config          → categories, focal brands, aliases, models
+ *   GET  /api/config          → categories, aliases, models
  *   POST /api/run             → kick off an experiment (streams progress via SSE)
  *   GET  /api/run/:id/status  → poll run progress
  *   GET  /api/run/:id/results → fetch raw + metric results
@@ -24,7 +24,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { execFile, spawn } = require('child_process');
+const { spawn } = require('child_process');
 const { parse } = require('csv-parse/sync');
 const { sendPrompt } = require('./lib/llm-clients');
 const { extractBrands, standardiseBrands, norm } = require('./lib/brand-extractor');
@@ -44,6 +44,7 @@ const {
   PAPER_DEFAULTS,
   buildProtocol,
   calculateExperimentMetrics,
+  calculateExperimentThemeMetrics,
 } = require('./lib/experiment-orchestrator');
 
 const app = express();
@@ -110,59 +111,10 @@ function readCSVIfExists(filepath) {
 }
 
 function safeFilename(filename) {
-  return String(filename || 'rq1-input.csv')
+  return String(filename || 'upload.csv')
     .replace(/[^a-zA-Z0-9._-]+/g, '_')
     .replace(/^_+|_+$/g, '')
-    .slice(0, 120) || 'rq1-input.csv';
-}
-
-function validateRq1CSV(csvText) {
-  const requiredColumns = [
-    'run_id',
-    'category',
-    'sub_category',
-    'model_id',
-    'model_name',
-    'replicate',
-    'prompt_condition',
-    'response_text',
-    'brand_1',
-    'brand_2',
-    'brand_3',
-    'brand_4',
-    'brand_5',
-  ];
-  const rows = parse(csvText, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-    to_line: 2,
-  });
-  const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
-  const missing = requiredColumns.filter(col => !columns.includes(col));
-  if (missing.length) {
-    throw new Error(`RQ1 CSV is missing required columns: ${missing.join(', ')}`);
-  }
-}
-
-function validateRq1BaselineCSV(csvText) {
-  const requiredColumns = [
-    'sub_category',
-    'brand',
-    'baseline_share',
-    'aspiration_score',
-  ];
-  const rows = parse(csvText, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-    to_line: 2,
-  });
-  const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
-  const missing = requiredColumns.filter(col => !columns.includes(col));
-  if (missing.length) {
-    throw new Error(`Baseline CSV is missing required columns: ${missing.join(', ')}`);
-  }
+    .slice(0, 120) || 'upload.csv';
 }
 
 function validateNeedsPromptCSV(csvText) {
@@ -210,7 +162,7 @@ function readStudy3Tables(outputDir) {
 }
 
 // Load configuration data at startup
-const categoriesBrands = loadCSV('categories_brands.csv');
+const categoryRows = loadCSV('categories.csv');
 const aliasRows = loadCSV('brand_alias_dictionary.csv');
 const modelsConfig = loadJSON('models.json');
 const promptConditionsConfig = loadJSON('prompt_conditions.json');
@@ -228,18 +180,11 @@ for (const row of aliasRows) {
   aliasMap[key] = row.standard_brand;
 }
 
-// Build category → sub_category → focal brands index
+// Build category → sub_category index. Brands are discovered from model output.
 const categoryIndex = {};
-for (const row of categoriesBrands) {
+for (const row of categoryRows) {
   if (!categoryIndex[row.category]) categoryIndex[row.category] = {};
-  if (!categoryIndex[row.category][row.sub_category]) {
-    categoryIndex[row.category][row.sub_category] = [];
-  }
-  categoryIndex[row.category][row.sub_category].push({
-    brand: row.brand,
-    visibility_group: row.visibility_group,
-    sub_category: row.sub_category,
-  });
+  categoryIndex[row.category][row.sub_category] = true;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -249,7 +194,6 @@ for (const row of categoriesBrands) {
 const runs = {};   // run_id → { status, config, results[], metrics[], progress }
 const experiments = {}; // secure, token-scoped public experiment jobs
 const experimentCredentials = new Map(); // never serialized
-let rq1AnalysisRun = null;
 let study3NeedsRun = null;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -258,6 +202,19 @@ let study3NeedsRun = null;
 
 const CACHE_FILE = path.join(DATA_DIR, 'result-cache.json');
 const EXPERIMENT_DIR = path.join(DATA_DIR, 'experiments');
+const ARCHIVED_CONTEXT_RESULTS = dataPath(
+  'exports',
+  'study1',
+  '2026-08-11_context_free_5cat_6model_40rep_repaired_with_reasons',
+  'raw_results.csv'
+);
+const ARCHIVED_NEEDS_RESULTS = dataPath(
+  'exports',
+  'study3',
+  '2026-08-07_needs_200prompts_6model_2repeat_category_explicit_merged_with_reasons',
+  'raw_results.csv'
+);
+let archivedResultsCache = null;
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -296,6 +253,86 @@ function loadExperiments() {
       console.warn(`Could not restore experiment ${filename}: ${err.message}`);
     }
   }
+}
+
+function normaliseArchivedResult(row, study) {
+  const brands = [1, 2, 3, 4, 5].map(rank => (
+    row[`cleaned_brand_${rank}`] || row[`brand_${rank}`] || ''
+  ));
+  const responseFailed = String(row.response_text || '').startsWith('[ERROR]');
+  return {
+    ...row,
+    study,
+    stage: study === 'study1' ? 'context-free' : 'needs-based',
+    status: responseFailed ? 'error' : 'completed',
+    brand_1: brands[0],
+    brand_2: brands[1],
+    brand_3: brands[2],
+    brand_4: brands[3],
+    brand_5: brands[4],
+    extracted_brands: brands.filter(Boolean),
+  };
+}
+
+function loadArchivedResults() {
+  if (archivedResultsCache) return archivedResultsCache;
+  if (!fs.existsSync(ARCHIVED_CONTEXT_RESULTS) || !fs.existsSync(ARCHIVED_NEEDS_RESULTS)) {
+    return null;
+  }
+
+  const contextRows = readCSVIfExists(ARCHIVED_CONTEXT_RESULTS)
+    .map(row => normaliseArchivedResult(row, 'study1'));
+  const needsRows = readCSVIfExists(ARCHIVED_NEEDS_RESULTS)
+    .map(row => normaliseArchivedResult(row, 'study3'));
+  const results = [...contextRows, ...needsRows];
+  const expectedTasks = results.map(row => ({ ...row }));
+  const completedReasons = results.filter(row => row.reason_status === 'completed').length;
+
+  archivedResultsCache = {
+    runId: 'archived-complete-recommendations',
+    status: 'completed',
+    archived: true,
+    sourceLabel: 'Existing full dataset · Study 1 (2026-08-11) + Study 3 (2026-08-07)',
+    config: {
+      ...PAPER_DEFAULTS,
+      models: modelsConfig.models.map(model => model.model_id),
+      categories: [...new Set(categoryRows.map(row => row.sub_category))],
+      promptTemplate: DEFAULT_CONTEXT_FREE_PROMPT,
+      protocolMode: 'existing-full-dataset',
+      needsPromptCount: defaultNeedsPrompts.length,
+    },
+    counts: {
+      contextFreeCalls: contextRows.length,
+      needsBasedCalls: needsRows.length,
+      recommendationCalls: results.length,
+      reasonCalls: results.length,
+      totalCalls: results.length * 2,
+    },
+    completeness: {
+      complete: completedReasons === results.length,
+      recommendationsComplete: true,
+      successfulRecommendations: results.filter(row => row.status === 'completed').length,
+      expectedRecommendations: results.length,
+      completedReasons,
+      expectedReasons: results.length,
+    },
+    results,
+    metrics: calculateExperimentMetrics(results, expectedTasks),
+    metricsByTheme: calculateExperimentThemeMetrics(results, expectedTasks),
+    prompts: defaultNeedsPrompts,
+    errors: [],
+    artifacts: [
+      'raw_results.csv',
+      'cleaned_results.csv',
+      'brand_reasons.csv',
+      'metrics.csv',
+      'metrics_by_theme.csv',
+      'prompt_library.csv',
+      'run_configuration.json',
+      'quality_report.txt',
+    ],
+  };
+  return archivedResultsCache;
 }
 
 function tokenDigest(token) {
@@ -510,16 +547,13 @@ function dryRunBrandResponse(subCategory) {
 
 /**
  * GET /api/config
- * Returns categories, focal brands, models, and the default prompt template.
+ * Returns categories, models, and the default prompt template.
  */
 app.get('/api/config', (req, res) => {
   // Build a structured category list for the frontend
   const categories = Object.entries(categoryIndex).map(([cat, subs]) => ({
     category: cat,
-    sub_categories: Object.entries(subs).map(([sub, brands]) => ({
-      sub_category: sub,
-      brands,
-    })),
+    sub_categories: Object.keys(subs).map(sub => ({ sub_category: sub })),
   }));
 
   res.json({
@@ -527,12 +561,16 @@ app.get('/api/config', (req, res) => {
     models: modelsConfig.models,
     defaultPrompt: DEFAULT_CONTEXT_FREE_PROMPT,
     promptConditions: promptConditionsConfig.conditions,
+    analysisLevels: [
+      { id: 'primary', label: 'Condition', status: 'primary' },
+      { id: 'theme', label: 'Theme', status: 'secondary' },
+    ],
     syntheticPersonas,
     needsPromptSummary: summariseNeedsPrompts(defaultNeedsPrompts, 'config/needs_based_prompts.csv'),
     paperDefaults: {
       ...PAPER_DEFAULTS,
       models: modelsConfig.models.map(model => model.model_id),
-      categories: [...new Set(categoriesBrands.map(row => row.sub_category))],
+      categories: [...new Set(categoryRows.map(row => row.sub_category))],
       promptTemplate: DEFAULT_CONTEXT_FREE_PROMPT,
       needsPromptCount: defaultNeedsPrompts.length,
       primaryRecommendationCalls: 3600,
@@ -555,14 +593,29 @@ app.get('/api/prompts', (req, res) => {
   });
 });
 
+app.get('/api/archive/results', (req, res) => {
+  try {
+    const archivedResults = loadArchivedResults();
+    if (!archivedResults) {
+      return res.status(404).json({ error: 'No existing complete dataset is available.' });
+    }
+    return res.json(archivedResults);
+  } catch (err) {
+    return res.status(500).json({ error: `Existing results could not be loaded: ${err.message}` });
+  }
+});
+
 app.post('/api/experiments', (req, res) => {
   try {
-    const requestedPrompts = req.body?.needsPrompts
-      ? validateNeedsPrompts(req.body.needsPrompts)
-      : defaultNeedsPrompts;
+    const includeNeedsBased = req.body?.includeNeedsBased !== false;
+    const requestedPrompts = includeNeedsBased
+      ? req.body?.needsPrompts
+        ? validateNeedsPrompts(req.body.needsPrompts)
+        : defaultNeedsPrompts
+      : [];
     const protocol = buildProtocol({
       availableModels: modelsConfig.models,
-      categoryRows: categoriesBrands,
+      categoryRows,
       needsPrompts: requestedPrompts,
       input: {
         ...req.body,
@@ -575,12 +628,15 @@ app.post('/api/experiments', (req, res) => {
     const runId = crypto.randomUUID();
     const runToken = crypto.randomBytes(32).toString('base64url');
     const now = new Date().toISOString();
+    const firstStage = protocol.recommendationTasks[0].stage;
     const experiment = {
       runId,
       tokenDigest: tokenDigest(runToken),
       status: 'running',
-      stage: 'context-free',
-      message: 'Preparing independent context-free requests.',
+      stage: firstStage,
+      message: firstStage === 'context-free'
+        ? 'Preparing independent context-free requests.'
+        : 'Preparing needs-based requests.',
       createdAt: now,
       startedAt: now,
       finishedAt: null,
@@ -601,6 +657,7 @@ app.post('/api/experiments', (req, res) => {
       recommendationTasks: protocol.recommendationTasks,
       results: [],
       metrics: [],
+      metricsByTheme: [],
       errors: [],
     };
 
@@ -633,12 +690,14 @@ app.get('/api/experiments/:id/results', (req, res) => {
     ...publicExperimentStatus(experiment),
     results: experiment.results,
     metrics: experiment.metrics,
+    metricsByTheme: experiment.metricsByTheme,
     prompts: experiment.config.needsPrompts,
     artifacts: [
       'raw_results.csv',
       'cleaned_results.csv',
       'brand_reasons.csv',
       'metrics.csv',
+      'metrics_by_theme.csv',
       'prompt_library.csv',
       'run_configuration.json',
       'quality_report.txt',
@@ -715,8 +774,9 @@ app.post('/api/run', (req, res) => {
   const model = modelsConfig.models.find(m => m.model_id === modelId);
   if (!model) return res.status(400).json({ error: `Unknown model: ${modelId}` });
 
-  const focalBrands = categoryIndex[category]?.[subCategory];
-  if (!focalBrands) return res.status(400).json({ error: `Unknown category/sub: ${category}/${subCategory}` });
+  if (!categoryIndex[category]?.[subCategory]) {
+    return res.status(400).json({ error: `Unknown category/sub: ${category}/${subCategory}` });
+  }
 
   const conditionId = promptCondition || 'context-free';
 
@@ -798,7 +858,7 @@ app.post('/api/run-all', (req, res) => {
 
   // Create a run for each category/sub-category pair
   for (const [category, subs] of Object.entries(categoryIndex)) {
-    for (const [subCategory, focalBrands] of Object.entries(subs)) {
+    for (const subCategory of Object.keys(subs)) {
       const finalPrompt = promptTemplate.replace(/\[category\]/gi, subCategory);
       const runId = crypto.randomUUID();
 
@@ -1102,126 +1162,6 @@ app.get('/api/study3/needs/status', (req, res) => {
   });
 });
 
-app.post('/api/analysis/rq1', (req, res) => {
-  if (rq1AnalysisRun?.status === 'running') {
-    return res.status(409).json({ error: 'RQ1 analysis is already running.' });
-  }
-
-  let sourceRawFile = '';
-  let sourceBaselineFile = '';
-  let sourceFilename = '';
-  let sourceBaselineFilename = '';
-  try {
-    const csvText = req.body?.csvText;
-    const baselineCsvText = req.body?.baselineCsvText;
-    sourceFilename = req.body?.filename || '';
-    sourceBaselineFilename = req.body?.baselineFilename || '';
-    if (csvText) {
-      validateRq1CSV(csvText);
-      const uploadDir = dataPath('uploads', 'rq1');
-      fs.mkdirSync(uploadDir, { recursive: true });
-      sourceRawFile = path.join(uploadDir, `${Date.now()}-${safeFilename(sourceFilename)}`);
-      fs.writeFileSync(sourceRawFile, csvText, 'utf8');
-    }
-    if (baselineCsvText) {
-      validateRq1BaselineCSV(baselineCsvText);
-      const uploadDir = dataPath('uploads', 'rq1');
-      fs.mkdirSync(uploadDir, { recursive: true });
-      sourceBaselineFile = path.join(uploadDir, `${Date.now()}-${safeFilename(sourceBaselineFilename)}`);
-      fs.writeFileSync(sourceBaselineFile, baselineCsvText, 'utf8');
-    }
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-
-  rq1AnalysisRun = {
-    status: 'running',
-    startedAt: new Date().toISOString(),
-    finishedAt: null,
-    stdout: '',
-    stderr: '',
-    files: {},
-    sourceFilename: sourceFilename || 'default local Study 1 CSV',
-    baselineFilename: sourceBaselineFilename || 'test baseline data',
-    sourceMode: sourceRawFile ? 'uploaded_csv' : 'default_path',
-    baselineMode: sourceBaselineFile ? 'uploaded_baseline_csv' : 'test_data',
-  };
-
-  execFile('Rscript', ['scripts/run-rq1-logit.R'], {
-    cwd: __dirname,
-    env: {
-      ...process.env,
-      ...(sourceRawFile ? { RQ1_RAW_FILE: sourceRawFile } : {}),
-      ...(sourceBaselineFile ? { RQ1_BASELINE_FILE: sourceBaselineFile } : {}),
-    },
-    timeout: 120000,
-    maxBuffer: 1024 * 1024 * 5,
-  }, (err, stdout, stderr) => {
-    const outDir = dataPath('analysis', 'rq1');
-    const summaryFile = path.join(outDir, 'rq1_summary.md');
-
-    rq1AnalysisRun.status = err ? 'failed' : 'completed';
-    rq1AnalysisRun.finishedAt = new Date().toISOString();
-    rq1AnalysisRun.stdout = stdout || '';
-    rq1AnalysisRun.stderr = stderr || '';
-    rq1AnalysisRun.error = err ? err.message : '';
-    rq1AnalysisRun.files = {
-      summary: summaryFile,
-      rawInput: sourceRawFile || dataPath('exports', 'study1', 'full_2026-05-05_all_models', 'raw_results_cleaned.csv'),
-      baselineInput: sourceBaselineFile || path.join(__dirname, 'config', 'brand_baseline_test.csv'),
-      binaryDataset: path.join(outDir, 'study1_brand_binary_dataset_focal.csv'),
-      predictorTemplate: path.join(outDir, 'brand_predictors_template.csv'),
-      visibilityModel: path.join(outDir, 'logit_model1_visibility.csv'),
-      visibilityModelInteraction: path.join(outDir, 'logit_model3_visibility_model_interaction.csv'),
-      visibilityModelInteractionAllRefs: path.join(outDir, 'logit_model3_visibility_model_interaction_all_refs.csv'),
-      fitStats: path.join(outDir, 'logit_fit_stats.csv'),
-      recommendationRates: path.join(outDir, 'brand_recommendation_rates.csv'),
-      visibilityRates: path.join(outDir, 'visibility_recommendation_rates.csv'),
-      categoryVisibilityRates: path.join(outDir, 'category_visibility_recommendation_rates.csv'),
-      categoryPopularityBias: path.join(outDir, 'category_popularity_bias.csv'),
-      nicheBrandOpportunities: path.join(outDir, 'niche_brand_opportunities.csv'),
-      modelVisibilityRates: path.join(outDir, 'model_visibility_recommendation_rates.csv'),
-      modelPopularityBias: path.join(outDir, 'model_popularity_bias.csv'),
-      baselineDistributionBias: path.join(outDir, 'baseline_distribution_bias_testdata.csv'),
-      baselineModelBias: path.join(outDir, 'baseline_model_bias_testdata.csv'),
-      brandBaselineOverrecommendation: path.join(outDir, 'brand_baseline_overrecommendation_testdata.csv'),
-      brandLevelOrrModel: path.join(outDir, 'brand_level_orr_model_testdata.csv'),
-      segmentShareBias: path.join(outDir, 'segment_share_bias_testdata.csv'),
-      categoryModelBiasModels: path.join(outDir, 'category_model_bias_models_testdata.csv'),
-    };
-    rq1AnalysisRun.summary = fs.existsSync(summaryFile)
-      ? fs.readFileSync(summaryFile, 'utf8')
-      : '';
-    rq1AnalysisRun.tables = {
-      visibilityModel: readCSVIfExists(rq1AnalysisRun.files.visibilityModel),
-      visibilityModelInteraction: readCSVIfExists(rq1AnalysisRun.files.visibilityModelInteraction),
-      visibilityModelInteractionAllRefs: readCSVIfExists(rq1AnalysisRun.files.visibilityModelInteractionAllRefs),
-      fitStats: readCSVIfExists(rq1AnalysisRun.files.fitStats),
-      visibilityRates: readCSVIfExists(rq1AnalysisRun.files.visibilityRates),
-      categoryVisibilityRates: readCSVIfExists(rq1AnalysisRun.files.categoryVisibilityRates),
-      categoryPopularityBias: readCSVIfExists(rq1AnalysisRun.files.categoryPopularityBias),
-      nicheBrandOpportunities: readCSVIfExists(rq1AnalysisRun.files.nicheBrandOpportunities),
-      modelVisibilityRates: readCSVIfExists(rq1AnalysisRun.files.modelVisibilityRates),
-      modelPopularityBias: readCSVIfExists(rq1AnalysisRun.files.modelPopularityBias),
-      baselineDistributionBias: readCSVIfExists(rq1AnalysisRun.files.baselineDistributionBias),
-      baselineModelBias: readCSVIfExists(rq1AnalysisRun.files.baselineModelBias),
-      brandBaselineOverrecommendation: readCSVIfExists(rq1AnalysisRun.files.brandBaselineOverrecommendation),
-      brandLevelOrrModel: readCSVIfExists(rq1AnalysisRun.files.brandLevelOrrModel),
-      segmentShareBias: readCSVIfExists(rq1AnalysisRun.files.segmentShareBias),
-      categoryModelBiasModels: readCSVIfExists(rq1AnalysisRun.files.categoryModelBiasModels),
-    };
-  });
-
-  res.json({ status: 'running', startedAt: rq1AnalysisRun.startedAt });
-});
-
-app.get('/api/analysis/rq1/status', (req, res) => {
-  if (!rq1AnalysisRun) {
-    return res.json({ status: 'idle' });
-  }
-  res.json(rq1AnalysisRun);
-});
-
 function normaliseApiKeys(value = {}) {
   return {
     openai: String(value.openai || '').trim(),
@@ -1247,11 +1187,13 @@ function validateExperimentCredentials(protocol, apiKeys) {
 
 function isPaperDefaultProtocol(protocol) {
   const expectedModels = modelsConfig.models.map(model => model.model_id);
-  const expectedCategories = [...new Set(categoriesBrands.map(row => row.sub_category))];
+  const expectedCategories = [...new Set(categoryRows.map(row => row.sub_category))];
   const config = protocol.config;
   return (
     JSON.stringify(config.models) === JSON.stringify(expectedModels) &&
     JSON.stringify(config.categories) === JSON.stringify(expectedCategories) &&
+    config.includeContextFree === true &&
+    config.includeNeedsBased === true &&
     config.contextFreeReplicates === PAPER_DEFAULTS.contextFreeReplicates &&
     config.needsRepeats === PAPER_DEFAULTS.needsRepeats &&
     config.maxOutputTokens === PAPER_DEFAULTS.maxOutputTokens &&
@@ -1314,8 +1256,11 @@ function nextExperimentStage(experiment) {
   if (experiment.recommendationTasks.some(task => task.stage === 'needs-based' && !completedKeys.has(task.task_key))) {
     return 'needs-based';
   }
-  if (experiment.config.followupReasons && experiment.results.some(row => row.status === 'completed' && row.reason_status !== 'completed')) {
-    return 'reasons';
+  if (experiment.config.followupReasons) {
+    const pendingReason = experiment.results.find(row => (
+      row.status === 'completed' && row.reason_status !== 'completed'
+    ));
+    if (pendingReason) return pendingReason.stage || 'context-free';
   }
   return 'results';
 }
@@ -1487,39 +1432,43 @@ async function executeUnifiedExperiment(experiment) {
   );
 
   for (const stage of ['context-free', 'needs-based']) {
-    experiment.stage = stage;
-    experiment.message = stage === 'context-free'
-      ? 'Running independent category-only recommendations.'
-      : 'Running general and detailed needs-based recommendations.';
-    persistExperiment(experiment);
     const tasks = experiment.recommendationTasks.filter(task => task.stage === stage);
+    if (!tasks.length) continue;
+    experiment.stage = stage;
+    const recommendationMessage = stage === 'context-free'
+      ? 'Running category-only recommendations with immediate reason follow-ups.'
+      : 'Running needs-based recommendations with immediate reason follow-ups.';
+    experiment.message = recommendationMessage;
+    persistExperiment(experiment);
     for (const task of tasks) {
       if (experiment.cancelRequested) break;
-      if (completedKeys.has(task.task_key)) continue;
-      await executeUnifiedRecommendation(experiment, task, credentials);
-      const row = experiment.results.find(item => item.task_key === task.task_key);
+      let row = experiment.results.find(item => item.task_key === task.task_key);
+      if (!completedKeys.has(task.task_key)) {
+        experiment.message = recommendationMessage;
+        await executeUnifiedRecommendation(experiment, task, credentials);
+        row = experiment.results.find(item => item.task_key === task.task_key);
+      }
       if (row?.status === 'completed') completedKeys.add(task.task_key);
+      if (
+        experiment.config.followupReasons &&
+        row?.status === 'completed' &&
+        row.reason_status !== 'completed'
+      ) {
+        experiment.message = `Collecting the immediate reason follow-up for ${task.prompt_id}.`;
+        await executeUnifiedReason(experiment, row, credentials);
+      }
       maybePersistExperiment(experiment);
     }
     if (experiment.cancelRequested) break;
   }
 
-  if (!experiment.cancelRequested && experiment.config.followupReasons) {
-    experiment.stage = 'reasons';
-    experiment.message = 'Collecting separate, stateless reasons for each successful recommendation.';
-    persistExperiment(experiment);
-    for (const row of experiment.results) {
-      if (experiment.cancelRequested) break;
-      if (row.status !== 'completed' || row.reason_status === 'completed') continue;
-      await executeUnifiedReason(experiment, row, credentials);
-      maybePersistExperiment(experiment);
-    }
-  }
-
   experiment.stage = experiment.cancelRequested ? 'cancelled' : 'results';
   experiment.metrics = calculateExperimentMetrics(
     experiment.results,
-    categoriesBrands,
+    experiment.recommendationTasks
+  );
+  experiment.metricsByTheme = calculateExperimentThemeMetrics(
+    experiment.results,
     experiment.recommendationTasks
   );
   updateExperimentCompleteness(experiment);
@@ -1576,7 +1525,6 @@ async function executeRun(run) {
     bypassCache,
     dryRun,
   } = run.config;
-  const focalBrands = categoryIndex[run.config.category][run.config.subCategory];
   const cachedRows = (bypassCache || followupReasons ? [] : getCachedRows(run.config)).slice(0, replicates);
 
   for (let i = 1; i <= replicates; i++) {
@@ -1702,7 +1650,6 @@ async function executeRun(run) {
   const successfulResults = run.results.filter(r => !r.response_text.startsWith('[ERROR]'));
   run.metrics = calculateMetrics(
     successfulResults,
-    focalBrands,
     run.config.subCategory,
     run.config.modelId,
     run.config.promptCondition

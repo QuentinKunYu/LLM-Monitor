@@ -60,17 +60,11 @@ function buildAliasMap() {
 }
 
 function loadDesign() {
-  const focalRows = readCSV(path.join(ROOT, 'config', 'categories_brands.csv'));
+  const categoryRows = readCSV(path.join(ROOT, 'config', 'categories.csv'));
   const modelRows = readJSON(path.join(ROOT, 'config', 'models.json')).models;
-  const categories = [...new Set(focalRows.map(row => row.sub_category))];
+  const categories = [...new Set(categoryRows.map(row => row.sub_category))];
   const models = modelRows.map(row => row.model_id);
-  const focalByCategory = new Map(categories.map(category => [category, new Map()]));
-
-  for (const row of focalRows) {
-    focalByCategory.get(row.sub_category).set(row.brand, row.visibility_group);
-  }
-
-  return { categories, models, focalByCategory };
+  return { categories, models };
 }
 
 function normalizeSourceRows(sourceRows, aliasMap, sourceLabel) {
@@ -140,7 +134,7 @@ function assertBalancedDesign(rows, design, conditions, sourceLabel) {
 function buildUniverse(rows, design) {
   const universe = new Map();
   for (const category of design.categories) {
-    universe.set(category, new Set(design.focalByCategory.get(category).keys()));
+    universe.set(category, new Set());
   }
   for (const row of rows) {
     const brands = universe.get(row.category);

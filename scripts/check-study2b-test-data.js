@@ -9,15 +9,6 @@ const rawOut = path.join(outDir, 'raw_results.csv');
 const metricsOut = path.join(outDir, 'metrics.csv');
 const reportOut = path.join(outDir, 'quality_report.md');
 
-const focalBrands = [
-  { brand: 'Ryobi', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'DeWalt', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Milwaukee', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Festool', visibility_group: 'niche', sub_category: 'cordless drills' },
-  { brand: 'Hilti', visibility_group: 'niche', sub_category: 'cordless drills' },
-  { brand: 'Makita', visibility_group: 'niche', sub_category: 'cordless drills' },
-];
-
 const fixture = [
   {
     persona_id: 'sp_fixture_budget',
@@ -88,7 +79,7 @@ function main() {
     }
   }
 
-  const metrics = calculateMetrics(rawRows, focalBrands, 'cordless drills', 'fixture-model', 'synthetic-profile')
+  const metrics = calculateMetrics(rawRows, 'cordless drills', 'fixture-model', 'synthetic-profile')
     .map(row => ({
       ...row,
       persona_type: 'synthetic',
@@ -103,7 +94,7 @@ function main() {
   ]);
   writeCSV(metricsOut, metrics, [
     'sub_category', 'model_id', 'prompt_condition', 'persona_type', 'n_personas',
-    'brand', 'visibility_group', 'total_mentions', 'n_replicates',
+    'brand', 'total_mentions', 'n_replicates',
     'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
   ]);
 

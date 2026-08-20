@@ -9,15 +9,6 @@ const rawOut = path.join(outDir, 'raw_results.csv');
 const metricsOut = path.join(outDir, 'metrics.csv');
 const reportOut = path.join(outDir, 'quality_report.md');
 
-const focalBrands = [
-  { brand: 'Ryobi', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'DeWalt', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Milwaukee', visibility_group: 'high_visibility', sub_category: 'cordless drills' },
-  { brand: 'Festool', visibility_group: 'niche', sub_category: 'cordless drills' },
-  { brand: 'Hilti', visibility_group: 'niche', sub_category: 'cordless drills' },
-  { brand: 'Makita', visibility_group: 'niche', sub_category: 'cordless drills' },
-];
-
 const fixtureResponses = [
   {
     prompt_condition: 'functional-need',
@@ -97,7 +88,6 @@ function main() {
     const rows = rawRows.filter(row => row.prompt_condition === condition.prompt_condition);
     metrics.push(...calculateMetrics(
       rows,
-      focalBrands,
       'cordless drills',
       'fixture-model',
       condition.prompt_condition
@@ -111,7 +101,7 @@ function main() {
     'max_output_tokens', 'notes',
   ];
   const metricHeaders = [
-    'sub_category', 'model_id', 'prompt_condition', 'brand', 'visibility_group',
+    'sub_category', 'model_id', 'prompt_condition', 'brand',
     'total_mentions', 'n_replicates', 'BRP@1', 'BRP@3', 'BRP@5', 'MRR',
   ];
 
