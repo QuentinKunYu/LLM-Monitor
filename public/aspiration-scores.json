@@ -1,0 +1,1077 @@
+{
+  "source": "Aspiration Score Coding.xlsx — Revised sheet",
+  "note": "Brand aspiration scores (1-5) reconciled from two independent coders (E = Eloise, S = Sanchary) and a third adjudicated score (Ed); Avg is the mean of Score E / Score S / Ed used as the final score. Matched to recommendation results by category + loosely-normalised brand name.",
+  "scale": "1 = Not at all Aspirational, 5 = Extremely Aspirational",
+  "entries": [
+    {
+      "sub_category": "boat cruises",
+      "brand": "AmaWaterways",
+      "key": "boat cruises|amawaterways",
+      "source": "Search, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "American Cruise Lines",
+      "key": "boat cruises|americancruiselines",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Avalon Waterways",
+      "key": "boat cruises|avalonwaterways",
+      "source": "Search, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Carnival",
+      "key": "boat cruises|carnival",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Celebrity Cruises",
+      "key": "boat cruises|celebritycruises",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "City Cruises",
+      "key": "boat cruises|citycruises",
+      "source": "LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": null,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Costa (Cruises)",
+      "key": "boat cruises|costacruises",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.0,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "CroisiEurope",
+      "key": "boat cruises|croisieurope",
+      "source": "Search, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Crystal (Cruising)",
+      "key": "boat cruises|crystal",
+      "source": "BrandZ",
+      "scoreE": 5.0,
+      "scoreS": 4.0,
+      "ed": 5.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Cunard",
+      "key": "boat cruises|cunard",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 4.0,
+      "ed": 4.5,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Disney Cruise Line",
+      "key": "boat cruises|disneycruiseline",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Holland America Line",
+      "key": "boat cruises|hollandamerica",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Lindblad Expeditions",
+      "key": "boat cruises|lindbladexpeditions",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.5,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "MSC Cruises",
+      "key": "boat cruises|msccruises",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Norwegian Cruise Line",
+      "key": "boat cruises|norwegiancruiseline",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Oceania Cruises",
+      "key": "boat cruises|oceaniacruises",
+      "source": "BrandZ",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Ponant",
+      "key": "boat cruises|ponant",
+      "source": "LLM context-free",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Princess Cruises",
+      "key": "boat cruises|princesscruises",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 3.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Regent Seven Seas Cruises",
+      "key": "boat cruises|regentsevenseas",
+      "source": "BrandZ",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 5.0,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Royal Caribbean",
+      "key": "boat cruises|royalcaribbean",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Seabourn",
+      "key": "boat cruises|seabourn",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 5.0,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Silversea",
+      "key": "boat cruises|silversea",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 4.0,
+      "ed": 5.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Spirit Cruises",
+      "key": "boat cruises|spiritcruises",
+      "source": "LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 2.0,
+      "ed": null,
+      "avg": 1.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "UnCruise Adventures",
+      "key": "boat cruises|uncruiseadventures",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Uniworld Boutique River Cruises",
+      "key": "boat cruises|uniworld",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 4.0,
+      "ed": 4.5,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Viking",
+      "key": "boat cruises|viking",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Virgin Voyages",
+      "key": "boat cruises|virginvoyages",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "boat cruises",
+      "brand": "Windstar",
+      "key": "boat cruises|windstarcruises",
+      "source": "Search",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "9 Lives",
+      "key": "cat food|9lives",
+      "source": "Search",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 1.5,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Acana",
+      "key": "cat food|acana",
+      "source": "Search",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Blue Buffalo",
+      "key": "cat food|bluebuffalo",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Cat Chow",
+      "key": "cat food|catchow",
+      "source": "BrandZ",
+      "scoreE": 1.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 1.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Fancy Feast",
+      "key": "cat food|fancyfeast",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 3.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Freshpet",
+      "key": "cat food|freshpet",
+      "source": "BrandZ",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Friskies",
+      "key": "cat food|friskies",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Hill's Science Diet",
+      "key": "cat food|hillssciencediet",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Iams",
+      "key": "cat food|iams",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Meow Mix",
+      "key": "cat food|meowmix",
+      "source": "LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Merrick",
+      "key": "cat food|merrick",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Nutrish",
+      "key": "cat food|rachaelraynutrish",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 3.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Nutro",
+      "key": "cat food|nutro",
+      "source": "BrandZ",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Orijen",
+      "key": "cat food|orijen",
+      "source": "BrandZ",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Purina",
+      "key": "cat food|purina",
+      "source": "LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Purina One",
+      "key": "cat food|purinaone",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Purina Pro Plan",
+      "key": "cat food|purinaproplan",
+      "source": "BrandZ",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Royal Canin",
+      "key": "cat food|royalcanin",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 4.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Sheba",
+      "key": "cat food|sheba",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 3.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Taste of the Wild",
+      "key": "cat food|tasteofthewild",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 2.0,
+      "ed": 3.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Wellness",
+      "key": "cat food|wellness",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Wellness CORE",
+      "key": "cat food|wellnesscore",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 4.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Wellness Complete Health",
+      "key": "cat food|wellnesscompletehealth",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Whiskas",
+      "key": "cat food|whiskas",
+      "source": "LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "cat food",
+      "brand": "Ziwi Peak",
+      "key": "cat food|ziwipeak",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Bella",
+      "key": "coffee maker|bella",
+      "source": "Search",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Black+Decker",
+      "key": "coffee maker|blackdecker",
+      "source": "BrandZ",
+      "scoreE": 1.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 1.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Bonavita",
+      "key": "coffee maker|bonavita",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Braun",
+      "key": "coffee maker|braun",
+      "source": "Search",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 3.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Brentwood",
+      "key": "coffee maker|brentwood",
+      "source": "Search",
+      "scoreE": 1.0,
+      "scoreS": 2.0,
+      "ed": 1.5,
+      "avg": 1.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Breville",
+      "key": "coffee maker|breville",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Bunn",
+      "key": "coffee maker|bunn",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Capresso",
+      "key": "coffee maker|capresso",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Cuisinart",
+      "key": "coffee maker|cuisinart",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 3.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "De'Longhi",
+      "key": "coffee maker|delonghi",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Hamilton Beach",
+      "key": "coffee maker|hamiltonbeach",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Jura",
+      "key": "coffee maker|jura",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Keurig",
+      "key": "coffee maker|keurig",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "KitchenAid",
+      "key": "coffee maker|kitchenaid",
+      "source": "BrandZ",
+      "scoreE": 3.0,
+      "scoreS": 2.0,
+      "ed": 3.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Mr. Coffee",
+      "key": "coffee maker|mrcoffee",
+      "source": "LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Nescafe",
+      "key": "coffee maker|nescafe",
+      "source": "Search",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Nespresso",
+      "key": "coffee maker|nespresso",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 3.0,
+      "ed": 4.0,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Ninja",
+      "key": "coffee maker|ninja",
+      "source": "LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "OXO",
+      "key": "coffee maker|oxo",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Philips",
+      "key": "coffee maker|philips",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "coffee maker",
+      "brand": "Technivorm",
+      "key": "coffee maker|technivorm",
+      "source": "LLM context-free",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Black+Decker",
+      "key": "cordless drills|blackdecker",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 1.0,
+      "scoreS": 1.0,
+      "ed": 2.0,
+      "avg": 1.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Bosch",
+      "key": "cordless drills|bosch",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Craftsman",
+      "key": "cordless drills|craftsman",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "DeWalt",
+      "key": "cordless drills|dewalt",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Festool",
+      "key": "cordless drills|festool",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Hilti",
+      "key": "cordless drills|hilti",
+      "source": "Search",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Kobalt",
+      "key": "cordless drills|kobalt",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.0,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Makita",
+      "key": "cordless drills|makita",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 3.5,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Metabo HPT",
+      "key": "cordless drills|metabohpt",
+      "source": "BrandZ",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Milwaukee",
+      "key": "cordless drills|milwaukee",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Ridgid",
+      "key": "cordless drills|ridgid",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 4.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Ryobi",
+      "key": "cordless drills|ryobi",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Skil",
+      "key": "cordless drills|skil",
+      "source": "BrandZ",
+      "scoreE": 1.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 1.5
+    },
+    {
+      "sub_category": "cordless drills",
+      "brand": "Worx",
+      "key": "cordless drills|worx",
+      "source": "BrandZ",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.0,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Arc'teryx",
+      "key": "hiking jacket|arcteryx",
+      "source": "LLM context-free",
+      "scoreE": 5.0,
+      "scoreS": 5.0,
+      "ed": 4.5,
+      "avg": 5.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Black Diamond",
+      "key": "hiking jacket|blackdiamond",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Columbia",
+      "key": "hiking jacket|columbia",
+      "source": "LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Eddie Bauer",
+      "key": "hiking jacket|eddiebauer",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 2.5,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Jack Wolfskin",
+      "key": "hiking jacket|jackwolfskin",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Kathmandu",
+      "key": "hiking jacket|kathmandu",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "K√úHL",
+      "key": "hiking jacket|kuhl",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "L.L.Bean",
+      "key": "hiking jacket|llbean",
+      "source": "Search",
+      "scoreE": 2.0,
+      "scoreS": 2.0,
+      "ed": 2.5,
+      "avg": 2.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Mammut",
+      "key": "hiking jacket|mammut",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 5.0,
+      "ed": 4.0,
+      "avg": 4.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Marmot",
+      "key": "hiking jacket|marmot",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.0,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Montane",
+      "key": "hiking jacket|montane",
+      "source": "Search",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Mountain Equipment",
+      "key": "hiking jacket|mountainequipment",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Mountain Hardwear",
+      "key": "hiking jacket|mountainhardwear",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Outdoor Research",
+      "key": "hiking jacket|outdoorresearch",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 3.5,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Patagonia",
+      "key": "hiking jacket|patagonia",
+      "source": "LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 3.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "REI Co-op",
+      "key": "hiking jacket|reicoop",
+      "source": "LLM context-free",
+      "scoreE": 2.0,
+      "scoreS": 3.0,
+      "ed": 3.0,
+      "avg": 2.5
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "Rab",
+      "key": "hiking jacket|rab",
+      "source": "LLM context-free",
+      "scoreE": 4.0,
+      "scoreS": 4.0,
+      "ed": 4.0,
+      "avg": 4.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "The North Face",
+      "key": "hiking jacket|thenorthface",
+      "source": "BrandZ, LLM context-free",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    },
+    {
+      "sub_category": "hiking jacket",
+      "brand": "icebreaker",
+      "key": "hiking jacket|icebreaker",
+      "source": "Search",
+      "scoreE": 3.0,
+      "scoreS": 3.0,
+      "ed": 3.5,
+      "avg": 3.0
+    }
+  ]
+}

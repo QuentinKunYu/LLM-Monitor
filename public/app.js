@@ -15,14 +15,54 @@ const state = {
   lastStatus: null,
   lastResults: null,
   liveErrors: [],
+  metricsSort: { key: null, dir: null },
+  aspirationScores: new Map(),
+  appPassword: sessionStorage.getItem('brandLabAppPassword') || '',
 };
+
+let passwordDialogResolve = null;
 
 const $ = id => document.getElementById(id);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
 
 document.addEventListener('DOMContentLoaded', init);
 
+async function loadAspirationScores() {
+  try {
+    const response = await fetch(`${API}/aspiration-scores.json`);
+    if (!response.ok) return;
+    const data = await response.json();
+    for (const entry of data.entries || []) {
+      state.aspirationScores.set(entry.key, entry);
+    }
+  } catch (_) {
+    // Aspiration scores are a supplementary layer; missing data shouldn't block the results page.
+  }
+}
+
+function looseBrandKey(subCategory, brand) {
+  const normalized = String(brand || '')
+    .normalize('NFKD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+  return `${subCategory}|${normalized}`;
+}
+
+function withAspiration(rows) {
+  return rows.map(row => {
+    const entry = state.aspirationScores.get(looseBrandKey(row.sub_category, row.brand));
+    return {
+      ...row,
+      aspiration_e: entry?.scoreE ?? null,
+      aspiration_s: entry?.scoreS ?? null,
+      aspiration_ed: entry?.ed ?? null,
+      aspiration_avg: entry?.avg ?? null,
+    };
+  });
+}
+
 async function init() {
+  loadAspirationScores();
   wireStaticEvents();
   state.config = browserFallbackConfig();
   const bundledPrompts = Array.isArray(globalThis.DEFAULT_NEEDS_PROMPTS) ? globalThis.DEFAULT_NEEDS_PROMPTS : [];
@@ -114,6 +154,18 @@ function wireStaticEvents() {
   $('prompt-next-btn').addEventListener('click', () => changePromptPage(1));
   $('dialog-save-btn').addEventListener('click', savePromptEdit);
   $('dialog-reset-btn').addEventListener('click', restoreEditingPrompt);
+  $('password-submit-btn').addEventListener('click', submitPasswordDialog);
+  $('password-input').addEventListener('keydown', event => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    submitPasswordDialog();
+  });
+  $('password-dialog').addEventListener('close', () => {
+    if (!passwordDialogResolve) return;
+    const resolve = passwordDialogResolve;
+    passwordDialogResolve = null;
+    resolve($('password-dialog').returnValue === 'submit');
+  });
   $('download-menu-btn').addEventListener('click', toggleDownloadMenu);
 }
 
@@ -130,7 +182,31 @@ function handleDocumentClick(event) {
   const exportButton = event.target.closest('[data-export]');
   if (exportButton) exportArtifact(exportButton.dataset.export);
 
+  const sortButton = event.target.closest('[data-sort-key]');
+  if (sortButton) toggleMetricsSort(sortButton.dataset.sortKey);
+
   if (!event.target.closest('.download-menu')) $('download-popover').classList.add('is-hidden');
+}
+
+function toggleMetricsSort(key) {
+  if (state.metricsSort.key !== key) {
+    state.metricsSort = { key, dir: 'desc' };
+  } else if (state.metricsSort.dir === 'desc') {
+    state.metricsSort = { key, dir: 'asc' };
+  } else {
+    state.metricsSort = { key: null, dir: null };
+  }
+  updateSortIndicators();
+  renderMetricsTable();
+}
+
+function updateSortIndicators() {
+  $$('.sort-icon').forEach(icon => {
+    const key = icon.dataset.sortIcon;
+    const active = state.metricsSort.key === key;
+    icon.classList.toggle('is-active', active);
+    icon.textContent = active ? (state.metricsSort.dir === 'asc' ? '▲' : '▼') : '⇅';
+  });
 }
 
 function handleProtocolChange(event) {
@@ -464,6 +540,38 @@ function restoreEditingPrompt() {
   $('dialog-prompt-text').value = original.prompt;
 }
 
+function ensureRunPassword() {
+  if (state.appPassword) return Promise.resolve(true);
+  return new Promise(resolve => {
+    passwordDialogResolve = resolve;
+    $('password-error').classList.add('is-hidden');
+    $('password-input').value = '';
+    $('password-dialog').showModal();
+    $('password-input').focus();
+  });
+}
+
+function submitPasswordDialog() {
+  const value = $('password-input').value.trim();
+  if (!value) {
+    $('password-error').textContent = 'Enter a password.';
+    $('password-error').classList.remove('is-hidden');
+    return;
+  }
+  state.appPassword = value;
+  sessionStorage.setItem('brandLabAppPassword', value);
+  $('password-dialog').close('submit');
+}
+
+function clearStoredRunPassword() {
+  state.appPassword = '';
+  sessionStorage.removeItem('brandLabAppPassword');
+}
+
+function runPasswordHeaders() {
+  return state.appPassword ? { 'X-App-Password': state.appPassword } : {};
+}
+
 function validateProtocol(snapshot) {
   if (!snapshot.models.length) throw new Error('Select at least one model.');
   if (!snapshot.categories.length) throw new Error('Select at least one category.');
@@ -477,6 +585,8 @@ async function startExperiment() {
   try {
     const snapshot = protocolSnapshot();
     validateProtocol(snapshot);
+    const authorized = await ensureRunPassword();
+    if (!authorized) return;
     state.liveErrors = [];
     renderExperimentErrors([]);
     setRunButtonsDisabled(true);
@@ -485,11 +595,14 @@ async function startExperiment() {
     $('execution-message').textContent = 'Validating prompts, model provenance, and server provider access.';
     const response = await fetch(`${API}/api/experiments`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...runPasswordHeaders() },
       body: JSON.stringify(snapshot),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'The experiment could not be started.');
+    if (!response.ok) {
+      if (response.status === 401) clearStoredRunPassword();
+      throw new Error(data.error || 'The experiment could not be started.');
+    }
     state.currentRunId = data.runId;
     state.currentRunToken = data.runToken;
     sessionStorage.setItem('brandLabRun', JSON.stringify({ runId: data.runId, runToken: data.runToken }));
@@ -630,14 +743,19 @@ async function cancelExperiment() {
 }
 
 async function retryExperiment() {
+  const authorized = await ensureRunPassword();
+  if (!authorized) return;
   try {
     $('retry-run-btn').disabled = true;
     const response = await fetch(`${API}/api/experiments/${state.currentRunId}/retry`, {
       method: 'POST',
-      headers: runTokenHeaders(),
+      headers: { ...runTokenHeaders(), ...runPasswordHeaders() },
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Unfinished observations could not be retried.');
+    if (!response.ok) {
+      if (response.status === 401) clearStoredRunPassword();
+      throw new Error(data.error || 'Unfinished observations could not be retried.');
+    }
     state.lastStatus = data;
     renderExperimentStatus(data);
     pollExperiment();
@@ -768,7 +886,8 @@ function renderMetricsTable() {
     ? 'Theme'
     : 'Grouping';
   $('result-group-heading').textContent = groupHeading;
-  $('metrics-table-body').innerHTML = filtered.length ? filtered.slice(0, 500).map(row => `
+  const sorted = sortMetricsRows(withAspiration(filtered));
+  $('metrics-table-body').innerHTML = sorted.length ? sorted.slice(0, 500).map(row => `
     <tr class="${row.provisional ? 'provisional-row' : ''}">
       <td>${escapeHtml(row.brand)}</td>
       <td>${escapeHtml(titleCase(row.sub_category))}</td>
@@ -780,13 +899,30 @@ function renderMetricsTable() {
       ${metricCell(row['BRP@5'])}
       ${metricCell(row.MRR)}
       <td>${escapeHtml(row.denominator || row.n_replicates)}${row.provisional ? ' / provisional' : ''}</td>
+      ${aspirationCell(row.aspiration_e)}${aspirationCell(row.aspiration_s)}${aspirationCell(row.aspiration_ed)}${aspirationCell(row.aspiration_avg)}
     </tr>
-  `).join('') : `<tr><td colspan="10">No metric rows match these filters.</td></tr>`;
+  `).join('') : `<tr><td colspan="14">No metric rows match these filters.</td></tr>`;
+}
+
+function sortMetricsRows(rows) {
+  const { key, dir } = state.metricsSort;
+  if (!key || !dir) return rows;
+  return [...rows].sort((a, b) => {
+    const diff = (Number(a[key]) || 0) - (Number(b[key]) || 0);
+    return dir === 'asc' ? diff : -diff;
+  });
 }
 
 function metricCell(value) {
   const number = Math.max(0, Math.min(1, Number(value) || 0));
   return `<td class="metric-cell"><span class="metric-value">${number.toFixed(4)}</span><div class="metric-bar"><span style="width:${number * 100}%"></span></div></td>`;
+}
+
+function aspirationCell(value) {
+  if (value === null || value === undefined || value === '') return '<td class="metric-cell aspiration-cell"><span class="metric-value metric-value--muted">—</span></td>';
+  const number = Math.max(1, Math.min(5, Number(value)));
+  const pct = ((number - 1) / 4) * 100;
+  return `<td class="metric-cell aspiration-cell"><span class="metric-value">${number.toFixed(1)}</span><div class="metric-bar"><span style="width:${pct}%"></span></div></td>`;
 }
 
 function brandsForRow(row) {

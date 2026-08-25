@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Results · LLMs as a new brand intermediary</title>
   <meta name="description" content="Brand recommendation metrics, raw model responses, and recommendation reasons." />
-  <link rel="stylesheet" href="index.css?v=20260820-6" />
+  <link rel="stylesheet" href="index.css?v=20260821-14" />
 </head>
 <body>
   <header class="site-header">
@@ -26,7 +26,7 @@
     <div class="page-shell analysis-results-page">
       <section class="results-section" id="results-section" aria-labelledby="results-title">
         <header class="results-heading">
-          <div><p class="section-kicker">Inspect results</p><h1 id="results-title">Brand recommendation measures</h1></div>
+          <div><p class="section-kicker">Inspect results</p><h1 id="results-title">Brand recommendation measures</h1><p class="result-source-badge is-hidden" id="result-source-badge"></p><button type="button" class="text-button result-source-switch is-hidden" id="result-source-switch"></button></div>
           <div class="download-menu">
             <button class="button button--secondary" id="download-menu-btn" type="button" aria-expanded="false">Download data</button>
             <div class="download-popover is-hidden" id="download-popover">
@@ -46,6 +46,8 @@
           <button class="result-tab is-active" type="button" role="tab" data-result-tab="metrics">Metrics</button>
           <button class="result-tab" type="button" role="tab" data-result-tab="raw">Raw responses</button>
           <button class="result-tab" type="button" role="tab" data-result-tab="reasons">Reasons</button>
+          <button class="result-tab" type="button" role="tab" data-result-tab="predictors">Real-world signals</button>
+          <button class="result-tab" type="button" role="tab" data-result-tab="by-category">By category</button>
         </div>
 
         <div class="result-panel" data-result-panel="metrics">
@@ -57,7 +59,7 @@
             <label><span>Theme</span><select id="result-theme-filter" disabled><option value="">All themes</option></select></label>
             <label><span>Brand</span><input id="result-brand-filter" type="search" placeholder="Filter brands" /></label>
           </div>
-          <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
+          <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@1">BRP@1<span class="sort-icon" data-sort-icon="BRP@1">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@3">BRP@3<span class="sort-icon" data-sort-icon="BRP@3">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@5">BRP@5<span class="sort-icon" data-sort-icon="BRP@5">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="MRR">MRR<span class="sort-icon" data-sort-icon="MRR">⇅</span></button></th><th>n</th><th class="sortable-th" title="Independent coder: Eloise"><button type="button" class="sort-th-btn" data-sort-key="aspiration_e">Score E<span class="sort-icon" data-sort-icon="aspiration_e">⇅</span></button></th><th class="sortable-th" title="Independent coder: Sanchary"><button type="button" class="sort-th-btn" data-sort-key="aspiration_s">Score S<span class="sort-icon" data-sort-icon="aspiration_s">⇅</span></button></th><th class="sortable-th" title="Adjudicated score"><button type="button" class="sort-th-btn" data-sort-key="aspiration_ed">Ed<span class="sort-icon" data-sort-icon="aspiration_ed">⇅</span></button></th><th class="sortable-th" title="Final aspiration score (mean of Score E / Score S / Ed)"><button type="button" class="sort-th-btn" data-sort-key="aspiration_avg">Avg<span class="sort-icon" data-sort-icon="aspiration_avg">⇅</span></button></th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
         </div>
 
         <div class="result-panel is-hidden" data-result-panel="raw">
@@ -86,11 +88,79 @@
             <tbody id="reasons-table-body"></tbody>
           </table></div>
         </div>
+
+        <div class="result-panel is-hidden" data-result-panel="predictors">
+          <div class="predictor-chart-block">
+            <div class="predictor-chart-heading">
+              <h3 id="predictor-chart-title">Real-world signal vs. LLM recommendation</h3>
+              <p id="predictor-chart-subtitle">Choose an axis pair below. Hover a dot for its brand name.</p>
+            </div>
+            <div class="predictor-axis-controls">
+              <label><span>X axis · real-world signal</span>
+                <select id="predictor-x-select"></select>
+              </label>
+              <label><span>Y axis · LLM outcome</span>
+                <select id="predictor-outcome-select">
+                  <option value="cf_BRP5">Context-free · BRP@5</option>
+                  <option value="cf_MRR">Context-free · MRR</option>
+                  <option value="nb_BRP5">Needs-based · BRP@5</option>
+                  <option value="nb_MRR">Needs-based · MRR</option>
+                </select>
+              </label>
+            </div>
+            <div class="predictor-legend" id="predictor-legend"></div>
+            <div class="predictor-scatter" id="predictor-scatter"></div>
+          </div>
+
+          <div class="predictor-table-heading">
+            <h3>Correlation with LLM recommendation, by real-world signal</h3>
+            <p class="predictor-table-hint">Click a row to plot that signal above.</p>
+          </div>
+          <div class="data-table-wrap"><table class="data-table predictor-table">
+            <thead><tr><th>Real-world signal</th><th>Correlation (r)</th><th>n brands</th><th>p-value</th></tr></thead>
+            <tbody id="predictor-table-body"></tbody>
+          </table></div>
+
+          <details class="analysis-details predictor-details">
+            <summary>Methodology, coverage gaps, and brand-level data (all 104 brands)</summary>
+            <div class="predictor-methodology" id="predictor-methodology"></div>
+            <div class="predictor-brand-controls">
+              <label><span class="sr-only">Filter brands</span><input id="predictor-brand-filter" type="search" placeholder="Filter by brand or category" /></label>
+              <p class="filter-result-count" id="predictor-brand-count"></p>
+            </div>
+            <div class="data-table-wrap predictor-brand-table-wrap"><table class="data-table predictor-brand-table">
+              <thead><tr><th>Category</th><th>Brand</th><th>Group</th><th>CF BRP@5</th><th>NB BRP@5</th><th>Awareness (%)</th><th>Search vol. (brand+cat)</th><th title="Brandwatch 12-month sampled estimate (5% sample scaled ×20)">Online mentions (Brandwatch 12mo est.)</th><th>Aspiration (1–5)</th></tr></thead>
+              <tbody id="predictor-brand-table-body"></tbody>
+            </table></div>
+          </details>
+        </div>
+
+        <div class="result-panel is-hidden" data-result-panel="by-category">
+          <div class="predictor-chart-heading">
+            <h3>Real-world signal vs. LLM recommendation, by category</h3>
+            <p>Same data as the Real-world signals tab, split into one panel per category so you can compare how the relationship looks within each one.</p>
+          </div>
+          <div class="predictor-axis-controls">
+            <label><span>X axis · real-world signal</span>
+              <select id="predictor-facet-x-select"></select>
+            </label>
+            <label><span>Y axis · LLM outcome</span>
+              <select id="predictor-facet-y-select">
+                <option value="cf_BRP5">Context-free · BRP@5</option>
+                <option value="cf_MRR">Context-free · MRR</option>
+                <option value="nb_BRP5">Needs-based · BRP@5</option>
+                <option value="nb_MRR">Needs-based · MRR</option>
+              </select>
+            </label>
+          </div>
+          <div class="predictor-legend" id="predictor-facet-legend"></div>
+          <div class="predictor-facet-grid" id="predictor-facet-grid"></div>
+        </div>
       </section>
     </div>
   </main>
 
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
-  <script src="analysis.js?v=20260820-6"></script>
+  <script src="analysis.js?v=20260825-15"></script>
 </body>
 </html>

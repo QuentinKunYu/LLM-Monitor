@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LLMs as a new brand intermediary</title>
   <meta name="description" content="An interactive appendix for reproducing an LLM brand recommendation experiment and calculating BRP@1, BRP@3, BRP@5, and MRR." />
-  <link rel="stylesheet" href="index.css?v=20260820-6" />
+  <link rel="stylesheet" href="index.css?v=20260820-10" />
 </head>
 <body>
   <header class="site-header">
@@ -325,7 +325,7 @@
                 <label><span>Theme</span><select id="result-theme-filter" disabled><option value="">All themes</option></select></label>
                 <label><span>Brand</span><input id="result-brand-filter" type="search" placeholder="Filter brands" /></label>
               </div>
-              <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th>BRP@1</th><th>BRP@3</th><th>BRP@5</th><th>MRR</th><th>n</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
+              <div class="data-table-wrap"><table class="data-table metrics-table"><thead><tr><th>Brand</th><th>Category</th><th>Model</th><th>Condition</th><th id="result-group-heading">Grouping</th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@1">BRP@1<span class="sort-icon" data-sort-icon="BRP@1">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@3">BRP@3<span class="sort-icon" data-sort-icon="BRP@3">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="BRP@5">BRP@5<span class="sort-icon" data-sort-icon="BRP@5">⇅</span></button></th><th class="sortable-th"><button type="button" class="sort-th-btn" data-sort-key="MRR">MRR<span class="sort-icon" data-sort-icon="MRR">⇅</span></button></th><th>n</th><th class="sortable-th" title="Independent coder: Eloise"><button type="button" class="sort-th-btn" data-sort-key="aspiration_e">Score E<span class="sort-icon" data-sort-icon="aspiration_e">⇅</span></button></th><th class="sortable-th" title="Independent coder: Sanchary"><button type="button" class="sort-th-btn" data-sort-key="aspiration_s">Score S<span class="sort-icon" data-sort-icon="aspiration_s">⇅</span></button></th><th class="sortable-th" title="Adjudicated score"><button type="button" class="sort-th-btn" data-sort-key="aspiration_ed">Ed<span class="sort-icon" data-sort-icon="aspiration_ed">⇅</span></button></th><th class="sortable-th" title="Final aspiration score (mean of Score E / Score S / Ed)"><button type="button" class="sort-th-btn" data-sort-key="aspiration_avg">Avg<span class="sort-icon" data-sort-icon="aspiration_avg">⇅</span></button></th></tr></thead><tbody id="metrics-table-body"></tbody></table></div>
             </div>
             <div class="result-panel is-hidden" data-result-panel="raw">
               <div class="result-filters">
@@ -395,8 +395,18 @@
     </form>
   </dialog>
 
+  <dialog id="password-dialog" class="prompt-dialog">
+    <form method="dialog">
+      <div class="dialog-heading"><div><p class="section-kicker">Run experiment</p><h2 id="password-dialog-title">Enter password</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">×</button></div>
+      <label for="password-input">Password</label>
+      <input type="password" id="password-input" autocomplete="off" spellcheck="false" />
+      <p id="password-error" class="dialog-error is-hidden">Incorrect password.</p>
+      <div class="dialog-actions"><span class="field-note">Required to start a run. Viewing results does not need a password.</span><div class="button-row"><button class="button button--secondary" value="cancel">Cancel</button><button class="button button--primary" id="password-submit-btn" type="button">Continue</button></div></div>
+    </form>
+  </dialog>
+
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
   <script src="default-prompts.js"></script>
-  <script src="app.js?v=20260820-6"></script>
+  <script src="app.js?v=20260820-10"></script>
 </body>
 </html>
