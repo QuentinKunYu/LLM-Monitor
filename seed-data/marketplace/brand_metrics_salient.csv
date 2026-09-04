@@ -1,0 +1,110 @@
+category,Brand,Source,Meaningful,Different,Salient,Demand Power,Pricing Power,Brand Spend,Ad Spend,Wikipedia Page Views,News (Brand Only),News (Brand + Cat),Google Trends (Brand Only),Google Trends (Brand + Cat),Awareness/Ownership (%)
+Boat Cruise,AmaWaterways,LLM context-free,,,,,,9448131,9448131,16265,546,422,76.56,10.9,
+Boat Cruise,American Cruise Lines,"BrandZ, LLM context-free",95,89,93,6.4,100,33010750,33010750,96436,256,256,100,100,
+Boat Cruise,Avalon Waterways,LLM context-free,,,,,,2933039,2933039,9335,166,159,23.4,1.6,
+Boat Cruise,Carnival,"BrandZ, LLM context-free",143,101,177,20,103,54333300,54334978,379536,6385,6385,3750,192,80
+Boat Cruise,Celebrity Cruises,"BrandZ, LLM context-free",86,108,69,6,100,66038660,66074298,194402,5944,5944,811.1,366,46
+Boat Cruise,City Cruises,LLM context-free,,,,,,114009,114009,2171,406,406,6.3,223.3,
+Boat Cruise,City Cruises by Hornblower,LLM context-free,,,,,,6612,6612,11556,674,40,1.5,3.1,
+Boat Cruise,CroisiEurope,LLM context-free,,,,,,0,0,4587,277,153,3.1,0,
+Boat Cruise,Disney Cruise Line,"BrandZ, LLM context-free",101,167,111,13.8,110,33150305,33150305,293422,1761,1761,1400,203.3,76
+Boat Cruise,Holland America Line,"BrandZ, LLM context-free",82,74,75,3.8,99,31398482,31399116,143409,6032,5685,368.4,122,40
+Boat Cruise,MSC Cruises,"BrandZ, LLM context-free",89,78,70,3.2,94,27590720,28304074,354783,8221,8221,866.7,333.3,
+Boat Cruise,NCL,"BrandZ, LLM context-free",109,78,95,4.7,97,69356389,69548870,255636,7918,7918,1900,557.1,63
+Boat Cruise,Princess (Cruises),"BrandZ, LLM context-free",101,90,90,8,98,58209550,59211677,199960,6458,6458,925,542.9,54
+Boat Cruise,Royal Caribbean,"BrandZ, LLM context-free",135,116,162,18.5,105,109471743,146540609,495383,25978,10348,3700,1033.3,71
+Boat Cruise,Uniworld Boutique River Cruises,LLM context-free,,,,,,30627,30627,9179,19,19,34.4,6.3,
+Boat Cruise,Viking (Cruising),"BrandZ, LLM context-free",77,104,70,4.6,100,52668075,53040492,11693,575,575,493.3,246.9,
+Boat Cruise,Other sources,,,,,,,,,,,,,,
+Boat Cruise,Costa (Cruises),BrandZ,79,72,81,2.8,96,0,0,97336,926,926,17.2,67.2,
+Boat Cruise,Crystal (Cruising),BrandZ,85,85,66,2.3,101,6626157,6649735,32955,318,318,21.9,28.1,
+Boat Cruise,Cunard,Search,,,,,,9134791,9168922,347067,4093,2497,87.5,25,20
+Boat Cruise,Oceania Cruises,BrandZ,75,80,67,3.2,98,19468612,19468612,63368,3587,3587,85.9,37.5,24
+Boat Cruise,Regent Seven Seas Cruises,BrandZ,83,78,60,2.6,99,67796868,67796868,64845,3146,3146,84.4,15.6,16
+Boat Cruise,Seabourn,Search,,,,,,13219870,13219870,47768,5546,5289,65.6,21.9,13
+Boat Cruise,Silversea,Search,,,,,,8136595,8136595,85286,5476,5105,134.1,37.5,
+Boat Cruise,Virgin Voyages,Search,,,,,,74999250,74999992,124742,1278,993,456.3,86,
+Boat Cruise,Windstar,Search,,,,,,81506,5203228,32976,978,615,46.9,14.1,14
+Cat Food,Blue Buffalo,"BrandZ, LLM context-free",107,124,124,10,103,60085331,135250343,,908,131,100,100,7
+Cat Food,Fancy Feast,"BrandZ, LLM context-free",94,84,100,6.3,97,102563,35393681,9301,227,54,105,80,16
+Cat Food,Friskies,"BrandZ, LLM context-free",107,91,109,8.3,98,19749203,23529929,12267,325,41,60,66.7,29
+Cat Food,Hill's,"BrandZ, LLM context-free",110,110,108,7.8,104,1246988,26170799,28166,19545,128,120,53.3,7
+Cat Food,IAMS,"BrandZ, LLM context-free",93,102,100,7.3,101,5326845,38224397,15653,1603,46,81.7,53.3,9
+Cat Food,Merrick,LLM context-free,,,,,,101549,113090,,21597,8,0,13.3,
+Cat Food,Orijen,"BrandZ, LLM context-free",90,93,88,3.3,98,1194827,1383815,7916,70,14,50,33.3,
+Cat Food,Purina,LLM context-free,,,,,,33042374,45999021,10380,3706,280,820,250,15
+Cat Food,Royal Canin,"BrandZ, LLM context-free",97,111,91,5.8,103,5083954,5408157,74013,1670,63,285.7,86.7,
+Cat Food,Taste of the Wild,LLM context-free,,,,,,91761,91761,,89,2,46.7,13.3,
+Cat Food,Wellness,LLM context-free,,,,,,825435,1362165,8132,401011,335,1.7,33.3,
+Cat Food,Wellness CORE,LLM context-free,,,,,,37275,37275,,30,1,,6.7,
+Cat Food,Wellness Complete Health,LLM context-free,,,,,,29013,29013,,7,3,,6.7,
+Cat Food,Other sources,,,,,,,,,,,,,,
+Cat Food,9 Lives,Search,,,,,,0,0,5745,1081,1059,10,6.7,15
+Cat Food,Acana,Search,,,,,,1189117,1585996,,197,14,36.7,20,
+Cat Food,Cat Chow,BrandZ,108,78,119,8.7,97,2696465,5348536,165,157,13,26.7,20,18
+Cat Food,Freshpet,BrandZ,89,137,72,5.1,105,30009121,71921057,14123,4219,1141,83.3,6.7,
+Cat Food,Meow Mix,Search,,,,,,2392071,2392071,32684,265,114,31.7,26.7,23
+Cat Food,Nutrish,BrandZ,87,99,87,5.2,99,827542,1052225,,1095,1060,26.7,13.3,
+Cat Food,Nutro,BrandZ,96,103,100,5.4,100,447,6981,6050,689,10,6.7,6.7,
+Cat Food,Purina One,BrandZ,112,91,111,8.2,99,8198997,24669408,39,336,57,100,66.7,6
+Cat Food,Purina Pro Plan,BrandZ,109,95,97,7,99,22977529,35983631,,2290,55,329.2,86.7,
+Cat Food,Sheba,Search,,,,,,7463898,20324054,11177,5510,84,36.7,26.7,7
+Cat Food,Whiskas,Search,,,,,,5530,5530,28949,1361,217,8.3,0,6
+Cat Food,Ziwi Peak,Search,,,,,,178263,178263,3862,6,2,15,13.3,
+Coffee Maker,Bonavita,LLM context-free,,,,,,61148,61148,,2971,2,12.9,35.3,26
+Coffee Maker,Breville,LLM context-free,,,,,,3621221,3737172,76240,2008,414,1050,223.1,32
+Coffee Maker,Bunn,LLM context-free,,,,,,187183,210551,6795,9453,8,110,182.4,28
+Coffee Maker,Cuisinart,"BrandZ, LLM context-free",80,91,77,4.4,98,10781363,11913516,38218,861,142,783.3,740,31
+Coffee Maker,DeLonghi,LLM context-free,,,,,,4689132,5128209,57479,829,144,400,47.1,23
+Coffee Maker,Hamilton Beach,"BrandZ, LLM context-free",75,84,86,4.8,95,87328,318048,30957,892,65,300,208.3,29
+Coffee Maker,Keurig,"BrandZ, LLM context-free",96,113,84,5.8,102,12130655,15171507,127115,27034,318,1183.3,1300,50
+Coffee Maker,Mr. Coffee,LLM context-free,,,,,,7161,7161,21750,154,28,100,100,47
+Coffee Maker,Nespresso,LLM context-free,,,,,,48553936,72046217,166121,8519,1161,1933.3,208.3,33
+Coffee Maker,Ninja,LLM context-free,,,,,,1563200,9643308,690240,31083,608,5200,1033.3,
+Coffee Maker,OXO,LLM context-free,,,,,,400758,681926,33154,4749,28,322.2,129.4,13
+Coffee Maker,Technivorm,LLM context-free,,,,,,1574,1574,12137,25,13,97.1,41.2,
+Coffee Maker,Other sources,,,,,,,,,,,,,,
+Coffee Maker,Bella,Search,,,,,,,,,166402,53,,100,23
+Coffee Maker,Black+Decker,BrandZ,80,81,90,5.1,94,276724,317118,74235,7759,29,514.3,82.4,35
+Coffee Maker,Braun,Search,,,,,,398040,19143686,10280,122714,112,383.3,82.4,25
+Coffee Maker,Brentwood,Search,,,,,,,,,20195,4,,11.8,25
+Coffee Maker,Capresso,Search,,,,,,1275,1275,1939,13,9,22.9,23.5,30
+Coffee Maker,Jura,Search,,,,,,0,1283295,14197,55536,124,162.9,76.5,16
+Coffee Maker,KitchenAid,BrandZ,105,89,95,6.3,100,14059878,15003949,80381,2287,184,2000,107.1,11
+Coffee Maker,Nescafe,Search,,,,,,835508,4717028,118924,7583,109,220.7,0,26
+Coffee Maker,Philips,BrandZ,88,103,86,6.3,99,13547099,17059505,585249,67811,543,1833.3,47.1,20
+Cordless Drills,Black+Decker,"BrandZ, LLM context-free",119,87,141,10.7,101,276724,317118,74235,7759,40,29.6,82.4,87.3
+Cordless Drills,Bosch,"BrandZ, LLM context-free",102,110,99,7.8,102,25960908,27643988,348515,176165,135,108.7,50,63
+Cordless Drills,Craftsman,"BrandZ, LLM context-free",121,83,129,10,99,2426921,6025357,88672,12082,41,95.8,118.2,81.3
+Cordless Drills,Dewalt,"BrandZ, LLM context-free",109,101,118,8.7,101,1795643,1837339,157037,3708,140,152.3,380,69.7
+Cordless Drills,Makita,"BrandZ, LLM context-free",84,92,86,4.8,99,0,8500,110685,5635,59,32.4,100,39.5
+Cordless Drills,Milwaukee,"BrandZ, LLM context-free",93,102,84,5.5,98,3571997,5286202,196410,102678,36,173,283.3,42.4
+Cordless Drills,Ryobi,"BrandZ, LLM context-free",105,99,95,6.6,99,1069312,2224117,130236,1205,31,100,100,40.4
+Cordless Drills,Other sources (context),,,,,,,,,,,,,,
+Cordless Drills,Festool,Search,,,,,,2841468,2841468,43112,327,0,8.5,15,9.4
+Cordless Drills,Hilti,Search,,,,,,1542775,1687364,120047,2631,5,11.3,15,16.8
+Cordless Drills,Kobalt,BrandZ,80,91,87,5.1,97,35000,35000,42830,4621,1,23.9,45,
+Cordless Drills,Metabo HPT,BrandZ,98,108,92,3.7,100,409213,663084,38264,21,3,1.4,15,9.5
+Cordless Drills,Ridgid,Search,,,,,,666079,666079,32031,415,1,29.6,25,25.5
+Cordless Drills,Skil,BrandZ,89,92,81,5.1,96,408060,408114,24130,1308,3,7,10,
+Cordless Drills,Worx,BrandZ,93,110,77,4.2,101,243838,279710,35948,6742,16,8.5,15,
+Hiking Jacket,Arc'teryx,LLM context-free,,,,,,6512367,6571127,294592,1336,3,850,400,19
+Hiking Jacket,Black Diamond,LLM context-free,,,,,,158255,158255,32731,5502,0,237,500,27
+Hiking Jacket,Columbia,LLM context-free,,,,,,1098371,9937908,135638,498162,3,1266.7,1100,81
+Hiking Jacket,Mammut,LLM context-free,,,,,,336555,336555,7811,3951,2,63.5,33.3,24
+Hiking Jacket,Marmot,LLM context-free,,,,,,11669,11669,32772,1886,1,157.6,100,29
+Hiking Jacket,Montane,LLM context-free,,,,,,,,,4817,2,9.6,0,
+Hiking Jacket,Mountain Hardwear,LLM context-free,,,,,,441,1072902,22810,209,0,113,33.3,19
+Hiking Jacket,Outdoor Research,LLM context-free,,,,,,247103,247103,12728,112,2,100,33.3,23
+Hiking Jacket,Patagonia,LLM context-free,,,,,,1419871,2305772,218560,36409,2,2000,3700,51
+Hiking Jacket,REI Co-op,LLM context-free,,,,,,388118,16375826,107619,370,0,1233.3,1800,38
+Hiking Jacket,Rab,LLM context-free,,,,,,138393,138393,35439,12500,2,98.1,33.3,
+Hiking Jacket,The North Face,"BrandZ, LLM context-free",96,102,87,6.2,99,1652232,18690582,292248,4140,3,3400,1000,82
+Hiking Jacket,Other sources,,,,,,,,,,,,,,
+Hiking Jacket,Eddie Bauer,Search,,,,,,4036492,8634642,104900,644,1,537.5,33.3,67
+Hiking Jacket,Jack Wolfskin,Search,,,,,,0,0,42581,1001,2,11.5,0,19
+Hiking Jacket,Kathmandu,Search,,,,,,3745,3745,37632,44546,0,7.7,0,20
+Hiking Jacket,KÜHL,Search,,,,,,146251,152647,,26812,0,192.6,33.3,20
+Hiking Jacket,L.L.Bean,Search,,,,,,133331014,145320259,129306,775,1,2150,33.3,
+Hiking Jacket,Mountain Equipment,Search,,,,,,,,33213,355,0,5.8,0,23
+Hiking Jacket,icebreaker,Search,,,,,,1006249,1006249,20001,6063,0,48.1,100,20

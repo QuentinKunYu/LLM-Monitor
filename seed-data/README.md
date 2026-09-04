@@ -21,34 +21,49 @@ GitHub site").
 - `results/needs_based_brand_metrics.csv` — per-model, per-brand,
   per-category BRP@1/3/5 and MRR from the needs-based condition (2,400
   recommendation lists). Source: `data/final/needs_based_brand_metrics.csv`.
+- `marketplace/brand_metrics_salient.csv` — per-brand, per-category
+  marketplace measures: BrandZ brand equity (Meaningful, Different,
+  Salient, Demand Power, Pricing Power), Kantar Brand/Ad Spend, Wikipedia
+  page views, LexisNexis (Nexis Uni) press mentions (brand-only and
+  brand+category), and Google Trends (brand-only and brand+category).
+  Aspiration Score has been dropped from this export -- it belongs to a
+  separate, unrelated coding exercise (see "Deliberately excluded" below)
+  and is not used anywhere in this paper. Source:
+  `brand_metrics_salient.xlsx` (research folder root, "BrandData"-style
+  per-category sheets).
+- `marketplace/metric_metadata.csv` — collection date, period, and source
+  for every marketplace metric above, including the exact LexisNexis
+  search strings per category (e.g. cordless drills:
+  `"[brand]" AND ("cordless drill" OR "power drill")`) and the Google
+  Trends anchor-normalization formula. This is the "full definitions,
+  sources, and collection periods" / "search specifications, category
+  anchors" content the Methodology section promises is in the supplement.
+  Source: `brand_metrics_salient.xlsx`, "Metric Metadata" sheet.
 
-Figures 2, 3, 4, and 5 in the paper aggregate these per-model rows across
-the six LLMs before plotting; that aggregation step is not yet checked
-into this repository (see "Still missing" below).
+Figures 2, 3, 4, and 5 in the paper aggregate the per-model result rows
+across the six LLMs and merge them with the marketplace measures before
+plotting; that aggregation/merge step is not yet checked into this
+repository (see "Still missing" below).
 
 ## Still missing before this folder backs the paper's data-availability claim
 
-- The merged brand-level marketplace-visibility dataset (BrandZ salience,
-  log ad spend, log press mentions, log Brandwatch mentions, log Google
-  Trends, log Wikipedia views, sqrt(MRR)) for the n=82 brands used in
-  Figures 2-5 and the ridge/lasso regression. The closest artifact in the
-  working tree, `data/analysis/LLM_vs_RealWorld_Brand_Metrics.xlsx`,
-  covers a broader 104-brand universe with different predictors (BrandZ
-  Meaningful/Different/Salient, Aspiration Score, Demand/Pricing Power)
-  and no Brandwatch column, so it is a different dataset and has not been
-  copied here.
-- The R script that fits the fractional-logit ridge/lasso model
+- **Brandwatch data.** Searched the entire connected working folder,
+  including files that had to be force-downloaded from iCloud first --
+  BrandZ, Kantar, Wikipedia, LexisNexis, Google Trends, and Statista are
+  all documented in `marketplace/metric_metadata.csv`, but there is no
+  Brandwatch mention-volume data anywhere. The paper's "Brandwatch
+  captures online brand conversation" measure has no backing file.
+- **The merged n=82 brand-level dataset** actually used in the ridge/lasso
+  regression (Figures 4-5), i.e. `brand_metrics_salient.csv` joined with
+  the aggregated MRR/BRP results and restricted/filtered down to n=82
+  brands. Not found as a saved artifact anywhere.
+- **The R script** that fits the fractional-logit ridge/lasso model
   (`glm`/`glmnet`, quasibinomial family) described in "Explaining Brand
-  Recommendation Prominence." No `.R` file currently exists anywhere in
-  the repository; `scripts/run-rq1-logit.R` was deleted, and based on
-  `data/analysis/rq1/rq1_summary.md`, it was an earlier logistic-regression
-  approach (binary visibility groups) that was superseded by the paper's
-  final continuous-predictor ridge method.
-- A data dictionary documenting variable definitions, sources, and
-  collection periods (BrandZ, Kantar, LexisNexis, Brandwatch, Google
-  Trends, Wikipedia) and the search specifications / category anchors
-  referenced in Methodology ("Full definitions, sources, and collection
-  periods are provided in the supplement").
+  Recommendation Prominence." No `.R` or `.Rmd` file exists anywhere in
+  the connected working folder. `scripts/run-rq1-logit.R` was deleted, and
+  based on `data/analysis/rq1/rq1_summary.md`, it was an earlier
+  logistic-regression approach (binary visibility groups) superseded by
+  the paper's final continuous-predictor ridge method -- not a substitute.
 
 ## Deliberately excluded
 

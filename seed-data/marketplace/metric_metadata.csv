@@ -1,0 +1,66 @@
+Metric,Category,Collection Date,Period,Source
+meaningful,Boat Cruise,May 2023,,BrandZ
+meaningful,Cat Food,July 2025,,BrandZ
+meaningful,Coffee Maker,April 2024,,BrandZ
+meaningful,Cordless Drills,Sep 2022,,BrandZ
+meaningful,Hiking Jacket,May 2025,,BrandZ
+different,Boat Cruise,May 2023,,BrandZ
+different,Cat Food,July 2025,,BrandZ
+different,Coffee Maker,April 2024,,BrandZ
+different,Cordless Drills,Sep 2022,,BrandZ
+different,Hiking Jacket,May 2025,,BrandZ
+salient,Boat Cruise,May 2023,,BrandZ
+salient,Cat Food,July 2025,,BrandZ
+salient,Coffee Maker,April 2024,,BrandZ
+salient,Cordless Drills,Sep 2022,,BrandZ
+salient,Hiking Jacket,May 2025,,BrandZ
+demand power,Boat Cruise,May 2023,,BrandZ
+demand power,Cat Food,July 2025,,BrandZ
+demand power,Coffee Maker,April 2024,,BrandZ
+demand power,Cordless Drills,Sep 2022,,BrandZ
+demand power,Hiking Jacket,May 2025,,BrandZ
+pricing power,Boat Cruise,May 2023,,BrandZ
+pricing power,Cat Food,July 2025,,BrandZ
+pricing power,Coffee Maker,April 2024,,BrandZ
+pricing power,Cordless Drills,Sep 2022,,BrandZ
+pricing power,Hiking Jacket,May 2025,,BrandZ
+paid - brand spend,Boat Cruise,"May 18, 2026",Rolling 12 Months,Kantar
+paid - brand spend,Cat Food,"May 18, 2026",Rolling 12 Months,Kantar
+paid - brand spend,Coffee Maker,"May 18, 2026",Rolling 12 Months,Kantar
+paid - brand spend,Cordless Drills,"May  18, 2026",Rolling 12 Months,Kantar
+paid - brand spend,Hiking Jacket,"May 19, 2026",Rolling 12 Months,Kantar
+paid - ad spend,Boat Cruise,"May 18, 2026",Rolling 12 Months,Kantar
+paid - ad spend,Cat Food,"May 18, 2026",Rolling 12 Months,Kantar
+paid - ad spend,Coffee Maker,"May 18, 2026",Rolling 12 Months,Kantar
+paid - ad spend,Cordless Drills,"May 18, 2026",Rolling 12 Months,Kantar
+paid - ad spend,Hiking Jacket,"May 19, 2026",Rolling 12 Months,Kantar
+earned - wikipedia,Boat Cruise,,1/1/2025 - 12/31/2025,Wikipedia Pageviews Analysis
+earned - wikipedia,Cat Food,,1/1/2025 - 12/31/2025,Wikipedia Pageviews Analysis
+earned - wikipedia,Coffee Maker,,1/1/2025 - 12/31/2025,Wikipedia Pageviews Analysis
+earned - wikipedia,Cordless Drills,,1/1/2025 - 12/31/2025,Wikipedia Pageviews Analysis
+earned - wikipedia,Hiking Jacket,,1/1/2025 - 12/31/2025,Wikipedia Pageviews Analysis
+earned - news (brand only),Boat Cruise,"""[brand]""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand only),Cat Food,"""[brand]""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand only),Coffee Maker,"""[brand]""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand only),Cordless Drills,"""[brand]""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand only),Hiking Jacket,"""[brand]""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand + category),Boat Cruise,"""[brand]"" AND ""cruise""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand + category),Cat Food,"""[brand]"" AND ""cat food""",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand + category),Coffee Maker,"""[brand]"" AND (""coffee maker"" OR ""coffee machine"")",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand + category),Cordless Drills,"""[brand]"" AND (""cordless drill"" OR ""power drill"")",1/1/2025 - 12/31/2025,Nexis Uni
+earned - news (brand + category),Hiking Jacket,"""[brand]"" AND ""hiking jacket""",1/1/2025 - 12/31/2025,Nexis Uni
+search - google trends (brand only),Boat Cruise,"May 19, 2026",Past Year,brand_score × 100 / anchor_score_in_that_query
+search - google trends (brand only),Cat Food,"May 20, 2026",Past Year,
+search - google trends (brand only),Coffee Maker,"May 20, 2026",Past Year,
+search - google trends (brand only),Cordless Drills,"May 20, 2026",Past Year,
+search - google trends (brand only),Hiking Jacket,"May 20, 2026",Past Year,
+search - google trends (brand + category),Boat Cruise,"May 20, 2026",Past Year,"[brand] + ""cruise"""
+search - google trends (brand + category),Cat Food,"May 20, 2026",Past Year,
+search - google trends (brand + category),Coffee Maker,"May 20, 2026",Past Year,
+search - google trends (brand + category),Cordless Drills,"May 20, 2026",Past Year,
+search - google trends (brand + category),Hiking Jacket,"May 20, 2026",Past Year,
+market share,Boat Cruise,,"24th of June to 20th of July, 2019",Statista
+market share,Cat Food,May 2019,,Statista
+market share,Coffee Maker,"n=1,199",11 September 2025 to 28 October 2025,Statista
+market share,Cordless Drills,,27th of November to 2nd of December 2017,Statista
+market share,Hiking Jacket,Nov 2024,,Statista
