@@ -67,23 +67,17 @@ function safeCompare(a, b) {
   return left.length === right.length && crypto.timingSafeEqual(left, right);
 }
 
-function requirePassword(req, res, next) {
+// Gates only endpoints that can trigger paid provider API calls. Reading the
+// interface and existing analysis remains available without a password.
+function requireRunPassword(req, res, next) {
   if (!APP_PASSWORD) return next();
 
-  const authHeader = req.get('authorization') || '';
-  const [scheme, encoded] = authHeader.split(' ');
-  if (scheme === 'Basic' && encoded) {
-    const decoded = Buffer.from(encoded, 'base64').toString('utf8');
-    const separator = decoded.indexOf(':');
-    const password = separator >= 0 ? decoded.slice(separator + 1) : decoded;
-    if (safeCompare(password, APP_PASSWORD)) return next();
-  }
+  const provided = req.get('x-app-password') || '';
+  if (safeCompare(provided, APP_PASSWORD)) return next();
 
-  res.set('WWW-Authenticate', 'Basic realm="LLM Brand Experiment"');
-  return res.status(401).send('Authentication required');
+  return res.status(401).json({ error: 'A valid password is required to run experiments.' });
 }
 
-app.use(requirePassword);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ═══════════════════════════════════════════════════════════════════
@@ -605,7 +599,7 @@ app.get('/api/archive/results', (req, res) => {
   }
 });
 
-app.post('/api/experiments', (req, res) => {
+app.post('/api/experiments', requireRunPassword, (req, res) => {
   try {
     const includeNeedsBased = req.body?.includeNeedsBased !== false;
     const requestedPrompts = includeNeedsBased
@@ -718,7 +712,7 @@ app.post('/api/experiments/:id/cancel', (req, res) => {
   res.json(publicExperimentStatus(experiment));
 });
 
-app.post('/api/experiments/:id/retry', (req, res) => {
+app.post('/api/experiments/:id/retry', requireRunPassword, (req, res) => {
   const experiment = authorizeExperiment(req, res);
   if (!experiment) return;
   if (experiment.status === 'running' || experiment.status === 'cancelling') {
@@ -749,7 +743,7 @@ app.post('/api/experiments/:id/retry', (req, res) => {
  *
  * Body: { modelId, category, subCategory, promptTemplate, replicates, temperature, maxOutputTokens }
  */
-app.post('/api/run', (req, res) => {
+app.post('/api/run', requireRunPassword, (req, res) => {
   const {
     modelId,
     category,
@@ -834,7 +828,7 @@ app.post('/api/run', (req, res) => {
  *
  * Body: { modelId, promptTemplate, replicates, temperature, maxOutputTokens }
  */
-app.post('/api/run-all', (req, res) => {
+app.post('/api/run-all', requireRunPassword, (req, res) => {
   const {
     modelId,
     promptTemplate,
@@ -1046,7 +1040,7 @@ app.get('/api/study3/needs-prompts', (req, res) => {
   }
 });
 
-app.post('/api/study3/needs/run', (req, res) => {
+app.post('/api/study3/needs/run', requireRunPassword, (req, res) => {
   if (study3NeedsRun?.status === 'running') {
     return res.status(409).json({ error: 'Study 3 needs-based run is already running.' });
   }

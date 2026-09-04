@@ -54,22 +54,43 @@ async function startServer(env = {}) {
   };
 }
 
-function basicAuth(password) {
-  return `Basic ${Buffer.from(`user:${password}`).toString('base64')}`;
-}
-
-test('APP_PASSWORD protects HTTP endpoints with basic auth', async () => {
+test('APP_PASSWORD protects only run-triggering endpoints', async () => {
   const server = await startServer({ APP_PASSWORD: 'secret' });
   try {
-    const unauthenticated = await fetch(`${server.baseUrl}/api/config`);
-    assert.equal(unauthenticated.status, 401);
-    assert.equal(unauthenticated.headers.get('www-authenticate'), 'Basic realm="LLM Brand Experiment"');
+    const config = await fetch(`${server.baseUrl}/api/config`);
+    assert.equal(config.status, 200);
+    const prompts = await fetch(`${server.baseUrl}/api/prompts`);
+    assert.equal(prompts.status, 200);
 
-    const authenticated = await fetch(`${server.baseUrl}/api/config`, {
-      headers: { Authorization: basicAuth('secret') },
+    const runBody = {
+      models: ['gpt-5.5'],
+      categories: ['cordless drills'],
+      includeNeedsBased: false,
+      contextFreeReplicates: 1,
+      dryRun: true,
+      promptTemplate,
+    };
+
+    const unauthenticated = await fetch(`${server.baseUrl}/api/experiments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(runBody),
     });
-    assert.equal(authenticated.status, 200);
-    assert.equal((await authenticated.json()).categories.length > 0, true);
+    assert.equal(unauthenticated.status, 401);
+
+    const wrongPassword = await fetch(`${server.baseUrl}/api/experiments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-App-Password': 'nope' },
+      body: JSON.stringify(runBody),
+    });
+    assert.equal(wrongPassword.status, 401);
+
+    const authenticated = await fetch(`${server.baseUrl}/api/experiments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-App-Password': 'secret' },
+      body: JSON.stringify(runBody),
+    });
+    assert.equal(authenticated.status, 202);
   } finally {
     await server.stop();
   }
@@ -77,7 +98,7 @@ test('APP_PASSWORD protects HTTP endpoints with basic auth', async () => {
 
 test('unified dry run is token-scoped and never persists supplied API keys', async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-brand-experiment-'));
-  const server = await startServer({ DATA_DIR: dataDir });
+  const server = await startServer({ DATA_DIR: dataDir, APP_PASSWORD: '' });
   const secretValues = {
     openai: 'never-store-openai-secret',
     google: 'never-store-google-secret',
