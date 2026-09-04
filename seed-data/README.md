@@ -50,8 +50,8 @@ repository (see "Still missing" below).
 - `study1/raw_results.csv` and `study3/raw_results.csv` -- the full raw,
   per-replicate LLM responses (prompt + response text) behind the
   category-only (study1) and needs-based (study3) conditions. Pulled from
-  the `publish` remote's `main` branch (github.com/QuentinKunYu/LLM-Monitor),
-  which already had these committed. This is the rawest level of the data
+  this project's separate (non-anonymized) deployment repository, which
+  already had these committed. This is the rawest level of the data
   -- more complete than `results/*_brand_metrics.csv` above, since anyone
   can recompute BRP/MRR from these directly. Checked for identifying
   strings before copying; found none.
