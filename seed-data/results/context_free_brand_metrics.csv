@@ -1,0 +1,397 @@
+sub_category,model_id,brand,total_mentions,n_replicates,BRP@1,BRP@3,BRP@5,MRR,prompt_condition
+cordless drills,gpt-5.5,Black+Decker,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.5,Bosch,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cordless drills,gpt-5.5,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,gpt-5.5,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.5,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.5,Makita,40,40,0.0000,1.0000,1.0000,0.4333,context-free
+cordless drills,gpt-5.5,Milwaukee,40,40,0.0000,1.0000,1.0000,0.4000,context-free
+cordless drills,gpt-5.5,Ryobi,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+cordless drills,gpt-5.4-mini,Black+Decker,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.4-mini,Bosch,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cordless drills,gpt-5.4-mini,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,gpt-5.4-mini,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.4-mini,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gpt-5.4-mini,Makita,40,40,0.0000,1.0000,1.0000,0.4875,context-free
+cordless drills,gpt-5.4-mini,Milwaukee,40,40,0.0000,1.0000,1.0000,0.3458,context-free
+cordless drills,gpt-5.4-mini,Ryobi,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+cordless drills,gemini-3.1-pro-preview,Black+Decker,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-3.1-pro-preview,Bosch,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cordless drills,gemini-3.1-pro-preview,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,gemini-3.1-pro-preview,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-3.1-pro-preview,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-3.1-pro-preview,Makita,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+cordless drills,gemini-3.1-pro-preview,Milwaukee,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+cordless drills,gemini-3.1-pro-preview,Ryobi,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+cordless drills,gemini-2.5-flash,Black+Decker,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-2.5-flash,Bosch,40,40,0.0000,0.0000,1.0000,0.2063,context-free
+cordless drills,gemini-2.5-flash,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,gemini-2.5-flash,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-2.5-flash,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,gemini-2.5-flash,Makita,40,40,0.0000,0.5250,1.0000,0.3133,context-free
+cordless drills,gemini-2.5-flash,Milwaukee,40,40,0.0000,1.0000,1.0000,0.4792,context-free
+cordless drills,gemini-2.5-flash,Ryobi,40,40,0.0000,0.4750,1.0000,0.2846,context-free
+cordless drills,claude-opus-4-7,Black+Decker,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,claude-opus-4-7,Bosch,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cordless drills,claude-opus-4-7,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,claude-opus-4-7,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,claude-opus-4-7,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,claude-opus-4-7,Makita,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+cordless drills,claude-opus-4-7,Milwaukee,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+cordless drills,claude-opus-4-7,Ryobi,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+cordless drills,claude-sonnet-4-6,Black+Decker,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+cordless drills,claude-sonnet-4-6,Bosch,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cordless drills,claude-sonnet-4-6,DeWalt,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cordless drills,claude-sonnet-4-6,Festool,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,claude-sonnet-4-6,Hilti,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cordless drills,claude-sonnet-4-6,Makita,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+cordless drills,claude-sonnet-4-6,Milwaukee,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+cordless drills,claude-sonnet-4-6,Ryobi,39,40,0.0000,0.0000,0.9750,0.1950,context-free
+hiking jacket,gpt-5.5,Arc'teryx,40,40,0.4750,1.0000,1.0000,0.7250,context-free
+hiking jacket,gpt-5.5,Black Diamond,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.5,Columbia,8,40,0.0000,0.0000,0.2000,0.0475,context-free
+hiking jacket,gpt-5.5,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.5,Mammut,6,40,0.0000,0.0000,0.1500,0.0325,context-free
+hiking jacket,gpt-5.5,Marmot,33,40,0.0000,0.0000,0.8250,0.1950,context-free
+hiking jacket,gpt-5.5,Montane,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.5,Outdoor Research,33,40,0.0000,0.0000,0.8250,0.1750,context-free
+hiking jacket,gpt-5.5,Patagonia,40,40,0.5250,1.0000,1.0000,0.7625,context-free
+hiking jacket,gpt-5.5,Rab,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.5,The North Face,40,40,0.0000,1.0000,1.0000,0.3458,context-free
+hiking jacket,gpt-5.4-mini,Arc'teryx,40,40,0.0250,1.0000,1.0000,0.4583,context-free
+hiking jacket,gpt-5.4-mini,Black Diamond,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.4-mini,Columbia,39,40,0.0000,0.0000,0.9750,0.2150,context-free
+hiking jacket,gpt-5.4-mini,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.4-mini,Mammut,7,40,0.0000,0.0000,0.1750,0.0425,context-free
+hiking jacket,gpt-5.4-mini,Marmot,33,40,0.0000,0.0000,0.8250,0.1875,context-free
+hiking jacket,gpt-5.4-mini,Montane,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.4-mini,Outdoor Research,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gpt-5.4-mini,Patagonia,40,40,0.7750,1.0000,1.0000,0.8875,context-free
+hiking jacket,gpt-5.4-mini,Rab,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+hiking jacket,gpt-5.4-mini,The North Face,40,40,0.2000,1.0000,1.0000,0.4875,context-free
+hiking jacket,gemini-3.1-pro-preview,Arc'teryx,40,40,0.0250,1.0000,1.0000,0.4833,context-free
+hiking jacket,gemini-3.1-pro-preview,Black Diamond,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,Columbia,40,40,0.0000,0.0000,1.0000,0.2487,context-free
+hiking jacket,gemini-3.1-pro-preview,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,Mammut,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,Marmot,40,40,0.0000,0.0000,1.0000,0.2013,context-free
+hiking jacket,gemini-3.1-pro-preview,Montane,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,Outdoor Research,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,Patagonia,40,40,0.9750,1.0000,1.0000,0.9875,context-free
+hiking jacket,gemini-3.1-pro-preview,Rab,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-3.1-pro-preview,The North Face,40,40,0.0000,1.0000,1.0000,0.3625,context-free
+hiking jacket,gemini-2.5-flash,Arc'teryx,40,40,0.9000,1.0000,1.0000,0.9458,context-free
+hiking jacket,gemini-2.5-flash,Black Diamond,6,40,0.0000,0.0000,0.1500,0.0375,context-free
+hiking jacket,gemini-2.5-flash,Columbia,7,40,0.0000,0.0000,0.1750,0.0400,context-free
+hiking jacket,gemini-2.5-flash,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,gemini-2.5-flash,Mammut,14,40,0.0000,0.0000,0.3500,0.0750,context-free
+hiking jacket,gemini-2.5-flash,Marmot,5,40,0.0000,0.0000,0.1250,0.0287,context-free
+hiking jacket,gemini-2.5-flash,Montane,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+hiking jacket,gemini-2.5-flash,Outdoor Research,39,40,0.0000,0.2000,0.9750,0.2492,context-free
+hiking jacket,gemini-2.5-flash,Patagonia,40,40,0.1000,1.0000,1.0000,0.5500,context-free
+hiking jacket,gemini-2.5-flash,Rab,15,40,0.0000,0.0000,0.3750,0.0750,context-free
+hiking jacket,gemini-2.5-flash,The North Face,33,40,0.0000,0.8000,0.8250,0.2771,context-free
+hiking jacket,claude-opus-4-7,Arc'teryx,40,40,0.8250,1.0000,1.0000,0.9125,context-free
+hiking jacket,claude-opus-4-7,Black Diamond,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,Columbia,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+hiking jacket,claude-opus-4-7,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,Mammut,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,Marmot,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+hiking jacket,claude-opus-4-7,Montane,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,Outdoor Research,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,Patagonia,40,40,0.1750,1.0000,1.0000,0.5875,context-free
+hiking jacket,claude-opus-4-7,Rab,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-opus-4-7,The North Face,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+hiking jacket,claude-sonnet-4-6,Arc'teryx,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+hiking jacket,claude-sonnet-4-6,Black Diamond,39,40,0.0000,0.0000,0.9750,0.1950,context-free
+hiking jacket,claude-sonnet-4-6,Columbia,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+hiking jacket,claude-sonnet-4-6,KUHL,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-sonnet-4-6,Mammut,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-sonnet-4-6,Marmot,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+hiking jacket,claude-sonnet-4-6,Montane,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-sonnet-4-6,Outdoor Research,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-sonnet-4-6,Patagonia,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+hiking jacket,claude-sonnet-4-6,Rab,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+hiking jacket,claude-sonnet-4-6,The North Face,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+coffee maker,gpt-5.5,Bonavita,3,40,0.0000,0.0750,0.0750,0.0250,context-free
+coffee maker,gpt-5.5,Braun,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.5,Breville,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+coffee maker,gpt-5.5,Cuisinart,40,40,0.0000,0.5250,1.0000,0.3508,context-free
+coffee maker,gpt-5.5,De'Longhi,16,40,0.0000,0.2750,0.4000,0.1542,context-free
+coffee maker,gpt-5.5,Hamilton Beach,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.5,Keurig,35,40,0.0000,0.5250,0.8750,0.2700,context-free
+coffee maker,gpt-5.5,Mr. Coffee,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.5,Nespresso,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.5,Ninja,40,40,0.0000,0.3500,1.0000,0.2825,context-free
+coffee maker,gpt-5.5,OXO,1,40,0.0000,0.0250,0.0250,0.0083,context-free
+coffee maker,gpt-5.5,Technivorm,25,40,0.0000,0.2250,0.6250,0.1925,context-free
+coffee maker,gpt-5.4-mini,Bonavita,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.4-mini,Braun,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.4-mini,Breville,40,40,0.1250,0.9000,1.0000,0.4333,context-free
+coffee maker,gpt-5.4-mini,Cuisinart,40,40,0.0000,0.2750,1.0000,0.2733,context-free
+coffee maker,gpt-5.4-mini,De'Longhi,9,40,0.0000,0.0250,0.2250,0.0525,context-free
+coffee maker,gpt-5.4-mini,Hamilton Beach,7,40,0.0000,0.0000,0.1750,0.0350,context-free
+coffee maker,gpt-5.4-mini,Keurig,40,40,0.8750,1.0000,1.0000,0.9292,context-free
+coffee maker,gpt-5.4-mini,Mr. Coffee,24,40,0.0000,0.0000,0.6000,0.1225,context-free
+coffee maker,gpt-5.4-mini,Nespresso,20,40,0.0000,0.4750,0.5000,0.2437,context-free
+coffee maker,gpt-5.4-mini,Ninja,20,40,0.0000,0.3250,0.5000,0.1937,context-free
+coffee maker,gpt-5.4-mini,OXO,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gpt-5.4-mini,Technivorm,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Bonavita,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Braun,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Breville,40,40,0.0000,1.0000,1.0000,0.3417,context-free
+coffee maker,gemini-3.1-pro-preview,Cuisinart,40,40,0.0000,0.0000,1.0000,0.2325,context-free
+coffee maker,gemini-3.1-pro-preview,De'Longhi,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Hamilton Beach,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Keurig,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Mr. Coffee,31,40,0.0000,0.0000,0.7750,0.1725,context-free
+coffee maker,gemini-3.1-pro-preview,Nespresso,40,40,0.0000,1.0000,1.0000,0.4917,context-free
+coffee maker,gemini-3.1-pro-preview,Ninja,9,40,0.0000,0.0000,0.2250,0.0450,context-free
+coffee maker,gemini-3.1-pro-preview,OXO,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-3.1-pro-preview,Technivorm,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-2.5-flash,Bonavita,3,40,0.0000,0.0250,0.0750,0.0196,context-free
+coffee maker,gemini-2.5-flash,Braun,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-2.5-flash,Breville,40,40,0.0250,0.2500,1.0000,0.2946,context-free
+coffee maker,gemini-2.5-flash,Cuisinart,40,40,0.0000,0.9500,1.0000,0.4292,context-free
+coffee maker,gemini-2.5-flash,De'Longhi,26,40,0.0000,0.0250,0.6500,0.1375,context-free
+coffee maker,gemini-2.5-flash,Hamilton Beach,1,40,0.0000,0.0250,0.0250,0.0083,context-free
+coffee maker,gemini-2.5-flash,Keurig,40,40,0.9750,1.0000,1.0000,0.9833,context-free
+coffee maker,gemini-2.5-flash,Mr. Coffee,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-2.5-flash,Nespresso,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,gemini-2.5-flash,Ninja,35,40,0.0000,0.7250,0.8750,0.3321,context-free
+coffee maker,gemini-2.5-flash,OXO,10,40,0.0000,0.0000,0.2500,0.0500,context-free
+coffee maker,gemini-2.5-flash,Technivorm,5,40,0.0000,0.0000,0.1250,0.0287,context-free
+coffee maker,claude-opus-4-7,Bonavita,2,40,0.0000,0.0500,0.0500,0.0167,context-free
+coffee maker,claude-opus-4-7,Braun,1,40,0.0000,0.0250,0.0250,0.0083,context-free
+coffee maker,claude-opus-4-7,Breville,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+coffee maker,claude-opus-4-7,Cuisinart,36,40,0.0000,0.2000,0.9000,0.2079,context-free
+coffee maker,claude-opus-4-7,De'Longhi,5,40,0.0000,0.0250,0.1250,0.0283,context-free
+coffee maker,claude-opus-4-7,Hamilton Beach,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-opus-4-7,Keurig,32,40,0.0000,0.7000,0.8000,0.2571,context-free
+coffee maker,claude-opus-4-7,Mr. Coffee,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-opus-4-7,Nespresso,24,40,0.0000,0.0000,0.6000,0.1487,context-free
+coffee maker,claude-opus-4-7,Ninja,15,40,0.0000,0.0000,0.3750,0.0875,context-free
+coffee maker,claude-opus-4-7,OXO,5,40,0.0000,0.0000,0.1250,0.0287,context-free
+coffee maker,claude-opus-4-7,Technivorm,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+coffee maker,claude-sonnet-4-6,Bonavita,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-sonnet-4-6,Braun,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-sonnet-4-6,Breville,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+coffee maker,claude-sonnet-4-6,Cuisinart,40,40,0.0000,0.7000,1.0000,0.4142,context-free
+coffee maker,claude-sonnet-4-6,De'Longhi,40,40,0.0000,0.8250,1.0000,0.3229,context-free
+coffee maker,claude-sonnet-4-6,Hamilton Beach,12,40,0.0000,0.0000,0.3000,0.0600,context-free
+coffee maker,claude-sonnet-4-6,Keurig,40,40,0.0000,0.4750,1.0000,0.3438,context-free
+coffee maker,claude-sonnet-4-6,Mr. Coffee,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-sonnet-4-6,Nespresso,28,40,0.0000,0.0000,0.7000,0.1425,context-free
+coffee maker,claude-sonnet-4-6,Ninja,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-sonnet-4-6,OXO,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+coffee maker,claude-sonnet-4-6,Technivorm,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,9 Lives,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Blue Buffalo,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cat food,gpt-5.5,Fancy Feast,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Friskies,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Hill's Science Diet,40,40,0.1250,1.0000,1.0000,0.5542,context-free
+cat food,gpt-5.5,Iams,18,40,0.0000,0.0000,0.4500,0.0900,context-free
+cat food,gpt-5.5,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Meow Mix,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Merrick,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Orijen,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Purina,40,40,0.6750,1.0000,1.0000,0.7833,context-free
+cat food,gpt-5.5,Royal Canin,40,40,0.2000,1.0000,1.0000,0.4958,context-free
+cat food,gpt-5.5,Taste of the Wild,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Wellness,22,40,0.0000,0.0000,0.5500,0.1100,context-free
+cat food,gpt-5.5,Weruva,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.5,Whiskas,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,9 Lives,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Blue Buffalo,40,40,0.0000,0.0000,1.0000,0.2487,context-free
+cat food,gpt-5.4-mini,Fancy Feast,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Friskies,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Hill's Science Diet,40,40,0.0000,1.0000,1.0000,0.4208,context-free
+cat food,gpt-5.4-mini,Iams,17,40,0.0000,0.0000,0.4250,0.0863,context-free
+cat food,gpt-5.4-mini,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Meow Mix,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Merrick,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Orijen,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Purina,40,40,0.8750,1.0000,1.0000,0.9167,context-free
+cat food,gpt-5.4-mini,Royal Canin,40,40,0.1250,1.0000,1.0000,0.4958,context-free
+cat food,gpt-5.4-mini,Taste of the Wild,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Wellness,23,40,0.0000,0.0000,0.5750,0.1150,context-free
+cat food,gpt-5.4-mini,Weruva,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gpt-5.4-mini,Whiskas,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,9 Lives,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Blue Buffalo,40,40,0.0000,0.0000,1.0000,0.2487,context-free
+cat food,gemini-3.1-pro-preview,Fancy Feast,5,40,0.0000,0.0000,0.1250,0.0250,context-free
+cat food,gemini-3.1-pro-preview,Friskies,8,40,0.0000,0.0000,0.2000,0.0400,context-free
+cat food,gemini-3.1-pro-preview,Hill's Science Diet,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+cat food,gemini-3.1-pro-preview,Iams,25,40,0.0000,0.0000,0.6250,0.1263,context-free
+cat food,gemini-3.1-pro-preview,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Meow Mix,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Merrick,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Orijen,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Purina,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cat food,gemini-3.1-pro-preview,Royal Canin,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+cat food,gemini-3.1-pro-preview,Taste of the Wild,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Wellness,2,40,0.0000,0.0000,0.0500,0.0100,context-free
+cat food,gemini-3.1-pro-preview,Weruva,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-3.1-pro-preview,Whiskas,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-2.5-flash,9 Lives,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+cat food,gemini-2.5-flash,Blue Buffalo,35,40,0.0750,0.1750,0.8750,0.2683,context-free
+cat food,gemini-2.5-flash,Fancy Feast,9,40,0.0250,0.1500,0.2250,0.0871,context-free
+cat food,gemini-2.5-flash,Friskies,4,40,0.0000,0.0750,0.1000,0.0425,context-free
+cat food,gemini-2.5-flash,Hill's Science Diet,37,40,0.0000,0.7000,0.9250,0.2904,context-free
+cat food,gemini-2.5-flash,Iams,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-2.5-flash,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-2.5-flash,Meow Mix,1,40,0.0000,0.0250,0.0250,0.0083,context-free
+cat food,gemini-2.5-flash,Merrick,11,40,0.0000,0.0000,0.2750,0.0600,context-free
+cat food,gemini-2.5-flash,Orijen,2,40,0.0000,0.0000,0.0500,0.0125,context-free
+cat food,gemini-2.5-flash,Purina,39,40,0.7750,0.9750,0.9750,0.8750,context-free
+cat food,gemini-2.5-flash,Royal Canin,39,40,0.1250,0.8750,0.9750,0.5083,context-free
+cat food,gemini-2.5-flash,Taste of the Wild,5,40,0.0000,0.0250,0.1250,0.0296,context-free
+cat food,gemini-2.5-flash,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,gemini-2.5-flash,Wellness,15,40,0.0000,0.0000,0.3750,0.0850,context-free
+cat food,gemini-2.5-flash,Weruva,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+cat food,gemini-2.5-flash,Whiskas,1,40,0.0000,0.0000,0.0250,0.0063,context-free
+cat food,claude-opus-4-7,9 Lives,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Blue Buffalo,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+cat food,claude-opus-4-7,Fancy Feast,1,40,0.0000,0.0250,0.0250,0.0125,context-free
+cat food,claude-opus-4-7,Friskies,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Hill's Science Diet,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+cat food,claude-opus-4-7,Iams,39,40,0.0000,0.0000,0.9750,0.1950,context-free
+cat food,claude-opus-4-7,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Meow Mix,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Merrick,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Orijen,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Purina,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cat food,claude-opus-4-7,Royal Canin,40,40,0.0000,0.9750,1.0000,0.4925,context-free
+cat food,claude-opus-4-7,Taste of the Wild,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Wellness,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Weruva,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-opus-4-7,Whiskas,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,9 Lives,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Blue Buffalo,40,40,0.0000,0.9750,1.0000,0.4938,context-free
+cat food,claude-sonnet-4-6,Fancy Feast,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Friskies,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Hill's Science Diet,40,40,0.0000,0.7000,1.0000,0.3083,context-free
+cat food,claude-sonnet-4-6,Iams,39,40,0.0000,0.0000,0.9750,0.1950,context-free
+cat food,claude-sonnet-4-6,Instinct,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Meow Mix,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Merrick,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Orijen,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Purina,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+cat food,claude-sonnet-4-6,Royal Canin,40,40,0.0000,0.3250,1.0000,0.2813,context-free
+cat food,claude-sonnet-4-6,Taste of the Wild,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Tiki Cat,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Wellness,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+cat food,claude-sonnet-4-6,Weruva,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+cat food,claude-sonnet-4-6,Whiskas,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,American Cruise Lines,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Bateaux New York,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Carnival,37,40,0.1250,0.8750,0.9250,0.5112,context-free
+boat cruises,gpt-5.5,Celebrity Cruises,33,40,0.0000,0.0500,0.8250,0.1800,context-free
+boat cruises,gpt-5.5,Circle Line Sightseeing Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,City Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Disney Cruise Line,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Holland America,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Hornblower Cruises & Events,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,MSC Cruises,2,40,0.0000,0.0000,0.0500,0.0100,context-free
+boat cruises,gpt-5.5,Norwegian Cruise Line,40,40,0.0000,0.9500,1.0000,0.3292,context-free
+boat cruises,gpt-5.5,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Princess Cruises,40,40,0.0000,0.0500,1.0000,0.2588,context-free
+boat cruises,gpt-5.5,Royal Caribbean,40,40,0.7500,0.9500,1.0000,0.8542,context-free
+boat cruises,gpt-5.5,Spirit Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Un-Cruise Adventures,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.5,Viking,8,40,0.1250,0.1250,0.2000,0.1400,context-free
+boat cruises,gpt-5.5,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,American Cruise Lines,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Bateaux New York,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Carnival,40,40,0.2250,0.7500,1.0000,0.5404,context-free
+boat cruises,gpt-5.4-mini,Celebrity Cruises,2,40,0.0000,0.0000,0.0500,0.0100,context-free
+boat cruises,gpt-5.4-mini,Circle Line Sightseeing Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,City Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Disney Cruise Line,3,40,0.0000,0.0000,0.0750,0.0150,context-free
+boat cruises,gpt-5.4-mini,Holland America,4,40,0.0000,0.0000,0.1000,0.0200,context-free
+boat cruises,gpt-5.4-mini,Hornblower Cruises & Events,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,MSC Cruises,31,40,0.0000,0.0250,0.7750,0.1696,context-free
+boat cruises,gpt-5.4-mini,Norwegian Cruise Line,39,40,0.0000,0.8750,0.9750,0.3292,context-free
+boat cruises,gpt-5.4-mini,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Princess Cruises,40,40,0.2500,0.3250,1.0000,0.4408,context-free
+boat cruises,gpt-5.4-mini,Royal Caribbean,40,40,0.5000,1.0000,1.0000,0.7333,context-free
+boat cruises,gpt-5.4-mini,Spirit Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Un-Cruise Adventures,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gpt-5.4-mini,Viking,1,40,0.0250,0.0250,0.0250,0.0250,context-free
+boat cruises,gpt-5.4-mini,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,American Cruise Lines,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Bateaux New York,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Carnival,40,40,0.0250,1.0000,1.0000,0.5125,context-free
+boat cruises,gemini-3.1-pro-preview,Celebrity Cruises,27,40,0.0000,0.0000,0.6750,0.1350,context-free
+boat cruises,gemini-3.1-pro-preview,Circle Line Sightseeing Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,City Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Disney Cruise Line,7,40,0.0000,0.0000,0.1750,0.0350,context-free
+boat cruises,gemini-3.1-pro-preview,Holland America,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Hornblower Cruises & Events,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,MSC Cruises,6,40,0.0000,0.0000,0.1500,0.0300,context-free
+boat cruises,gemini-3.1-pro-preview,Norwegian Cruise Line,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+boat cruises,gemini-3.1-pro-preview,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Princess Cruises,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+boat cruises,gemini-3.1-pro-preview,Royal Caribbean,40,40,0.9750,1.0000,1.0000,0.9875,context-free
+boat cruises,gemini-3.1-pro-preview,Spirit Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Un-Cruise Adventures,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Viking,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-3.1-pro-preview,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-2.5-flash,American Cruise Lines,3,40,0.0000,0.0500,0.0750,0.0300,context-free
+boat cruises,gemini-2.5-flash,Bateaux New York,2,40,0.0000,0.0000,0.0500,0.0100,context-free
+boat cruises,gemini-2.5-flash,Carnival,38,40,0.8000,0.8750,0.9500,0.8521,context-free
+boat cruises,gemini-2.5-flash,Celebrity Cruises,6,40,0.0000,0.0000,0.1500,0.0300,context-free
+boat cruises,gemini-2.5-flash,Circle Line Sightseeing Cruises,2,40,0.0000,0.0000,0.0500,0.0125,context-free
+boat cruises,gemini-2.5-flash,City Cruises,2,40,0.0000,0.0500,0.0500,0.0167,context-free
+boat cruises,gemini-2.5-flash,Disney Cruise Line,8,40,0.0000,0.0000,0.2000,0.0400,context-free
+boat cruises,gemini-2.5-flash,Holland America,15,40,0.0000,0.0000,0.3750,0.0750,context-free
+boat cruises,gemini-2.5-flash,Hornblower Cruises & Events,2,40,0.0500,0.0500,0.0500,0.0500,context-free
+boat cruises,gemini-2.5-flash,MSC Cruises,1,40,0.0000,0.0000,0.0250,0.0050,context-free
+boat cruises,gemini-2.5-flash,Norwegian Cruise Line,34,40,0.0000,0.7750,0.8500,0.2733,context-free
+boat cruises,gemini-2.5-flash,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,gemini-2.5-flash,Princess Cruises,37,40,0.0500,0.0750,0.9250,0.2696,context-free
+boat cruises,gemini-2.5-flash,Royal Caribbean,38,40,0.0250,0.9000,0.9500,0.4696,context-free
+boat cruises,gemini-2.5-flash,Spirit Cruises,2,40,0.0000,0.0500,0.0500,0.0250,context-free
+boat cruises,gemini-2.5-flash,Un-Cruise Adventures,1,40,0.0000,0.0250,0.0250,0.0083,context-free
+boat cruises,gemini-2.5-flash,Viking,9,40,0.0750,0.1500,0.2250,0.1163,context-free
+boat cruises,gemini-2.5-flash,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,American Cruise Lines,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Bateaux New York,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Carnival,40,40,0.0000,1.0000,1.0000,0.3333,context-free
+boat cruises,claude-opus-4-7,Celebrity Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Circle Line Sightseeing Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,City Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Disney Cruise Line,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Holland America,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Hornblower Cruises & Events,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,MSC Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Norwegian Cruise Line,40,40,0.0000,0.0000,1.0000,0.2500,context-free
+boat cruises,claude-opus-4-7,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Princess Cruises,40,40,0.0000,0.0000,1.0000,0.2000,context-free
+boat cruises,claude-opus-4-7,Royal Caribbean,40,40,0.0000,1.0000,1.0000,0.5000,context-free
+boat cruises,claude-opus-4-7,Spirit Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Un-Cruise Adventures,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-opus-4-7,Viking,40,40,1.0000,1.0000,1.0000,1.0000,context-free
+boat cruises,claude-opus-4-7,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,American Cruise Lines,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Bateaux New York,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Carnival,40,40,0.0000,1.0000,1.0000,0.4958,context-free
+boat cruises,claude-sonnet-4-6,Celebrity Cruises,12,40,0.0000,0.0000,0.3000,0.0613,context-free
+boat cruises,claude-sonnet-4-6,Circle Line Sightseeing Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,City Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Disney Cruise Line,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Holland America,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Hornblower Cruises & Events,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,MSC Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Norwegian Cruise Line,40,40,0.0000,0.0250,1.0000,0.2562,context-free
+boat cruises,claude-sonnet-4-6,Oceania Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Princess Cruises,29,40,0.0000,0.0000,0.7250,0.1450,context-free
+boat cruises,claude-sonnet-4-6,Royal Caribbean,40,40,0.0250,1.0000,1.0000,0.3500,context-free
+boat cruises,claude-sonnet-4-6,Spirit Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Un-Cruise Adventures,0,40,0.0000,0.0000,0.0000,0.0000,context-free
+boat cruises,claude-sonnet-4-6,Viking,39,40,0.9750,0.9750,0.9750,0.9750,context-free
+boat cruises,claude-sonnet-4-6,Windstar Cruises,0,40,0.0000,0.0000,0.0000,0.0000,context-free
