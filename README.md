@@ -2,6 +2,12 @@
 
 This repository contains the companion application for a study of brand recommendations made by large language models (LLMs). It can run the documented experiment, retain the exact prompts and raw model responses, standardise brand names, and calculate Brand Recommendation Probability (BRP@1, BRP@3, and BRP@5) and Mean Reciprocal Rank (MRR).
 
+> **For paper reviewers:** the data and code referenced by this paper's
+> Methodology and Results sections (prompt library, per-model BRP/MRR
+> results, marketplace-visibility measures, and the ridge/lasso regression
+> dataset and R script) are curated in [`seed-data/`](seed-data/README.md).
+> Start there.
+
 The application has two main pages:
 
 - **Run experiment** (`/`) configures, previews, and starts a run.
