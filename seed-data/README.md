@@ -31,14 +31,20 @@ GitHub site").
   and is not used anywhere in this paper. Source:
   `brand_metrics_salient.xlsx` (research folder root, "BrandData"-style
   per-category sheets).
+- `marketplace/brandwatch_mentions.csv` — estimated 12-month Brandwatch
+  mention volume for the same 104-brand, five-category universe. Values
+  are available for 103 brands; `City Cruises by Hornblower` is the only
+  missing observation. Source: the Brandwatch column in
+  `brand_metrics_merged.xlsx`.
 - `marketplace/metric_metadata.csv` — collection date, period, and source
-  for every marketplace metric above, including the exact LexisNexis
+  for the marketplace metrics above, including the exact LexisNexis
   search strings per category (e.g. cordless drills:
   `"[brand]" AND ("cordless drill" OR "power drill")`) and the Google
-  Trends anchor-normalization formula. This is the "full definitions,
-  sources, and collection periods" / "search specifications, category
-  anchors" content the Methodology section promises is in the supplement.
-  Source: `brand_metrics_salient.xlsx`, "Metric Metadata" sheet.
+  Trends anchor-normalization formula. The Brandwatch rows record the
+  information preserved with the available source: August 2026 collection,
+  a rolling 12-month period, and a 5% sampled estimate scaled by 20.
+  Source: `brand_metrics_salient.xlsx`, "Metric Metadata" sheet, plus the
+  Brandwatch source note in `brand_metrics_merged.xlsx`.
 
 Figures 2, 3, 4, and 5 in the paper aggregate the per-model result rows
 across the six LLMs and merge them with the marketplace measures before
@@ -56,23 +62,23 @@ repository (see "Still missing" below).
   can recompute BRP/MRR from these directly. Checked for identifying
   strings before copying; found none.
 
+## Brandwatch provenance limitation
+
+The Brandwatch values are now included, but the available source does not
+preserve the exact start and end dates, per-brand query syntax, geographic
+or language filters, or the original Brandwatch export. The numbers support
+inspection and merging, but those missing collection details still limit
+independent reproduction of the measure.
+
 ## Still missing before this folder backs the paper's data-availability claim
 
-- **Brandwatch data.** Searched the entire connected working folder,
-  including files that had to be force-downloaded from iCloud first --
-  BrandZ, Kantar, Wikipedia, LexisNexis, Google Trends, and Statista are
-  all documented in `marketplace/metric_metadata.csv`, but there is no
-  Brandwatch mention-volume data anywhere. The paper's "Brandwatch
-  captures online brand conversation" measure has no backing file.
 - **The merged n=82 brand-level dataset** actually used in the ridge/lasso
   regression (Figures 4-5), i.e. `brand_metrics_salient.csv` joined with
   the aggregated MRR/BRP results and restricted/filtered down to n=82
   brands. Not found as a saved artifact anywhere.
-- **The R script** that fits the fractional-logit ridge/lasso model
+- **The final R script** that fits the fractional-logit ridge/lasso model
   (`glm`/`glmnet`, quasibinomial family) described in "Explaining Brand
-  Recommendation Prominence." No `.R` or `.Rmd` file exists anywhere in
-  the connected working folder. `scripts/run-rq1-logit.R` was deleted, and
-  based on `data/analysis/rq1/rq1_summary.md`, it was an earlier
+  Recommendation Prominence." The included `scripts/run-rq1-logit.R` is an earlier
   logistic-regression approach (binary visibility groups) superseded by
   the paper's final continuous-predictor ridge method -- not a substitute.
 
@@ -86,5 +92,6 @@ repository (see "Still missing" below).
   exploratory analyses with a different sample size and predictor set that
   don't match the numbers reported in the paper.
 
-Fill the three gaps above before publishing the anonymized link, or the
+Fill the two remaining gaps above and complete the Brandwatch provenance
+details before publishing the anonymized link, or the
 supplement will not actually contain what the paper's text promises.
