@@ -31,19 +31,32 @@ GitHub site").
   and is not used anywhere in this paper. Source:
   `brand_metrics_salient.xlsx` (research folder root, "BrandData"-style
   per-category sheets).
+- `marketplace/brandwatch_mentions.csv` — estimated 12-month Brandwatch
+  mention volume for the same 104-brand, five-category universe. Values
+  are available for 103 brands; `City Cruises by Hornblower` is the only
+  missing observation. Source: the Brandwatch column in
+  `brand_metrics_merged.xlsx`. Cross-checked against the Brandwatch column
+  in `regression/all.csv` (below, supplied independently by a
+  collaborator): 83 brand/category rows overlap and every overlapping
+  value agrees except one row where `all.csv` had no value and this file
+  does -- the two sources corroborate each other.
 - `marketplace/metric_metadata.csv` — collection date, period, and source
-  for every marketplace metric above, including the exact LexisNexis
+  for the marketplace metrics above, including the exact LexisNexis
   search strings per category (e.g. cordless drills:
   `"[brand]" AND ("cordless drill" OR "power drill")`) and the Google
-  Trends anchor-normalization formula. This is the "full definitions,
-  sources, and collection periods" / "search specifications, category
-  anchors" content the Methodology section promises is in the supplement.
-  Source: `brand_metrics_salient.xlsx`, "Metric Metadata" sheet.
+  Trends anchor-normalization formula. The Brandwatch rows record the
+  information preserved with the available source: August 2026 collection,
+  a rolling 12-month period, and a 5% sampled estimate scaled by 20. This
+  is the "full definitions, sources, and collection periods" / "search
+  specifications, category anchors" content the Methodology section
+  promises is in the supplement. Source: `brand_metrics_salient.xlsx`,
+  "Metric Metadata" sheet, plus the Brandwatch source note in
+  `brand_metrics_merged.xlsx`.
 
 Figures 2, 3, 4, and 5 in the paper aggregate the per-model result rows
 across the six LLMs and merge them with the marketplace measures before
 plotting; that aggregation/merge step is not yet checked into this
-repository (see "Still missing" below).
+repository.
 
 ## Also included
 
@@ -83,6 +96,16 @@ repository (see "Still missing" below).
   manuscript will be updated to match -- check with them before finalizing
   Figures 4-5 numbers in the paper text.
 
+## Brandwatch provenance limitation
+
+Brandwatch values are now included from two corroborating sources (see
+above), but neither preserves the exact per-brand query syntax, geographic
+or language filters, or the original Brandwatch export/date range down to
+the day -- only "August 2026, rolling 12 months, 5%-sample scaled by 20."
+The numbers support inspection, merging, and reproduction of the reported
+regression results, but that missing collection detail still limits a
+reader's ability to re-run the Brandwatch query themselves from scratch.
+
 ## Deliberately excluded
 
 - `public/aspiration-scores.json` and
@@ -93,5 +116,15 @@ repository (see "Still missing" below).
   exploratory analyses with a different sample size and predictor set that
   don't match the numbers reported in the paper.
 
-Fill the three gaps above before publishing the anonymized link, or the
-supplement will not actually contain what the paper's text promises.
+## Still missing before this folder fully backs the paper's data-availability claim
+
+- **The Figures 2-3 aggregation/merge step** that combines the per-model
+  result rows across the six LLMs with the marketplace measures (see note
+  above) is not yet checked in as a script -- only the two ends
+  (per-model results, marketplace measures) and the separate regression
+  merge (`regression/all.csv`) are.
+
+All three items originally listed here (Brandwatch data, the merged n=82
+regression dataset, and the R script) are now resolved. Confirm the
+Brandwatch provenance limitation above is acceptable for the paper's
+methods section before publishing the anonymized link.
