@@ -75,7 +75,6 @@ Clone the canonical repository and enter the project directory:
 
 ```bash
 git clone <ANONYMIZED_REPO_URL>
-cd LLM-Monitor
 ```
 
 ### One-command start
