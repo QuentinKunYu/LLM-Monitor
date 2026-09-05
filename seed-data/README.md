@@ -56,25 +56,32 @@ repository (see "Still missing" below).
   can recompute BRP/MRR from these directly. Checked for identifying
   strings before copying; found none.
 
-## Still missing before this folder backs the paper's data-availability claim
+## Regression artifact (resolves the three items formerly listed as missing)
 
-- **Brandwatch data.** Searched the entire connected working folder,
-  including files that had to be force-downloaded from iCloud first --
-  BrandZ, Kantar, Wikipedia, LexisNexis, Google Trends, and Statista are
-  all documented in `marketplace/metric_metadata.csv`, but there is no
-  Brandwatch mention-volume data anywhere. The paper's "Brandwatch
-  captures online brand conversation" measure has no backing file.
-- **The merged n=82 brand-level dataset** actually used in the ridge/lasso
-  regression (Figures 4-5), i.e. `brand_metrics_salient.csv` joined with
-  the aggregated MRR/BRP results and restricted/filtered down to n=82
-  brands. Not found as a saved artifact anywhere.
-- **The R script** that fits the fractional-logit ridge/lasso model
-  (`glm`/`glmnet`, quasibinomial family) described in "Explaining Brand
-  Recommendation Prominence." No `.R` or `.Rmd` file exists anywhere in
-  the connected working folder. `scripts/run-rq1-logit.R` was deleted, and
-  based on `data/analysis/rq1/rq1_summary.md`, it was an earlier
-  logistic-regression approach (binary visibility groups) superseded by
-  the paper's final continuous-predictor ridge method -- not a substitute.
+- `regression/all.csv` -- the full merged brand-level dataset (100 rows
+  across the 5 categories) joining LLM recommendation metrics (BRP1/3/5,
+  MRR) with BrandZ equity, Kantar Ad Spend, Wikipedia, LexisNexis News,
+  Google Trends, Statista market share, AND Brandwatch mention volume.
+  Filtering to complete cases on the 5 marketplace-visibility predictors +
+  MRR + Category yields exactly n=82, matching the paper's reported ridge
+  regression sample size.
+- `regression/LLMmonitorJAR.Rmd` -- the actual R script that fits the
+  fractional-logit ridge/lasso model (`glmnet`, quasibinomial family,
+  `cv.glmnet` for lambda selection) plus lasso and OLS robustness checks,
+  matching the paper's "Explaining Brand Recommendation Prominence"
+  section. Received already anonymized (the `setwd()` path reads
+  `/Users/XXX/...`).
+- Received from a collaborator along with `all.xlsx` and a knitted
+  `llmmonitorJAS.html` -- **neither of those two is included here.**
+  `all.xlsx`'s hidden file metadata (`docProps/core.xml`) names the
+  collaborator's full real name as last-modified-by, and its
+  `workbook.xml` embeds their real `/Users/<initials>/...` file path;
+  the `.html` knit output echoes that same real path in visible source
+  code. `all.csv` carries none of this (plain text, no metadata), so it
+  fully replaces the `.xlsx` for this repo.
+- The collaborator noted the ridge results are changing slightly and the
+  manuscript will be updated to match -- check with them before finalizing
+  Figures 4-5 numbers in the paper text.
 
 ## Deliberately excluded
 

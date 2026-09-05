@@ -1,0 +1,158 @@
+---
+title: "LLMmonitorJAR"
+author: "Anonymous"
+date: "2026-09-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(psych)
+library(dplyr)
+library(tidyverse)
+library(ggrepel)
+library(glmnet)
+setwd("/Users/XXX/prose/AImediateRel/Results11Aug") # put your path here
+all = read.csv("all.csv") %>%
+    mutate(
+    logAdSpend = log(AdSpend+1),
+    logWiki = log(WikipediaPV+1),
+    logNews = log(NewsBrandCat+1),
+    logSearch = log(GoogleBrandCat+1),
+    logBrandwatch = log(Brandwatch+1),
+    sqrtMRR = sqrt(MRR)
+  ) 
+dim(all)
+names(all)
+summary(all)
+table(all$Category)
+```
+
+# Study scatterplots
+```{r}
+xvar = c("logAdSpend", "logNews", "logBrandwatch", "logWiki", "logSearch")
+pairs.panels(all[, c("Salient", "BRP1", "BRP3", "BRP5", "MRR")], smooth=F, stars=T, ellipses=F)
+pairs.panels(all[, c(xvar, "sqrtMRR")], stars=T)
+```
+
+# PCA marketplace varaibles 
+```{r}
+fit = principal(all[, xvar])
+fit$values # single eigenvalue>1
+```
+
+
+# make the scatterplots
+```{r}
+all2 = all %>%
+  filter(!is.na(Category)) %>%
+  mutate(BrandZ = if_else(is.na(Salient), "Not in BrandZ", "In BrandZ")) 
+all2 %>%
+  ggplot(aes(x = logAdSpend, y = BRP5)) +
+  # BrandZ brands: circles sized by Salience
+  geom_point(data = ~ filter(.x, !is.na(Salient)),
+    aes(size = Salient), shape = 16, alpha = 0.8) +
+  # Brands not in BrandZ: fixed-size X
+  geom_point(data = ~ filter(.x, is.na(Salient)),
+    shape = 4, size = 3) +
+  geom_text_repel(aes(label = BrandShort),
+    cex = 1.7, show.legend = FALSE) +
+  facet_wrap(~ Category) +
+  scale_size_continuous(range = c(2, 7)) +
+  labs(x = "log(Ad Spend)", y = "BRP@5", size = "BrandZ Salience") +
+  theme_bw() +
+  theme(legend.position = "top")
+
+all2 %>%
+  ggplot(aes(x = logAdSpend, y = MRR)) +
+  # BrandZ brands: circles sized by Salience
+  geom_point(data = ~ filter(.x, !is.na(Salient)),
+    aes(size = Salient), shape = 16, alpha = 0.8) +
+  # Brands not in BrandZ: fixed-size X
+  geom_point(data = ~ filter(.x, is.na(Salient)),
+    shape = 4, size = 3) +
+  geom_text_repel(aes(label = BrandShort),
+    cex = 1.7, show.legend = FALSE) +
+  facet_wrap(~ Category) +
+  scale_size_continuous(range = c(2, 7)) +
+  labs(x = "log(Ad Spend)", y = "MRR", size = "Salience") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+# fraction logit with ridge model
+```{r}
+library(glmnet)
+all2 <- all %>%
+  filter(complete.cases(logSearch, logAdSpend,
+    logNews,logBrandwatch, MRR, logWiki, Category)) %>%
+  mutate(across(
+    c(logAdSpend, logSearch, logBrandwatch, logNews, logWiki),
+    ~ as.numeric(scale(.x))
+  ))
+x <- model.matrix(
+  ~ Category+logAdSpend+logNews+logSearch+logBrandwatch+logWiki,  
+  data = all2)[, -1]
+y <- all2$MRR
+cat("dim of x matrix: ")
+dim(x)
+
+ridge <- glmnet(x, y, quasibinomial(link="logit"),  alpha=0)
+ridge$beta[,ncol(ridge$beta)]
+plot(ridge, xvar = "lambda", label = TRUE)
+# 1=catfood, 2=coffee, 3=drill, 4=hike, 5=ad, 6=news, 
+# 7=google, 8=brand, 9=wiki
+abline(h=0)
+set.seed(54321)
+cv.ridge <- cv.glmnet(x, y, family = quasibinomial(link="logit"), alpha=0)
+log(c(cv.ridge$lambda.min, cv.ridge$lambda.1se))
+coef(cv.ridge, s = "lambda.min")
+# Google, brandwatch and news tied, wiki and adspend tied
+```
+
+# make better plot for article
+```{r}
+B <- as.matrix(ridge$beta)
+Bplot <- B[-(1:4), ] # Remove the first four category coefficients
+matplot(log(ridge$lambda), t(Bplot), type = "l", lty = 1, 
+    xlab = "log(lambda)", ylab = "Coefficient (predictors standardized)"
+)
+abline(h = 0, lty = 2)
+legend("topright",
+  legend = rownames(Bplot),
+  lty = 1, col = seq_len(nrow(Bplot)), cex = .8
+)
+abline(v=log(cv.ridge$lambda.min))
+abline(v=log(cv.ridge$lambda.1se), col=2)
+```
+
+# Robuestness check: Lasso
+```{r}
+lasso <- glmnet(x, y, quasibinomial(link="logit"),  alpha=1)
+set.seed(54321)
+cv.lasso <- cv.glmnet(x, y, family=quasibinomial(link="logit"), alpha=1)
+B <- as.matrix(lasso$beta)
+Bplot <- B[-(1:4), ] # Remove the first four category coefficients
+matplot(log(lasso$lambda), t(Bplot), type = "l", lty = 1, 
+    xlab = "log(lambda)", ylab = "Coefficient (predictors standardized)")
+abline(h = 0, lty = 2)
+legend("topright", legend = rownames(Bplot),
+  lty = 1, col = seq_len(nrow(Bplot)), cex = .8)
+abline(v=log(cv.lasso$lambda.min))
+abline(v=log(cv.lasso$lambda.1se), col=2)
+```
+
+
+
+# Robustness checks: OLS
+```{r}
+fit.ols = lm(MRR ~ Category+logAdSpend+logWiki+logNews+logSearch+logBrandwatch, data=all)
+summary(fit.ols) # Google**, brandwatch*, ad and news and wiki NS
+# now log MRR as variance stabilizing transformation
+fitolssqrt = lm(sqrt(MRR) ~ Category+logAdSpend+logWiki+logNews+logSearch+logBrandwatch, data=all)
+summary(fitolssqrt) # Google***, brandwatch**, ad-*, news and wiki NS
+```
+OLS: Search is most important, brandwatch second, others NS. When we add a variance stabilizing transform the story is the same, but adspend becomes borderline sig with a signflip.
