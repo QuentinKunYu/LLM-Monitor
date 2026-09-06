@@ -129,7 +129,7 @@ abline(v=log(cv.ridge$lambda.min))
 abline(v=log(cv.ridge$lambda.1se), col=2)
 ```
 
-# Robuestness check: Lasso
+# Robustness check: Lasso
 ```{r}
 lasso <- glmnet(x, y, quasibinomial(link="logit"),  alpha=1)
 set.seed(54321)
